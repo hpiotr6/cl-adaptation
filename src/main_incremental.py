@@ -432,7 +432,7 @@ def main(argv=None):
     else:
         print("WARNING: [CUDA unavailable] Using CPU instead!")
         device = "cpu"
-        # raise EnvironmentError('No GPU available')
+        raise EnvironmentError('No GPU available')
 
     # In case the dataset is too large
     torch.multiprocessing.set_sharing_strategy("file_system")

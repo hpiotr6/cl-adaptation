@@ -533,7 +533,7 @@ class Inc_Learning_Appr:
             self.model.freeze_bn()
         for images, targets in trn_loader:
             # Forward current model
-            varcov_loss, feats = self.varcov_regularizer(self.model.model, images)
+            varcov_loss, feats = self.varcov_regularizer(self.model.model, images.to(self.device))
             outputs = [head(feats) for head in self.model.heads]
             loss = self.add_varcov_loss(
                 varcov_loss, self.criterion, t, outputs, targets.to(self.device)
