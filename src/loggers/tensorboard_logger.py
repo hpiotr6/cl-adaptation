@@ -1,4 +1,5 @@
 import json
+import warnings
 
 import numpy as np
 from torch.utils.tensorboard import SummaryWriter
@@ -48,6 +49,9 @@ class Logger(ExperimentLogger):
             else:
                 s += "\tAvg.:{:5.1f}% \n".format(100 * array[i, : i + 1].mean())
             self.tbwriter.add_text(f"results/{name}", s, step)
+
+    def save_model(self, state_dict, task):
+        warnings.warn("Saving model is not implemented in wandb logger")
 
     def __del__(self):
         self.tbwriter.close()

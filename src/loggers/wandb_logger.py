@@ -1,6 +1,7 @@
 import io
 import os
 from typing import List, Optional
+import warnings
 
 import seaborn as sns
 from matplotlib import pyplot as plt
@@ -95,6 +96,9 @@ class Logger(ExperimentLogger):
 
     def log_figure(self, name, iter, figure, curtime=None):
         wandb.log({name: _plot_to_wandb(figure)})
+
+    def save_model(self, state_dict, task):
+        warnings.warn("Saving model is not implemented in wandb logger")
 
     def __del__(self):
         wandb.finish()

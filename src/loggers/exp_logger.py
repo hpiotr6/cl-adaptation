@@ -1,9 +1,10 @@
 import importlib
 import os
 from datetime import datetime
+from abc import ABC, abstractmethod
 
 
-class ExperimentLogger:
+class ExperimentLogger(ABC):
     """Main class for experiment logging"""
 
     def __init__(self, log_path, exp_name, begin_time=None):
@@ -15,20 +16,25 @@ class ExperimentLogger:
         else:
             self.begin_time = begin_time
 
+    @abstractmethod
     def log_scalar(self, task, iter, name, value, group=None, curtime=None):
-        pass
+        ...
 
+    @abstractmethod
     def log_args(self, args):
-        pass
+        ...
 
+    @abstractmethod
     def log_result(self, array, name, step):
-        pass
+        ...
 
+    @abstractmethod
     def log_figure(self, name, iter, figure, curtime=None):
-        pass
+        ...
 
+    @abstractmethod
     def save_model(self, state_dict, task):
-        pass
+        ...
 
 
 class MultiLogger(ExperimentLogger):
