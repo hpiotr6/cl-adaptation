@@ -8,6 +8,8 @@ from PIL import Image
 
 import wandb
 from loggers.exp_logger import ExperimentLogger
+import os
+from datetime import date
 
 os.environ["WANDB_START_METHOD"] = "thread"
 
@@ -24,7 +26,10 @@ class Logger(ExperimentLogger):
     ):
         super(Logger, self).__init__(exp_path, exp_name)
 
-        wandb.init(group=exp_name, tags=tags)
+        current_date = date.today().strftime("%Y-%m-%d")
+        wandb.init(
+            group=exp_name, tags=tags, entity="tunnels-ssl", project=current_date
+        )
         self.metrics = []
 
     def log_scalar(self, task, iter, name, value, group=None, curtime=None):
