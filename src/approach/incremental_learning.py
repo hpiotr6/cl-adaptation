@@ -4,9 +4,9 @@ import torch
 import numpy as np
 from argparse import ArgumentParser
 
-from loggers.exp_logger import ExperimentLogger
-from datasets.exemplars_dataset import ExemplarsDataset
-from regularizers import NullVarCovRegLoss, VarCovRegLossProtocol
+from src.loggers.exp_logger import ExperimentLogger
+from src.datasets.exemplars_dataset import ExemplarsDataset
+from src.regularizers import NullVarCovRegLoss, VarCovRegLossProtocol
 
 
 class Inc_Learning_Appr:
@@ -533,7 +533,9 @@ class Inc_Learning_Appr:
             self.model.freeze_bn()
         for images, targets in trn_loader:
             # Forward current model
-            varcov_loss, feats = self.varcov_regularizer(self.model.model, images.to(self.device))
+            varcov_loss, feats = self.varcov_regularizer(
+                self.model.model, images.to(self.device)
+            )
             outputs = [head(feats) for head in self.model.heads]
             loss = self.add_varcov_loss(
                 varcov_loss, self.criterion, t, outputs, targets.to(self.device)
