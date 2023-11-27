@@ -53,6 +53,7 @@ class Appr(Inc_Learning_Appr):
         cbnt=False,
         pretraining_epochs=5,
         ta_lr=1e-5,
+        **kwargs,
     ):
         super(Appr, self).__init__(
             model,
@@ -78,6 +79,7 @@ class Appr(Inc_Learning_Appr):
             logger,
             exemplars_dataset,
             scheduler_milestones,
+            **kwargs,
         )
         self.model_old = None
         self.lamb = lamb
