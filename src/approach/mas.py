@@ -36,6 +36,7 @@ class Appr(Inc_Learning_Appr):
         lamb=1,
         alpha=0.5,
         fi_num_samples=-1,
+        **kwargs,
     ):
         super(Appr, self).__init__(
             model,
@@ -57,6 +58,7 @@ class Appr(Inc_Learning_Appr):
             logger,
             exemplars_dataset,
             scheduler_milestones,
+            **kwargs,
         )
         self.lamb = lamb
         self.alpha = alpha

@@ -10,8 +10,8 @@ from functools import reduce
 
 from dotenv import load_dotenv, find_dotenv
 
-from metrics import cm
-from regularizers import NullVarCovRegLoss, VarCovRegLoss
+from src.metrics import cm
+from src.regularizers import NullVarCovRegLoss, VarCovRegLoss
 
 load_dotenv(find_dotenv())
 
@@ -432,7 +432,7 @@ def main(argv=None):
     else:
         print("WARNING: [CUDA unavailable] Using CPU instead!")
         device = "cpu"
-        raise EnvironmentError('No GPU available')
+        raise EnvironmentError("No GPU available")
 
     # In case the dataset is too large
     torch.multiprocessing.set_sharing_strategy("file_system")
