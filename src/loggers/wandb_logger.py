@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 from PIL import Image
 
 import wandb
-from loggers.exp_logger import ExperimentLogger
+from .exp_logger import ExperimentLogger
 import os
 from datetime import date
 

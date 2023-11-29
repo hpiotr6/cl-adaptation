@@ -6,9 +6,9 @@ import torch.nn.functional as F
 from argparse import ArgumentParser
 from torchvision.utils import save_image
 
-from networks.network import LLL_Net
+from src.networks.network import LLL_Net
 from .incremental_learning import Inc_Learning_Appr
-from datasets.exemplars_dataset import ExemplarsDataset
+from src.datasets.exemplars_dataset import ExemplarsDataset
 
 
 class Appr(Inc_Learning_Appr):

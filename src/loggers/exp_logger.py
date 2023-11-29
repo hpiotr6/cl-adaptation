@@ -54,7 +54,7 @@ class MultiLogger(ExperimentLogger):
         self.wandb_id = None
         for i, l in enumerate(loggers):
             lclass = getattr(
-                importlib.import_module(name="loggers." + l + "_logger"), "Logger"
+                importlib.import_module(name="src.loggers." + l + "_logger"), "Logger"
             )
             if l == "wandb":
                 self.loggers.append(lclass(self.log_path, self.exp_name, tags))

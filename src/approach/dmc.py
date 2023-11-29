@@ -3,9 +3,9 @@ from torch import nn
 from copy import deepcopy
 from argparse import ArgumentParser
 
-from datasets.data_loader import get_loaders
+from src.datasets.data_loader import get_loaders
 from .incremental_learning import Inc_Learning_Appr
-from datasets.exemplars_dataset import ExemplarsDataset
+from src.datasets.exemplars_dataset import ExemplarsDataset
 
 
 class Appr(Inc_Learning_Appr):

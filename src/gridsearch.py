@@ -2,7 +2,7 @@ import importlib
 from copy import deepcopy
 from argparse import ArgumentParser
 
-import utils
+import src.utils
 
 
 class GridSearch:
@@ -87,7 +87,7 @@ class GridSearch:
 
         # Iterate through the other variable parameters
         for curr_lr in list_lr:
-            utils.seed_everything(seed=self.seed)
+            src.utils.seed_everything(seed=self.seed)
             self.appr_ft.model = deepcopy(model)
             self.appr_ft.lr = curr_lr
             self.appr_ft.train(t, trn_loader, val_loader)
@@ -126,7 +126,7 @@ class GridSearch:
             # iterate through decreasing trade-off values -- limit to `max_num_searches` searches
             num_searches = 0
             while num_searches < self.max_num_searches:
-                utils.seed_everything(seed=self.seed)
+                src.utils.seed_everything(seed=self.seed)
                 # Make deepcopy of the appr without duplicating the logger
                 appr_gs = type(appr)(
                     deepcopy(appr.model),

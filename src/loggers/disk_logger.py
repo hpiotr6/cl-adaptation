@@ -6,7 +6,7 @@ from datetime import datetime
 import numpy as np
 import torch
 
-from loggers.exp_logger import ExperimentLogger
+from .exp_logger import ExperimentLogger
 
 
 class Logger(ExperimentLogger):

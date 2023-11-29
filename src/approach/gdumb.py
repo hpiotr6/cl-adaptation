@@ -5,7 +5,7 @@ from argparse import ArgumentParser
 from torch.utils.data.dataloader import default_collate
 
 from .incremental_learning import Inc_Learning_Appr
-from datasets.exemplars_dataset import ExemplarsDataset
+from src.datasets.exemplars_dataset import ExemplarsDataset
 
 
 def rand_bbox(size, lam):
