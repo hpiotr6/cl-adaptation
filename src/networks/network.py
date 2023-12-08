@@ -37,10 +37,18 @@ class LLL_Net(nn.Module):
         else:
             self.out_size = last_layer.out_features
 
+        self.modify_to_cifar()
+
         self.heads = nn.ModuleList()
         self.task_cls = []
         self.task_offset = []
         self._initialize_weights()
+
+    def modify_to_cifar(self):
+        self.model.conv1 = nn.Conv2d(
+            3, 64, kernel_size=3, stride=1, padding=2, bias=False
+        )
+        self.model.maxpool = nn.Identity()
 
     def add_head(self, num_outputs):
         """Add a new head with the corresponding number of outputs. Also update the number of classes per task and the

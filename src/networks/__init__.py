@@ -5,6 +5,8 @@ from .vggnet import VggNet
 from .resnet32 import resnet32
 from .resnet32_no_bn import resnet32_no_bn
 from .resnet32_ln import resnet32_ln
+from .resnet_custom import *
+
 
 # available torchvision models
 tvmodels = [
@@ -50,7 +52,14 @@ tvmodels = [
     "efficientnet_b7",
 ]
 
-allmodels = tvmodels + ["resnet32", "resnet32_no_bn", "resnet32_ln", "LeNet", "VggNet"]
+allmodels = tvmodels + [
+    "resnet32",
+    "resnet32_no_bn",
+    "resnet32_ln",
+    "LeNet",
+    "VggNet",
+    *resnet_custom.__all__,
+]
 
 
 def set_tvmodel_head_var(model):
