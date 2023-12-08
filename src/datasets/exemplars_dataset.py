@@ -23,7 +23,7 @@ class ExemplarsDataset(MemoryDataset):
         ), "Cannot use both limits at once!"
         cls_name = "{}ExemplarsSelector".format(exemplar_selection.capitalize())
         selector_cls = getattr(
-            importlib.import_module(name="datasets.exemplars_selection"), cls_name
+            importlib.import_module(name="src.datasets.exemplars_selection"), cls_name
         )
         self.exemplars_selector = selector_cls(self)
 

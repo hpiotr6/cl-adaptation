@@ -2,9 +2,9 @@ import torch
 from copy import deepcopy
 from argparse import ArgumentParser
 
-from metrics import cka
+from src.metrics import cka
 from .incremental_learning import Inc_Learning_Appr
-from datasets.exemplars_dataset import ExemplarsDataset
+from src.datasets.exemplars_dataset import ExemplarsDataset
 
 
 class Appr(Inc_Learning_Appr):

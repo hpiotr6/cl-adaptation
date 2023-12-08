@@ -10,18 +10,18 @@ from functools import reduce
 
 from dotenv import load_dotenv, find_dotenv
 
-from metrics import cm
-from regularizers import NullVarCovRegLoss, VarCovRegLoss
+from src.metrics import cm
+from src.regularizers import NullVarCovRegLoss, VarCovRegLoss
 
 load_dotenv(find_dotenv())
 
-import utils
-import approach
-from loggers.exp_logger import MultiLogger
-from datasets.dataset_config import dataset_config
-from last_layer_analysis import last_layer_analysis
-from networks import tvmodels, allmodels, set_tvmodel_head_var
-from datasets.data_loader import get_loaders
+import src.utils
+import src.approach
+from src.loggers.exp_logger import MultiLogger
+from src.datasets.dataset_config import dataset_config
+from src.last_layer_analysis import last_layer_analysis
+from src.networks import tvmodels, allmodels, set_tvmodel_head_var
+from src.datasets.data_loader import get_loaders
 
 torch.multiprocessing.set_sharing_strategy("file_system")
 
@@ -236,7 +236,7 @@ def main(argv=None):
         "--approach",
         default="finetuning",
         type=str,
-        choices=approach.__all__,
+        choices=src.approach.__all__,
         help="Learning approach used (default=%(default)s)",
         metavar="APPROACH",
     )
@@ -416,9 +416,9 @@ def main(argv=None):
 
     if args.no_cudnn_deterministic:
         print("WARNING: CUDNN Deterministic will be disabled.")
-        utils.cudnn_deterministic = False
+        src.utils.cudnn_deterministic = False
 
-    utils.seed_everything(seed=args.seed)
+    src.utils.seed_everything(seed=args.seed)
     print("=" * 108)
     print("Arguments =")
     for arg in np.sort(list(vars(args).keys())):
@@ -432,7 +432,7 @@ def main(argv=None):
     else:
         print("WARNING: [CUDA unavailable] Using CPU instead!")
         device = "cpu"
-        raise EnvironmentError('No GPU available')
+        # raise EnvironmentError("No GPU available")
 
     # In case the dataset is too large
     torch.multiprocessing.set_sharing_strategy("file_system")
@@ -443,7 +443,7 @@ def main(argv=None):
     ####################################################################################################################
 
     # Args -- Network
-    from networks.network import LLL_Net
+    from src.networks.network import LLL_Net
 
     if args.network in tvmodels:  # torchvision models
         tvnet = getattr(
@@ -455,14 +455,16 @@ def main(argv=None):
             init_model = tvnet(pretrained=args.pretrained)
         set_tvmodel_head_var(init_model)
     else:  # other models declared in networks package's init
-        net = getattr(importlib.import_module(name="networks"), args.network)
+        net = getattr(importlib.import_module(name="src.networks"), args.network)
         # WARNING: fixed to pretrained False for other model (non-torchvision)
         init_model = net(pretrained=False)
 
     # Args -- Continual Learning Approach
-    from approach.incremental_learning import Inc_Learning_Appr
+    from src.approach.incremental_learning import Inc_Learning_Appr
 
-    Appr = getattr(importlib.import_module(name="approach." + args.approach), "Appr")
+    Appr = getattr(
+        importlib.import_module(name="src.approach." + args.approach), "Appr"
+    )
     assert issubclass(Appr, Inc_Learning_Appr)
     appr_args, extra_args = Appr.extra_parser(extra_args)
     print("Approach arguments =")
@@ -471,7 +473,7 @@ def main(argv=None):
     print("=" * 108)
 
     # Args -- Exemplars Management
-    from datasets.exemplars_dataset import ExemplarsDataset
+    from src.datasets.exemplars_dataset import ExemplarsDataset
 
     Appr_ExemplarsDataset = Appr.exemplars_dataset_class()
     if Appr_ExemplarsDataset:
@@ -488,11 +490,11 @@ def main(argv=None):
 
     # Args -- GridSearch
     if args.gridsearch_tasks > 0:
-        from gridsearch import GridSearch
+        from src.gridsearch import GridSearch
 
         gs_args, extra_args = GridSearch.extra_parser(extra_args)
         Appr_finetuning = getattr(
-            importlib.import_module(name="approach.finetuning"), "Appr"
+            importlib.import_module(name="src.approach.finetuning"), "Appr"
         )
         assert issubclass(Appr_finetuning, Inc_Learning_Appr)
         GridSearch_ExemplarsDataset = Appr.exemplars_dataset_class()
@@ -529,7 +531,7 @@ def main(argv=None):
     )
 
     # Loaders
-    utils.seed_everything(seed=args.seed)
+    src.utils.seed_everything(seed=args.seed)
     trn_loader, val_loader, tst_loader, taskcla = get_loaders(
         args.datasets,
         args.num_tasks,
@@ -554,9 +556,9 @@ def main(argv=None):
     max_task = len(taskcla) if args.stop_at_task == 0 else args.stop_at_task
 
     # Network and Approach instances
-    utils.seed_everything(seed=args.seed)
+    src.utils.seed_everything(seed=args.seed)
     net = LLL_Net(init_model, remove_existing_head=not args.keep_existing_head)
-    utils.seed_everything(seed=args.seed)
+    src.utils.seed_everything(seed=args.seed)
     # taking transformations and class indices from first train dataset
     first_train_ds = trn_loader[0].dataset
     transform, class_indices = first_train_ds.transform, first_train_ds.class_indices
@@ -565,7 +567,7 @@ def main(argv=None):
         appr_kwargs["exemplars_dataset"] = Appr_ExemplarsDataset(
             transform, class_indices, **appr_exemplars_dataset_args.__dict__
         )
-    utils.seed_everything(seed=args.seed)
+    src.utils.seed_everything(seed=args.seed)
     appr = Appr(net, device, **appr_kwargs)
 
     ### Add test loader for oracle evaluation during teacher finetuning
@@ -824,7 +826,7 @@ def main(argv=None):
     logger.log_result(wavg_accs_tag, name="wavg_accs_tag", step=0, skip_wandb=False)
 
     # Print Summary
-    utils.print_summary(acc_taw, acc_tag, forg_taw, forg_tag)
+    src.utils.print_summary(acc_taw, acc_tag, forg_taw, forg_tag)
     print("[Elapsed time = {:.1f} h]".format((time.time() - tstart) / (60 * 60)))
     print("Done!")
 

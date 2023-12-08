@@ -4,7 +4,7 @@ import warnings
 import numpy as np
 from torch.utils.tensorboard import SummaryWriter
 
-from loggers.exp_logger import ExperimentLogger
+from .exp_logger import ExperimentLogger
 
 
 class Logger(ExperimentLogger):

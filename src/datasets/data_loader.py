@@ -10,6 +10,7 @@ from torch.utils import data
 import torchvision.transforms as transforms
 from torchvision.datasets import MNIST as TorchVisionMNIST
 from torchvision.datasets import CIFAR100 as TorchVisionCIFAR100
+from torchvision.datasets import CIFAR10 as TorchVisionCIFAR10
 from torchvision.datasets import SVHN as TorchVisionSVHN
 
 from . import base_dataset as basedat
@@ -203,9 +204,13 @@ def get_datasets(
         # set dataset type
         Dataset = memd.MemoryDataset
 
-    elif "cifar100" in dataset:
-        tvcifar_trn = TorchVisionCIFAR100(path, train=True, download=True)
-        tvcifar_tst = TorchVisionCIFAR100(path, train=False, download=True)
+    elif "cifar" in dataset:
+        if "cifar100" in dataset:
+            tvcifar_trn = TorchVisionCIFAR100(path, train=True, download=True)
+            tvcifar_tst = TorchVisionCIFAR100(path, train=False, download=True)
+        else:
+            tvcifar_trn = TorchVisionCIFAR10(path, train=True, download=True)
+            tvcifar_tst = TorchVisionCIFAR10(path, train=False, download=True)
         trn_data = {"x": tvcifar_trn.data, "y": tvcifar_trn.targets}
         tst_data = {"x": tvcifar_tst.data, "y": tvcifar_tst.targets}
         # compute splits

@@ -2,8 +2,8 @@ import numpy as np
 from torchvision.transforms import Lambda
 from torch.utils.data.dataset import ConcatDataset
 
-from datasets.memory_dataset import MemoryDataset
-from datasets.exemplars_selection import override_dataset_transform
+from src.datasets.memory_dataset import MemoryDataset
+from src.datasets.exemplars_selection import override_dataset_transform
 
 
 def pic(i):
