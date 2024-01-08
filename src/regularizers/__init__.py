@@ -43,13 +43,14 @@ class VarCovRegLoss(VarCovRegLossProtocol):
         variance_sum = 0
         covariance_sum = 0
 
-        for hook in [*self.hooks.values(), feats]:
+        for hook in [*self.hooks.values()]:
             v, c = self.regularize_step(hook)
             variance_sum += v
             covariance_sum += c
 
         return (
-            self.vcr_var_weight * variance_sum + self.vcr_cov_weight * covariance_sum,
+            self.vcr_var_weight * variance_sum,
+            self.vcr_cov_weight * covariance_sum,
             feats,
         )
 
