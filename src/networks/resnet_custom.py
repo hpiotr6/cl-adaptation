@@ -26,7 +26,7 @@ from torch import Tensor
 from torchvision.models import resnet18, resnet50
 from torchvision.models.resnet import BasicBlock, Bottleneck, conv1x1
 
-__all__ = ["resnet34_skips", "resnet34_noskips"]
+__all__ = ["resnet34_skips", "resnet34_skips_nobn", "resnet34_noskips"]
 
 
 class BasicBlock(BasicBlock):
@@ -317,6 +317,13 @@ def _forward_impl(self, x: Tensor) -> Tensor:
 
 
 resnet34_skips = partial(
+    build_resnet,
+    backbone_type="resnet34",
+    batchnorm_layers=True,
+    width_scale=1,
+    skips=True,
+)
+resnet34_skips_nobn = partial(
     build_resnet,
     backbone_type="resnet34",
     batchnorm_layers=False,
