@@ -35,7 +35,11 @@ class VarCovRegLoss(VarCovRegLossProtocol):
             self.hooks[layer_name] = layer.register_forward_hook(hook_fn(layer_name))
 
     def __call__(self, model: torch.nn.Module, inputs: torch.Tensor):
-        if self.layer_names_to_hook is not None and not self.initialised:
+        if self.layer_names_to_hook is None:
+            last_layer_name = list(model.named_modules())[-1][0]
+            self.layer_names_to_hook = [last_layer_name]
+
+        if not self.initialised:
             self.initialise_hooks(model)
             self.initialised = True
 
@@ -72,4 +76,4 @@ class NullVarCovRegLoss(VarCovRegLossProtocol):
     def __call__(self, model, inputs):
         feats = model(inputs)
 
-        return self.dummy_zero, feats
+        return self.dummy_zero, self.dummy_zero, feats

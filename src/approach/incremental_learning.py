@@ -605,8 +605,8 @@ class Inc_Learning_Appr:
                 hits_taw, hits_tag = self.calculate_metrics(outputs, targets)
                 # Log
                 total_loss += loss.item() * len(targets)
-                total_var += loss.item() * len(targets)
-                total_cov += loss.item() * len(targets)
+                total_var += var_loss.item() * len(targets)
+                total_cov += cov_loss.item() * len(targets)
 
                 total_acc_taw += hits_taw.sum().item()
                 total_acc_tag += hits_tag.sum().item()

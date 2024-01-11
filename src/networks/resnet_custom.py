@@ -319,7 +319,7 @@ def _forward_impl(self, x: Tensor) -> Tensor:
 resnet34_skips = partial(
     build_resnet,
     backbone_type="resnet34",
-    batchnorm_layers=True,
+    batchnorm_layers=False,
     width_scale=1,
     skips=True,
 )
