@@ -41,6 +41,31 @@ class VarCovRegLoss(VarCovRegLossProtocol):
 
         if not self.initialised:
             self.initialise_hooks(model)
+
+            if "layer1" in self.layer_names_to_hook:
+                model.layer1[2].bn2 = torch.nn.Identity()
+
+            if "layer4" in self.layer_names_to_hook:
+                model.layer4[2].bn2 = torch.nn.Identity()
+
+            # named_modules = dict(
+            #     filter(
+            #         lambda x: isinstance(x[1], torch.nn.BatchNorm2d)
+            #         and x[0].startswith(*self.layer_names_to_hook),
+            #         model.named_modules(),
+            #     )
+            # )
+
+            # layers_to_identity = [
+            #     tuple(filter(lambda x: x.startswith(layer_name), named_modules.keys()))[
+            #         -1
+            #     ]
+            #     for layer_name in self.layer_names_to_hook
+            # ]
+
+            # for layer_name in layers_to_identity:
+            #     ln, n, mn = layer_name.split(".")
+            #     model.[n][mn] = torch.nn.Identity()
             self.initialised = True
 
         feats = model(inputs)
