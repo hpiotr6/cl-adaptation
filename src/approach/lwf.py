@@ -218,10 +218,12 @@ class Appr(Inc_Learning_Appr):
     def pre_train_process(self, t, trn_loader):
         if t > 0:
             if self.ctt or self.cbnt or self.tp or self.bnp:
+                raise NotImplementedError
                 self.model_old.add_head(self.model.heads[-1].out_features)
                 self.model_old = self.model_old.to(self.device)
 
             if self.ctt or self.cbnt:
+                raise NotImplementedError
                 if self.ctt:
                     self.model_old.unfreeze_all()
                 if self.cbnt:
@@ -233,6 +235,7 @@ class Appr(Inc_Learning_Appr):
                 )
 
             if self.tp or self.bnp:
+                raise NotImplementedError
                 if self.tp:
                     self.model_old.unfreeze_all()
                 if self.bnp:
@@ -309,8 +312,10 @@ class Appr(Inc_Learning_Appr):
                     self.model_old.train()
                 else:
                     self.model_old.eval()
+
                 targets_old = self.model_old(images)
                 if self.ctt or self.cbnt:
+                    raise NotImplementedError
                     loss_old = self.criterion(t, targets_old, targets)
                     self.optimizer_old.zero_grad()
                     loss_old.backward()
@@ -322,11 +327,10 @@ class Appr(Inc_Learning_Appr):
                         self.model_old.eval()
                         targets_old = self.model_old(images)
 
-            # Forward current model
-            outputs = self.model(images)
-            loss, loss_kd, loss_ce = self.criterion(
-                t, outputs, targets, targets_old, return_partial_losses=True
+            loss, loss_kd, loss_ce = self.add_varcov_loss_lwf(
+                self.model, t, images, targets, targets_old
             )
+
             if self.debug_loss:
                 self.logger.log_scalar(
                     task=None,
@@ -361,10 +365,29 @@ class Appr(Inc_Learning_Appr):
         if self.scheduler is not None:
             self.scheduler.step()
 
+    def add_varcov_loss_lwf(self, model, t, images, targets, targets_old):
+        var_loss, cov_loss, feats = self.varcov_regularizer(model.model, images)
+        outputs = [head(feats) for head in model.heads]
+        varcov_loss = var_loss + cov_loss
+
+        loss, loss_kd, loss_ce = self.criterion(
+            t, outputs, targets, targets_old, return_partial_losses=True
+        )
+        loss += varcov_loss
+        return loss, loss_kd, loss_ce
+
     def eval(self, t, val_loader):
         """Contains the evaluation code"""
         with torch.no_grad():
-            total_loss, total_acc_taw, total_acc_tag, total_num = 0, 0, 0, 0
+            # total_loss, total_acc_taw, total_acc_tag, total_num = 0, 0, 0, 0
+            (
+                total_loss,
+                total_acc_taw,
+                total_acc_tag,
+                total_num,
+                total_var,
+                total_cov,
+            ) = (0, 0, 0, 0, 0, 0)
             self.model.eval()
             if self.model_old is not None:
                 self.model_old.eval()
@@ -376,11 +399,28 @@ class Appr(Inc_Learning_Appr):
                 if t > 0:
                     targets_old = self.model_old(images)
                 # Forward current model
-                outputs = self.model(images)
-                loss = self.criterion(t, outputs, targets, targets_old)
+
+                # outputs = self.model(images)
+                # loss = self.criterion(t, outputs, targets, targets_old)
+                var_loss, cov_loss, feats = self.varcov_regularizer(
+                    self.model.model, images
+                )
+                outputs = [head(feats) for head in self.model.heads]
+                varcov_loss = var_loss + cov_loss
+
+                loss, loss_kd, loss_ce = self.criterion(
+                    t, outputs, targets, targets_old, return_partial_losses=True
+                )
+                loss += varcov_loss
+                # loss, loss_kd, loss_ce = self.add_varcov_loss_lwf(
+                #     self.model, t, images, targets, targets_old
+                # )
+
                 hits_taw, hits_tag = self.calculate_metrics(outputs, targets)
                 # Log
                 total_loss += loss.data.cpu().numpy().item() * len(targets)
+                total_var += var_loss.item() * len(targets)
+                total_cov += cov_loss.item() * len(targets)
                 total_acc_taw += hits_taw.sum().data.cpu().numpy().item()
                 total_acc_tag += hits_tag.sum().data.cpu().numpy().item()
                 total_num += len(targets)
@@ -393,6 +433,8 @@ class Appr(Inc_Learning_Appr):
 
         return (
             total_loss / total_num,
+            total_var / total_num,
+            total_cov / total_num,
             total_acc_taw / total_num,
             total_acc_tag / total_num,
         )

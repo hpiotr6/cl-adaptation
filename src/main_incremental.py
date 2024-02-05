@@ -40,6 +40,13 @@ def main(argv=None):
         "--varcov_reg", action="store_true", help="Whether to use var_cov_regularize"
     )
     parser.add_argument(
+        "--reg_layers",
+        default=None,
+        nargs="+",
+        type=str,
+        required=False,
+    )
+    parser.add_argument(
         "--var_weight",
         type=float,
         default=None,
@@ -409,7 +416,9 @@ def main(argv=None):
         eval_on_train=args.eval_on_train,
         select_best_model_by_val_loss=True,
         scheduler_milestones=args.scheduler_milestones,
-        varcov_regularizer=VarCovRegLoss(args.var_weight, args.cov_weight)
+        varcov_regularizer=VarCovRegLoss(
+            args.var_weight, args.cov_weight, layer_names_to_hook=args.reg_layers
+        )
         if args.varcov_reg
         else NullVarCovRegLoss(),
     )
@@ -599,6 +608,8 @@ def main(argv=None):
     forg_taw = np.zeros((max_task, max_task))
     forg_tag = np.zeros((max_task, max_task))
     test_loss = np.zeros((max_task, max_task))
+    test_var_loss = np.zeros((max_task, max_task))
+    test_cov_loss = np.zeros((max_task, max_task))
 
     for t, (_, ncla) in enumerate(taskcla):
         # Early stop tasks if flag
@@ -696,7 +707,13 @@ def main(argv=None):
 
         # Test
         for u in range(t + 1):
-            test_loss[t, u], acc_taw[t, u], acc_tag[t, u] = appr.eval(u, tst_loader[u])
+            (
+                test_loss[t, u],
+                test_var_loss[t, u],
+                test_cov_loss[t, u],
+                acc_taw[t, u],
+                acc_tag[t, u],
+            ) = appr.eval(u, tst_loader[u])
             if u < t:
                 forg_taw[t, u] = acc_taw[:t, u].max(0) - acc_taw[t, u]
                 forg_tag[t, u] = acc_tag[:t, u].max(0) - acc_tag[t, u]
@@ -715,6 +732,12 @@ def main(argv=None):
         for u in range(max_task):
             logger.log_scalar(
                 task=u, iter=t, name="loss", group="test", value=test_loss[t, u]
+            )
+            logger.log_scalar(
+                task=u, iter=t, name="var_loss", group="test", value=test_var_loss[t, u]
+            )
+            logger.log_scalar(
+                task=u, iter=t, name="cov_loss", group="test", value=test_cov_loss[t, u]
             )
             logger.log_scalar(
                 task=u, iter=t, name="acc_taw", group="test", value=100 * acc_taw[t, u]
