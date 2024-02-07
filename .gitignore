@@ -197,5 +197,17 @@ pyrightconfig.json
 poetry.lock
 slurm*
 
+<<<<<<< HEAD
 .DS_Store
 .vscode
+=======
+data
+analysis
+wandb
+runs
+.vscode
+results
+outputs
+
+.DS_Store
+>>>>>>> develop
