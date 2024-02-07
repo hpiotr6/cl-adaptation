@@ -33,7 +33,8 @@ class LLL_Net(nn.Module):
                 # converts last layer into identity
                 # setattr(self.model, head_var, nn.Identity())
                 # WARNING: this is for when pytorch version is <1.2
-                setattr(self.model, head_var, nn.Sequential())
+                # setattr(self.model, head_var, nn.Sequential())
+                setattr(self.model, head_var, nn.BatchNorm2d(last_layer.in_features))
         else:
             self.out_size = last_layer.out_features
 

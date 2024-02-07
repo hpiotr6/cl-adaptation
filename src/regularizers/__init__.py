@@ -22,36 +22,10 @@ class VarCovRegLoss(VarCovRegLossProtocol):
     initialised: bool = False
     hooks: defaultdict = field(default_factory=lambda: defaultdict(lambda: None))
 
-    # def initialise_hooks(self, model):
-    #     def hook_fn(name):
-    #         def hook(module, input, output):
-    #             self.hooks[name] = output
-
-    #         return hook
-
-    #     # Initialize hooks on specified layers
-    #     for layer_name in self.layer_names_to_hook:
-    #         layer = dict(model.named_children())[layer_name]
-    #         self.hooks[layer_name] = layer.register_forward_hook(hook_fn(layer_name))
-
     def __call__(self, model: torch.nn.Module, inputs: torch.Tensor):
         feats = model(inputs)
         v, c = self.regularize_step(feats)
-        feats = feats - feats.mean(dim=0)
         return v * self.vcr_var_weight, c * self.vcr_cov_weight, feats
-        # variance_sum = 0
-        # covariance_sum = 0
-
-        # for hook in [*self.hooks.values()]:
-        #     v, c = self.regularize_step(hook)
-        #     variance_sum += v
-        #     covariance_sum += c
-
-        # return (
-        #     self.vcr_var_weight * variance_sum,
-        #     self.vcr_cov_weight * covariance_sum,
-        #     feats,
-        # )
 
     def regularize_step(self, feats):
         flattened_input = feats.flatten(start_dim=0, end_dim=-2)
@@ -70,6 +44,5 @@ class NullVarCovRegLoss(VarCovRegLossProtocol):
 
     def __call__(self, model, inputs):
         feats = model(inputs)
-        feats = feats - feats.mean(dim=0)
 
         return self.dummy_zero, self.dummy_zero, feats
