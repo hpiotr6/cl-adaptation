@@ -22,66 +22,36 @@ class VarCovRegLoss(VarCovRegLossProtocol):
     initialised: bool = False
     hooks: defaultdict = field(default_factory=lambda: defaultdict(lambda: None))
 
-    def initialise_hooks(self, model):
-        def hook_fn(name):
-            def hook(module, input, output):
-                self.hooks[name] = output
+    # def initialise_hooks(self, model):
+    #     def hook_fn(name):
+    #         def hook(module, input, output):
+    #             self.hooks[name] = output
 
-            return hook
+    #         return hook
 
-        # Initialize hooks on specified layers
-        for layer_name in self.layer_names_to_hook:
-            layer = dict(model.named_children())[layer_name]
-            self.hooks[layer_name] = layer.register_forward_hook(hook_fn(layer_name))
+    #     # Initialize hooks on specified layers
+    #     for layer_name in self.layer_names_to_hook:
+    #         layer = dict(model.named_children())[layer_name]
+    #         self.hooks[layer_name] = layer.register_forward_hook(hook_fn(layer_name))
 
     def __call__(self, model: torch.nn.Module, inputs: torch.Tensor):
-        if self.layer_names_to_hook is None:
-            last_layer_name = list(model.named_modules())[-1][0]
-            self.layer_names_to_hook = [last_layer_name]
-
-        if not self.initialised:
-            self.initialise_hooks(model)
-
-            if "layer1" in self.layer_names_to_hook:
-                model.layer1[2].bn2 = torch.nn.Identity()
-
-            if "layer4" in self.layer_names_to_hook:
-                model.layer4[2].bn2 = torch.nn.Identity()
-
-            # named_modules = dict(
-            #     filter(
-            #         lambda x: isinstance(x[1], torch.nn.BatchNorm2d)
-            #         and x[0].startswith(*self.layer_names_to_hook),
-            #         model.named_modules(),
-            #     )
-            # )
-
-            # layers_to_identity = [
-            #     tuple(filter(lambda x: x.startswith(layer_name), named_modules.keys()))[
-            #         -1
-            #     ]
-            #     for layer_name in self.layer_names_to_hook
-            # ]
-
-            # for layer_name in layers_to_identity:
-            #     ln, n, mn = layer_name.split(".")
-            #     model.[n][mn] = torch.nn.Identity()
-            self.initialised = True
-
         feats = model(inputs)
-        variance_sum = 0
-        covariance_sum = 0
+        v, c = self.regularize_step(feats)
+        feats = feats - feats.mean(dim=0)
+        return v * self.vcr_var_weight, c * self.vcr_cov_weight, feats
+        # variance_sum = 0
+        # covariance_sum = 0
 
-        for hook in [*self.hooks.values()]:
-            v, c = self.regularize_step(hook)
-            variance_sum += v
-            covariance_sum += c
+        # for hook in [*self.hooks.values()]:
+        #     v, c = self.regularize_step(hook)
+        #     variance_sum += v
+        #     covariance_sum += c
 
-        return (
-            self.vcr_var_weight * variance_sum,
-            self.vcr_cov_weight * covariance_sum,
-            feats,
-        )
+        # return (
+        #     self.vcr_var_weight * variance_sum,
+        #     self.vcr_cov_weight * covariance_sum,
+        #     feats,
+        # )
 
     def regularize_step(self, feats):
         flattened_input = feats.flatten(start_dim=0, end_dim=-2)
@@ -100,5 +70,6 @@ class NullVarCovRegLoss(VarCovRegLossProtocol):
 
     def __call__(self, model, inputs):
         feats = model(inputs)
+        feats = feats - feats.mean(dim=0)
 
         return self.dummy_zero, self.dummy_zero, feats

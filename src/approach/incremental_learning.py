@@ -218,6 +218,8 @@ class Inc_Learning_Appr:
                         )
                         outputs = [head(feats) for head in self.model.heads]
 
+                        varcov_loss = var_loss + cov_loss
+
                         loss = self.add_varcov_loss(
                             varcov_loss,
                             self.warmup_loss,
