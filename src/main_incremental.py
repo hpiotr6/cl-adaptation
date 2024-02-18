@@ -263,7 +263,7 @@ def main(argv=None):
     )
     parser.add_argument(
         "--scheduler-milestones",
-        default=[60, 120, 160],
+        default=None,
         nargs="+",
         type=int,
         required=False,
