@@ -1,6 +1,6 @@
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Protocol, Tuple, Union
+from typing import Callable, Protocol, Tuple, Union
 import torch.nn.functional as F
 import torch
 
@@ -9,8 +9,7 @@ import torch
 class VarCovRegLossProtocol(Protocol):
     def __call__(
         self, model: torch.nn.Module, inputs: torch.Tensor
-    ) -> Tuple[torch.Tensor, torch.LongTensor]:
-        ...
+    ) -> Tuple[torch.Tensor, torch.LongTensor]: ...
 
 
 @dataclass
@@ -21,6 +20,7 @@ class VarCovRegLoss(VarCovRegLossProtocol):
     layer_names_to_hook: Union[list, None] = None
     initialised: bool = False
     hooks: defaultdict = field(default_factory=lambda: defaultdict(lambda: None))
+    scale_strategy: Callable[[torch.Tensor], torch.Tensor] = lambda feats: feats
 
     # def initialise_hooks(self, model):
     #     def hook_fn(name):
@@ -37,8 +37,12 @@ class VarCovRegLoss(VarCovRegLossProtocol):
     def __call__(self, model: torch.nn.Module, inputs: torch.Tensor):
         feats = model(inputs)
         v, c = self.regularize_step(feats)
-        feats = feats - feats.mean(dim=0)
-        return v * self.vcr_var_weight, c * self.vcr_cov_weight, feats
+        # feats = feats - feats.mean(dim=0)
+        return (
+            v * self.vcr_var_weight,
+            c * self.vcr_cov_weight,
+            self.scale_strategy(feats),
+        )
         # variance_sum = 0
         # covariance_sum = 0
 
@@ -66,10 +70,11 @@ class VarCovRegLoss(VarCovRegLossProtocol):
 
 @dataclass
 class NullVarCovRegLoss(VarCovRegLossProtocol):
+    scale_strategy: Callable[[torch.Tensor], torch.Tensor] = lambda feats: feats
     dummy_zero = torch.tensor(0.0)
 
     def __call__(self, model, inputs):
         feats = model(inputs)
-        feats = feats - feats.mean(dim=0)
+        # feats = feats - feats.mean(dim=0)
 
-        return self.dummy_zero, self.dummy_zero, feats
+        return self.dummy_zero, self.dummy_zero, self.scale_strategy(feats)

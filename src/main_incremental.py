@@ -37,6 +37,12 @@ def main(argv=None):
     parser.add_argument("--gpu", type=int, default=0, help="GPU (default=%(default)s)")
 
     parser.add_argument(
+        "--scale-feats",
+        default=False,
+        action="store_true",
+        help="whether to use scale features between model and head",
+    )
+    parser.add_argument(
         "--varcov_reg", action="store_true", help="Whether to use var_cov_regularize"
     )
     parser.add_argument(
@@ -396,6 +402,11 @@ def main(argv=None):
             args.var_weight is None and args.cov_weight is None
         ), "Do not specify var_weight/cov_weight"
 
+    if args.scale_feats:
+        scale_strategy = lambda feats: feats - feats.mean(dim=0)
+    else:
+        scale_strategy = lambda feats: feats
+
     base_kwargs = dict(
         nepochs=args.nepochs,
         lr=args.lr,
@@ -416,11 +427,18 @@ def main(argv=None):
         eval_on_train=args.eval_on_train,
         select_best_model_by_val_loss=True,
         scheduler_milestones=args.scheduler_milestones,
-        varcov_regularizer=VarCovRegLoss(
-            args.var_weight, args.cov_weight, layer_names_to_hook=args.reg_layers
-        )
-        if args.varcov_reg
-        else NullVarCovRegLoss(),
+        varcov_regularizer=(
+            VarCovRegLoss(
+                args.var_weight,
+                args.cov_weight,
+                layer_names_to_hook=args.reg_layers,
+                scale_strategy=scale_strategy,
+            )
+            if args.varcov_reg
+            else NullVarCovRegLoss(
+                scale_strategy=scale_strategy,
+            )
+        ),
     )
 
     if args.no_cudnn_deterministic:
