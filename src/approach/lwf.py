@@ -15,19 +15,26 @@ class Appr(Inc_Learning_Appr):
     # Weight decay of 0.0005 is used in the original article (page 4).
     # Page 4: "The warm-up step greatly enhances fine-tuning’s old-task performance, but is not so crucial to either our
     #  method or the compared Less Forgetting Learning (see Table 2(b))."
-    def __init__(self, model, device, nepochs=100, lr=0.05, lr_min=1e-4, lr_factor=3, lr_patience=5, clipgrad=10000,
-                 momentum=0, wd=0, multi_softmax=False, wu_nepochs=0, wu_lr=1e-1, wu_fix_bn=False,
-                 wu_scheduler='constant', wu_patience=None, wu_wd=0., fix_bn=False, eval_on_train=False,
-                 select_best_model_by_val_loss=True, logger=None, exemplars_dataset=None, scheduler_milestones=None,
-                 lamb=1, T=2, mc=False, taskwise_kd=False,
-                 ta=False,
-                 cka=False, debug_loss=False,
-                 tp=False, ctt=False, bnp=False, cbnt=False, pretraining_epochs=5, ta_lr=1e-5,
-                 ):
-        super(Appr, self).__init__(model, device, nepochs, lr, lr_min, lr_factor, lr_patience, clipgrad, momentum, wd,
-                                   multi_softmax, wu_nepochs, wu_lr, wu_fix_bn, wu_scheduler, wu_patience, wu_wd,
-                                   fix_bn, eval_on_train, select_best_model_by_val_loss, logger, exemplars_dataset,
-                                   scheduler_milestones)
+    def __init__(
+        self,
+        model,
+        device,
+        lamb=1,
+        T=2,
+        mc=False,
+        taskwise_kd=False,
+        ta=False,
+        cka=False,
+        debug_loss=False,
+        tp=False,
+        ctt=False,
+        bnp=False,
+        cbnt=False,
+        pretraining_epochs=5,
+        ta_lr=1e-5,
+        **kwargs,
+    ):
+        super(Appr, self).__init__(model, device, **kwargs)
         self.model_old = None
         self.lamb = lamb
         self.T = T
@@ -61,39 +68,104 @@ class Appr(Inc_Learning_Appr):
         # Page 5: "lambda is a loss balance weight, set to 1 for most our experiments. Making lambda larger will favor
         # the old task performance over the new task’s, so we can obtain a old-task-new-task performance line by
         # changing lambda."
-        parser.add_argument('--lamb', default=1, type=float, required=False,
-                            help='Forgetting-intransigence trade-off (default=%(default)s)')
+        parser.add_argument(
+            "--lamb",
+            default=1,
+            type=float,
+            required=False,
+            help="Forgetting-intransigence trade-off (default=%(default)s)",
+        )
         # Page 5: "We use T=2 according to a grid search on a held out set, which aligns with the authors’
         #  recommendations." -- Using a higher value for T produces a softer probability distribution over classes.
-        parser.add_argument('--T', default=2, type=int, required=False,
-                            help='Temperature scaling (default=%(default)s)')
-        parser.add_argument('--mc', default=False, action='store_true', required=False,
-                            help='If set, will use LwF.MC variant from iCaRL. (default=%(default)s)')
-        parser.add_argument('--taskwise-kd', default=False, action='store_true', required=False,
-                            help='If set, will use task-wise KD loss as defined in SSIL. (default=%(default)s)')
+        parser.add_argument(
+            "--T",
+            default=2,
+            type=int,
+            required=False,
+            help="Temperature scaling (default=%(default)s)",
+        )
+        parser.add_argument(
+            "--mc",
+            default=False,
+            action="store_true",
+            required=False,
+            help="If set, will use LwF.MC variant from iCaRL. (default=%(default)s)",
+        )
+        parser.add_argument(
+            "--taskwise-kd",
+            default=False,
+            action="store_true",
+            required=False,
+            help="If set, will use task-wise KD loss as defined in SSIL. (default=%(default)s)",
+        )
 
-        parser.add_argument('--ta', default=False, action='store_true', required=False,
-                            help='Teacher adaptation. If set, will update old model batch norm params '
-                                 'during training the new task. (default=%(default)s)')
+        parser.add_argument(
+            "--ta",
+            default=False,
+            action="store_true",
+            required=False,
+            help="Teacher adaptation. If set, will update old model batch norm params "
+            "during training the new task. (default=%(default)s)",
+        )
 
-        parser.add_argument('--tp', default=False, action='store_true', required=False,
-                            help='Teacher pretraining instead of TA. (default=%(default)s)')
-        parser.add_argument('--ctt', default=False, action='store_true', required=False,
-                            help='Continuous teacher training instead of TA. (default=%(default)s)')
-        parser.add_argument('--bnp', default=False, action='store_true', required=False,
-                            help='Batch norm pretraining instead of TA. (default=%(default)s)')
-        parser.add_argument('--cbnt', default=False, action='store_true', required=False,
-                            help='Continuous batch norm training instead of TA. (default=%(default)s)')
-        parser.add_argument('--pretraining-epochs', default=5, type=int, required=False,
-                            help='Number of epochs for pretraining. (default=%(default)s)')
-        parser.add_argument('--ta-lr', default=1e-5, type=float, required=False,
-                            help='Teacher adaptation learning rate. (default=%(default)s)')
+        parser.add_argument(
+            "--tp",
+            default=False,
+            action="store_true",
+            required=False,
+            help="Teacher pretraining instead of TA. (default=%(default)s)",
+        )
+        parser.add_argument(
+            "--ctt",
+            default=False,
+            action="store_true",
+            required=False,
+            help="Continuous teacher training instead of TA. (default=%(default)s)",
+        )
+        parser.add_argument(
+            "--bnp",
+            default=False,
+            action="store_true",
+            required=False,
+            help="Batch norm pretraining instead of TA. (default=%(default)s)",
+        )
+        parser.add_argument(
+            "--cbnt",
+            default=False,
+            action="store_true",
+            required=False,
+            help="Continuous batch norm training instead of TA. (default=%(default)s)",
+        )
+        parser.add_argument(
+            "--pretraining-epochs",
+            default=5,
+            type=int,
+            required=False,
+            help="Number of epochs for pretraining. (default=%(default)s)",
+        )
+        parser.add_argument(
+            "--ta-lr",
+            default=1e-5,
+            type=float,
+            required=False,
+            help="Teacher adaptation learning rate. (default=%(default)s)",
+        )
 
-        parser.add_argument('--cka', default=False, action='store_true', required=False,
-                            help='If set, will compute CKA between current representations and representations at '
-                                 'the start of the task. (default=%(default)s)')
-        parser.add_argument('--debug-loss', default=False, action='store_true', required=False,
-                            help='If set, will log intermediate loss values. (default=%(default)s)')
+        parser.add_argument(
+            "--cka",
+            default=False,
+            action="store_true",
+            required=False,
+            help="If set, will compute CKA between current representations and representations at "
+            "the start of the task. (default=%(default)s)",
+        )
+        parser.add_argument(
+            "--debug-loss",
+            default=False,
+            action="store_true",
+            required=False,
+            help="If set, will log intermediate loss values. (default=%(default)s)",
+        )
 
         return parser.parse_known_args(args)
 
@@ -110,7 +182,9 @@ class Appr(Inc_Learning_Appr):
                     self.model_old.unfreeze_bn()
 
                 params = [p for p in self.model_old.parameters() if p.requires_grad]
-                self.optimizer_old = torch.optim.SGD(params, lr=self.ta_lr, weight_decay=self.wd)
+                self.optimizer_old = torch.optim.SGD(
+                    params, lr=self.ta_lr, weight_decay=self.wd
+                )
 
             if self.tp or self.bnp:
                 if self.tp:
@@ -120,17 +194,23 @@ class Appr(Inc_Learning_Appr):
                 self.model_old.train()
 
                 params = [p for p in self.model_old.parameters() if p.requires_grad]
-                self.optimizer_old = torch.optim.SGD(params, lr=self.ta_lr, weight_decay=self.wd)
+                self.optimizer_old = torch.optim.SGD(
+                    params, lr=self.ta_lr, weight_decay=self.wd
+                )
 
                 for epoch in range(self.pretraining_epochs):
                     for images, targets in trn_loader:
-                        images, targets = images.to(self.device), targets.to(self.device)
+                        images, targets = images.to(self.device), targets.to(
+                            self.device
+                        )
                         outputs = self.model_old(images)
                         loss = self.criterion(t, outputs, targets)
 
                         self.optimizer_old.zero_grad()
                         loss.backward()
-                        torch.nn.utils.clip_grad_norm_(self.model_old.parameters(), self.clipgrad)
+                        torch.nn.utils.clip_grad_norm_(
+                            self.model_old.parameters(), self.clipgrad
+                        )
                         self.optimizer_old.step()
 
                 self.model_old.freeze_all()
@@ -142,11 +222,13 @@ class Appr(Inc_Learning_Appr):
 
         # add exemplars to train_loader
         if len(self.exemplars_dataset) > 0 and t > 0:
-            trn_loader = torch.utils.data.DataLoader(trn_loader.dataset + self.exemplars_dataset,
-                                                     batch_size=trn_loader.batch_size,
-                                                     shuffle=True,
-                                                     num_workers=trn_loader.num_workers,
-                                                     pin_memory=trn_loader.pin_memory)
+            trn_loader = torch.utils.data.DataLoader(
+                trn_loader.dataset + self.exemplars_dataset,
+                batch_size=trn_loader.batch_size,
+                shuffle=True,
+                num_workers=trn_loader.num_workers,
+                pin_memory=trn_loader.pin_memory,
+            )
 
         self.training = True
         # FINETUNING TRAINING -- contains the epochs loop
@@ -154,7 +236,9 @@ class Appr(Inc_Learning_Appr):
         self.training = False
 
         # EXEMPLAR MANAGEMENT -- select training subset
-        self.exemplars_dataset.collect_exemplars(self.model, trn_loader, val_loader.dataset.transform)
+        self.exemplars_dataset.collect_exemplars(
+            self.model, trn_loader, val_loader.dataset.transform
+        )
 
     def post_train_process(self, t, trn_loader):
         """Runs after training all the epochs of the task (after the train session)"""
@@ -184,7 +268,9 @@ class Appr(Inc_Learning_Appr):
                     loss_old = self.criterion(t, targets_old, targets)
                     self.optimizer_old.zero_grad()
                     loss_old.backward()
-                    torch.nn.utils.clip_grad_norm_(self.model_old.parameters(), self.clipgrad)
+                    torch.nn.utils.clip_grad_norm_(
+                        self.model_old.parameters(), self.clipgrad
+                    )
                     self.optimizer_old.step()
                     with torch.no_grad():
                         self.model_old.eval()
@@ -192,14 +278,31 @@ class Appr(Inc_Learning_Appr):
 
             # Forward current model
             outputs = self.model(images)
-            loss, loss_kd, loss_ce = self.criterion(t, outputs, targets, targets_old, return_partial_losses=True)
+            loss, loss_kd, loss_ce = self.criterion(
+                t, outputs, targets, targets_old, return_partial_losses=True
+            )
             if self.debug_loss:
-                self.logger.log_scalar(task=None, iter=None, name='loss_kd', group=f"debug_t{t}",
-                                       value=float(loss_kd))
-                self.logger.log_scalar(task=None, iter=None, name='loss_ce', group=f"debug_t{t}",
-                                       value=float(loss_ce))
-                self.logger.log_scalar(task=None, iter=None, name='loss_total', group=f"debug_t{t}",
-                                       value=float(loss))
+                self.logger.log_scalar(
+                    task=None,
+                    iter=None,
+                    name="loss_kd",
+                    group=f"debug_t{t}",
+                    value=float(loss_kd),
+                )
+                self.logger.log_scalar(
+                    task=None,
+                    iter=None,
+                    name="loss_ce",
+                    group=f"debug_t{t}",
+                    value=float(loss_ce),
+                )
+                self.logger.log_scalar(
+                    task=None,
+                    iter=None,
+                    name="loss_total",
+                    group=f"debug_t{t}",
+                    value=float(loss),
+                )
 
             assert not torch.isnan(loss), "Loss is NaN"
 
@@ -238,9 +341,15 @@ class Appr(Inc_Learning_Appr):
 
         if self.cka and t > 0 and self.training:
             _cka = cka(self.model, self.model_old, val_loader, self.device)
-            self.logger.log_scalar(task=None, iter=None, name=f't_{t}', group=f"cka", value=_cka)
+            self.logger.log_scalar(
+                task=None, iter=None, name=f"t_{t}", group=f"cka", value=_cka
+            )
 
-        return total_loss / total_num, total_acc_taw / total_num, total_acc_tag / total_num
+        return (
+            total_loss / total_num,
+            total_acc_taw / total_num,
+            total_acc_tag / total_num,
+        )
 
     def cross_entropy(self, outputs, targets, exp=1.0, size_average=True, eps=1e-5):
         """Calculates cross-entropy with temperature scaling"""
@@ -258,36 +367,52 @@ class Appr(Inc_Learning_Appr):
             ce = ce.mean()
         return ce
 
-    def criterion(self, t, outputs, targets, outputs_old=None, return_partial_losses=False):
+    def criterion(
+        self, t, outputs, targets, outputs_old=None, return_partial_losses=False
+    ):
         """Returns the loss value"""
         if t > 0 and outputs_old is not None:
             # Knowledge distillation loss for all previous tasks
-            kd_outputs, kd_outputs_old = torch.cat(outputs[:t], dim=1), torch.cat(outputs_old[:t], dim=1)
+            kd_outputs, kd_outputs_old = torch.cat(outputs[:t], dim=1), torch.cat(
+                outputs_old[:t], dim=1
+            )
 
             if self.mc:
                 g = torch.sigmoid(kd_outputs)
                 q_i = torch.sigmoid(kd_outputs_old)
                 loss_kd = sum(
                     torch.nn.functional.binary_cross_entropy(g[:, y], q_i[:, y])
-                    for y in range(kd_outputs.shape[-1]))
+                    for y in range(kd_outputs.shape[-1])
+                )
             elif self.taskwise_kd:
                 loss_kd = torch.zeros(t).to(self.device)
                 for _t in range(t):
-                    soft_target = torch.nn.functional.softmax(outputs_old[_t] / self.T, dim=1)
-                    output_log = torch.nn.functional.log_softmax(outputs[_t] / self.T, dim=1)
-                    loss_kd[_t] = torch.nn.functional.kl_div(output_log, soft_target, reduction='batchmean') * (
-                                self.T ** 2)
+                    soft_target = torch.nn.functional.softmax(
+                        outputs_old[_t] / self.T, dim=1
+                    )
+                    output_log = torch.nn.functional.log_softmax(
+                        outputs[_t] / self.T, dim=1
+                    )
+                    loss_kd[_t] = torch.nn.functional.kl_div(
+                        output_log, soft_target, reduction="batchmean"
+                    ) * (self.T**2)
                 loss_kd = loss_kd.sum()
             else:
-                loss_kd = self.cross_entropy(kd_outputs, kd_outputs_old, exp=1.0 / self.T)
+                loss_kd = self.cross_entropy(
+                    kd_outputs, kd_outputs_old, exp=1.0 / self.T
+                )
         else:
             loss_kd = 0
 
         # Current cross-entropy loss -- with exemplars use all heads
         if len(self.exemplars_dataset) > 0:
-            loss_ce = torch.nn.functional.cross_entropy(torch.cat(outputs, dim=1), targets)
+            loss_ce = torch.nn.functional.cross_entropy(
+                torch.cat(outputs, dim=1), targets
+            )
         else:
-            loss_ce = torch.nn.functional.cross_entropy(outputs[t], targets - self.model.task_offset[t])
+            loss_ce = torch.nn.functional.cross_entropy(
+                outputs[t], targets - self.model.task_offset[t]
+            )
 
         if return_partial_losses:
             return self.lamb * loss_kd + loss_ce, loss_kd, loss_ce
