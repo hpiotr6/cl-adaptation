@@ -19,13 +19,11 @@ class Appr(Inc_Learning_Appr):
         alpha=0.5,
         fi_sampling_type="max_pred",
         fi_num_samples=-1,
-        *args,
         **kwargs,
     ):
         super(Appr, self).__init__(
             model,
             device,
-            *args,
             **kwargs,
         )
         self.lamb = lamb
