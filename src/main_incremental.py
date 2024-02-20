@@ -553,7 +553,7 @@ def main(argv=None):
         argparse.Namespace(
             **args.__dict__,
             **appr_args.__dict__,
-            **appr_exemplars_dataset_args.__dict__
+            **appr_exemplars_dataset_args.__dict__,
         )
     )
 
@@ -628,6 +628,12 @@ def main(argv=None):
     test_loss = np.zeros((max_task, max_task))
     test_var_loss = np.zeros((max_task, max_task))
     test_cov_loss = np.zeros((max_task, max_task))
+    test_var_layers = np.zeros(
+        (max_task, max_task, len(appr.varcov_regularizer.layer_names_to_hook))
+    )
+    test_cov_layers = np.zeros(
+        (max_task, max_task, len(appr.varcov_regularizer.layer_names_to_hook))
+    )
 
     for t, (_, ncla) in enumerate(taskcla):
         # Early stop tasks if flag
@@ -731,6 +737,8 @@ def main(argv=None):
                 test_cov_loss[t, u],
                 acc_taw[t, u],
                 acc_tag[t, u],
+                test_var_layers[t, u],
+                test_cov_layers[t, u],
             ) = appr.eval(u, tst_loader[u])
             if u < t:
                 forg_taw[t, u] = acc_taw[:t, u].max(0) - acc_taw[t, u]
@@ -748,6 +756,26 @@ def main(argv=None):
             )
 
         for u in range(max_task):
+            for var_val, cov_val, layer_name in zip(
+                test_var_layers[t, u],
+                test_cov_layers[t, u],
+                appr.varcov_regularizer.layer_names_to_hook,
+            ):
+                logger.log_scalar(
+                    task=u,
+                    iter=t,
+                    name=f"layers_var_loss/{layer_name}",
+                    value=var_val.item(),
+                    group="test",
+                )
+                logger.log_scalar(
+                    task=u,
+                    iter=t,
+                    name=f"layers_cov_loss/{layer_name}",
+                    value=cov_val.item(),
+                    group="test",
+                )
+
             logger.log_scalar(
                 task=u, iter=t, name="loss", group="test", value=test_loss[t, u]
             )

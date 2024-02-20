@@ -7,9 +7,7 @@ import torch
 
 @dataclass
 class VarCovRegLossProtocol(Protocol):
-    def __call__(
-        self, model: torch.nn.Module, inputs: torch.Tensor
-    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]: ...
+    def __call__(self, model: torch.nn.Module, inputs: torch.Tensor): ...
 
 
 @dataclass
@@ -44,17 +42,20 @@ class VarCovRegLoss(VarCovRegLossProtocol):
 
         feats = model(inputs)
 
-        variance_sum = 0
-        covariance_sum = 0
+        variances = []
+        covariances = []
 
         for hook in [*self.hooks.values()]:
             v, c = self.regularize_step(hook)
-            variance_sum += v
-            covariance_sum += c
+            variances.append(v)
+            covariances.append(c)
+
+        variances_t = torch.tensor(variances)
+        covariances_t = torch.tensor(covariances)
 
         return (
-            self.vcr_var_weight * variance_sum,
-            self.vcr_cov_weight * covariance_sum,
+            variances_t * self.vcr_var_weight,
+            covariances_t * self.vcr_cov_weight,
             self.scale_strategy(feats),
         )
 

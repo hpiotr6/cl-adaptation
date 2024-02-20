@@ -97,7 +97,7 @@ class Inc_Learning_Appr:
         varcov_loss: torch.Tensor, loss_fn: Callable, *args
     ) -> torch.Tensor:
         loss = loss_fn(*args)
-        loss += varcov_loss
+        loss += varcov_loss.sum()
         return loss
 
     def _get_scheduler(self):
@@ -442,9 +442,15 @@ class Inc_Learning_Appr:
             self.train_epoch(t, trn_loader)
             clock1 = time.time()
             if self.eval_on_train:
-                train_loss, train_var_loss, train_cov_loss, train_acc, _ = self.eval(
-                    t, trn_loader
-                )
+                (
+                    train_loss,
+                    train_var_loss,
+                    train_cov_loss,
+                    train_acc,
+                    _,
+                    train_var_layers,
+                    train_cov_layers,
+                ) = self.eval(t, trn_loader)
                 clock2 = time.time()
                 print(
                     "| Epoch {:3d}, time={:5.1f}s/{:5.1f}s | Train: loss={:.3f}, TAw acc={:5.1f}% |".format(
@@ -456,6 +462,27 @@ class Inc_Learning_Appr:
                     ),
                     end="",
                 )
+
+                for var_val, cov_val, layer_name in zip(
+                    train_var_layers,
+                    train_cov_layers,
+                    self.varcov_regularizer.layer_names_to_hook,
+                ):
+                    self.logger.log_scalar(
+                        task=t,
+                        iter=e + 1,
+                        name=f"layers_var_loss/{layer_name}",
+                        value=var_val.item(),
+                        group="train",
+                    )
+                    self.logger.log_scalar(
+                        task=t,
+                        iter=e + 1,
+                        name=f"layers_cov_loss/{layer_name}",
+                        value=cov_val.item(),
+                        group="train",
+                    )
+
                 self.logger.log_scalar(
                     task=t, iter=e + 1, name="loss", value=train_loss, group="train"
                 )
@@ -486,7 +513,7 @@ class Inc_Learning_Appr:
 
             # Valid
             clock3 = time.time()
-            valid_loss, valid_var_loss, valid_cov_loss, valid_acc, _ = self.eval(
+            valid_loss, valid_var_loss, valid_cov_loss, valid_acc, _, _, _ = self.eval(
                 t, val_loader
             )
             clock4 = time.time()
@@ -588,7 +615,9 @@ class Inc_Learning_Appr:
                 total_num,
                 total_var,
                 total_cov,
-            ) = (0, 0, 0, 0, 0, 0)
+                total_layers_var,
+                total_layers_cov,
+            ) = (0, 0, 0, 0, 0, 0, 0, 0)
             self.model.eval()
             for images, targets in val_loader:
                 # Forward current model
@@ -604,21 +633,28 @@ class Inc_Learning_Appr:
                     varcov_loss, self.criterion, t, outputs, targets
                 )
 
-                hits_taw, hits_tag = self.calculate_metrics(outputs, targets)
                 # Log
                 total_loss += loss.item() * len(targets)
-                total_var += var_loss.item() * len(targets)
-                total_cov += cov_loss.item() * len(targets)
+                total_var += var_loss.sum().item() * len(targets)
+                total_cov += cov_loss.sum().item() * len(targets)
 
+                total_layers_var += var_loss * len(targets)
+                total_layers_cov += cov_loss * len(targets)
+
+                hits_taw, hits_tag = self.calculate_metrics(outputs, targets)
                 total_acc_taw += hits_taw.sum().item()
                 total_acc_tag += hits_tag.sum().item()
+
                 total_num += len(targets)
+
         return (
             total_loss / total_num,
             total_var / total_num,
             total_cov / total_num,
             total_acc_taw / total_num,
             total_acc_tag / total_num,
+            total_layers_var / total_num,
+            total_layers_cov / total_num,
         )
 
     def calculate_metrics(self, outputs, targets):
