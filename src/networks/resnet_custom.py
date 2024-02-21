@@ -1,22 +1,3 @@
-# Copyright 2023 solo-learn development team.
-
-# Permission is hereby granted, free of charge, to any person obtaining a copy of
-# this software and associated documentation files (the "Software"), to deal in
-# the Software without restriction, including without limitation the rights to use,
-# copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
-# Software, and to permit persons to whom the Software is furnished to do so,
-# subject to the following conditions:
-
-# The above copyright notice and this permission notice shall be included in all copies
-# or substantial portions of the Software.
-
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-# PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
-# FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-# OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-# DEALINGS IN THE SOFTWARE.
-
 from functools import partial
 from typing import Callable, List, Optional, Type, Union
 
@@ -236,12 +217,6 @@ class ResNet(nn.Module):
 def build_resnet(
     backbone_type, batchnorm_layers, width_scale, skips, num_classes=1000, **kwargs
 ):
-    # backbone_type = model_config.backbone_type
-    # batchnorm_layers = model_config.batchnorm_layers
-    # width_scale = model_config.width_scale
-    # skips = model_config.skips
-
-    # model = torchvision.models.__dict__[backbone_type](num_classes=num_classes)
     resnet = partial(
         ResNet, num_classes=num_classes, width_scale=width_scale, skips=skips
     )
@@ -278,22 +253,6 @@ def build_resnet(
         "resnet152": int(2048 * width_scale),
     }
     model.penultimate_layer_size = renset_penultimate_layer_size[backbone_type]
-
-    unused_params = [
-        "layer2.0.downsample.0.weight",
-        "layer2.0.downsample.1.weight",
-        "layer2.0.downsample.1.bias",
-        "layer3.0.downsample.0.weight",
-        "layer3.0.downsample.1.weight",
-        "layer3.0.downsample.1.bias",
-        "layer4.0.downsample.0.weight",
-        "layer4.0.downsample.1.weight",
-        "layer4.0.downsample.1.bias",
-    ]
-
-    for name, param in model.named_parameters():
-        if name in unused_params:
-            param.requires_grad = False
 
     return model
 
