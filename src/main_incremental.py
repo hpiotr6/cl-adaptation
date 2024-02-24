@@ -1,4 +1,5 @@
 import os
+import torch.nn.functional as F
 import time
 
 import torch
@@ -9,6 +10,7 @@ import torch.multiprocessing
 from functools import reduce
 
 from dotenv import load_dotenv, find_dotenv
+import wandb
 
 from src.metrics import cm
 from src.regularizers import NullVarCovRegLoss, VarCovRegLoss
@@ -26,6 +28,47 @@ from src.datasets.data_loader import get_loaders
 torch.multiprocessing.set_sharing_strategy("file_system")
 
 
+class VarianceCovarianceRegularizationFunction(torch.autograd.Function):
+    # Forward pass
+    # We assume the input has zero mean per channel
+    # In practice, we apply a batch demean operation before calling the function
+    @staticmethod
+    def forward(tensor, alpha, beta, epsilon):
+        return tensor
+
+    @staticmethod
+    def setup_context(ctx, inputs, output):
+        tensor, alpha, beta, epsilon = inputs
+        ctx.save_for_backward(tensor)
+        ctx.alpha = alpha
+        ctx.beta = beta
+        ctx.epsilon = epsilon
+
+    # Backward pass
+    @staticmethod
+    def backward(ctx, grad_output):
+        if grad_output.isnan().any().item():
+            return None, None, None, None
+        (input,) = ctx.saved_tensors
+        # Reshape the input to have (n, d) shape
+        flattened_input = input.flatten(start_dim=0, end_dim=-2)
+        n, d = flattened_input.shape
+        # Calculate the covariance matrix
+        covariance_matrix = torch.mm(flattened_input.t(), flattened_input) / (n - 1)
+        # Calculate the gradient
+        diagonal = F.threshold(
+            torch.rsqrt(covariance_matrix.diagonal() + ctx.epsilon), 1.0, 0.0
+        )
+        std_grad_input = diagonal * flattened_input
+        cov_grad_input = torch.mm(flattened_input, covariance_matrix.fill_diagonal_(0))
+        grad_input = (
+            grad_output
+            - ctx.alpha / (d * (n - 1)) * std_grad_input.view(grad_output.shape)
+            + 4 * ctx.beta / (d * (d - 1)) * cov_grad_input.view(grad_output.shape)
+        )
+        return grad_input, None, None, None
+
+
 def main(argv=None):
     tstart = time.time()
     # Arguments
@@ -36,12 +79,6 @@ def main(argv=None):
     # miscellaneous args
     parser.add_argument("--gpu", type=int, default=0, help="GPU (default=%(default)s)")
 
-    parser.add_argument(
-        "--scale-feats",
-        default=False,
-        action="store_true",
-        help="whether to use scale features between model and head",
-    )
     parser.add_argument(
         "--varcov_reg", action="store_true", help="Whether to use var_cov_regularize"
     )
@@ -393,20 +430,21 @@ def main(argv=None):
     args, extra_args = parser.parse_known_args(argv)
     args.results_path = os.path.expanduser(args.results_path)
 
-    if args.varcov_reg:
-        assert (
-            args.var_weight is not None or args.cov_weight is not None
-        ), "Define var_weight/cov_weight"
-    else:
-        assert (
-            args.var_weight is None and args.cov_weight is None
-        ), "Do not specify var_weight/cov_weight"
+    # if args.varcov_reg:
+    #     assert (
+    #         args.var_weight is not None or args.cov_weight is not None
+    #     ), "Define var_weight/cov_weight"
+    # else:
+    #     assert (
+    #         args.var_weight is None and args.cov_weight is None
+    #     ), "Do not specify var_weight/cov_weight"
 
-    if args.scale_feats:
-        scale_strategy = lambda feats: feats - feats.mean(dim=0)
-    else:
-        scale_strategy = lambda feats: feats
+    # if args.scale_feats:
+    #     scale_strategy = lambda feats: feats - feats.mean(dim=0)
+    # else:
+    #     scale_strategy = lambda feats: feats
 
+    scale_strategy = lambda feats: feats
     base_kwargs = dict(
         nepochs=args.nepochs,
         lr=args.lr,
@@ -427,18 +465,7 @@ def main(argv=None):
         eval_on_train=args.eval_on_train,
         select_best_model_by_val_loss=True,
         scheduler_milestones=args.scheduler_milestones,
-        varcov_regularizer=(
-            VarCovRegLoss(
-                args.var_weight,
-                args.cov_weight,
-                layer_names_to_hook=args.reg_layers,
-                scale_strategy=scale_strategy,
-            )
-            if args.varcov_reg
-            else NullVarCovRegLoss(
-                scale_strategy=scale_strategy,
-            )
-        ),
+        varcov_regularizer=NullVarCovRegLoss(scale_strategy=scale_strategy),
     )
 
     if args.no_cudnn_deterministic:
@@ -484,7 +511,15 @@ def main(argv=None):
     else:  # other models declared in networks package's init
         net = getattr(importlib.import_module(name="src.networks"), args.network)
         # WARNING: fixed to pretrained False for other model (non-torchvision)
-        init_model = net(pretrained=False)
+        varcov_reg = (
+            None
+            if not args.varcov_reg
+            else lambda tensor: VarianceCovarianceRegularizationFunction.apply(
+                tensor, args.var_weight, args.cov_weight, 1e-5
+            )
+        )
+
+        init_model = net(varcov_reg=varcov_reg)
 
     # Args -- Continual Learning Approach
     from src.approach.incremental_learning import Inc_Learning_Appr
@@ -595,6 +630,8 @@ def main(argv=None):
             transform, class_indices, **appr_exemplars_dataset_args.__dict__
         )
     src.utils.seed_everything(seed=args.seed)
+    if "wandb" in args.log:
+        wandb.watch(net)
     appr = Appr(net, device, **appr_kwargs)
 
     ### Add test loader for oracle evaluation during teacher finetuning
@@ -628,12 +665,15 @@ def main(argv=None):
     test_loss = np.zeros((max_task, max_task))
     test_var_loss = np.zeros((max_task, max_task))
     test_cov_loss = np.zeros((max_task, max_task))
-    test_var_layers = np.zeros(
-        (max_task, max_task, len(appr.varcov_regularizer.layer_names_to_hook))
-    )
-    test_cov_layers = np.zeros(
-        (max_task, max_task, len(appr.varcov_regularizer.layer_names_to_hook))
-    )
+    # FIXME: DUMB way to unuse
+    test_var_layers = np.zeros((max_task, max_task))
+    test_cov_layers = np.zeros((max_task, max_task))
+    # test_var_layers = np.zeros(
+    #     (max_task, max_task, len(appr.varcov_regularizer.layer_names_to_hook))
+    # )
+    # test_cov_layers = np.zeros(
+    #     (max_task, max_task, len(appr.varcov_regularizer.layer_names_to_hook))
+    # )
 
     for t, (_, ncla) in enumerate(taskcla):
         # Early stop tasks if flag
@@ -756,25 +796,25 @@ def main(argv=None):
             )
 
         for u in range(max_task):
-            for var_val, cov_val, layer_name in zip(
-                test_var_layers[t, u],
-                test_cov_layers[t, u],
-                appr.varcov_regularizer.layer_names_to_hook,
-            ):
-                logger.log_scalar(
-                    task=u,
-                    iter=t,
-                    name=f"layers_var_loss/{layer_name}",
-                    value=var_val.item(),
-                    group="test",
-                )
-                logger.log_scalar(
-                    task=u,
-                    iter=t,
-                    name=f"layers_cov_loss/{layer_name}",
-                    value=cov_val.item(),
-                    group="test",
-                )
+            # for var_val, cov_val, layer_name in zip(
+            #     test_var_layers[t, u],
+            #     test_cov_layers[t, u],
+            #     appr.varcov_regularizer.layer_names_to_hook,
+            # ):
+            #     logger.log_scalar(
+            #         task=u,
+            #         iter=t,
+            #         name=f"layers_var_loss/{layer_name}",
+            #         value=var_val.item(),
+            #         group="test",
+            #     )
+            #     logger.log_scalar(
+            #         task=u,
+            #         iter=t,
+            #         name=f"layers_cov_loss/{layer_name}",
+            #         value=cov_val.item(),
+            #         group="test",
+            #     )
 
             logger.log_scalar(
                 task=u, iter=t, name="loss", group="test", value=test_loss[t, u]

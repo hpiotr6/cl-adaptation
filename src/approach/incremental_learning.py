@@ -463,25 +463,25 @@ class Inc_Learning_Appr:
                     end="",
                 )
 
-                for var_val, cov_val, layer_name in zip(
-                    train_var_layers,
-                    train_cov_layers,
-                    self.varcov_regularizer.layer_names_to_hook,
-                ):
-                    self.logger.log_scalar(
-                        task=t,
-                        iter=e + 1,
-                        name=f"layers_var_loss/{layer_name}",
-                        value=var_val.item(),
-                        group="train",
-                    )
-                    self.logger.log_scalar(
-                        task=t,
-                        iter=e + 1,
-                        name=f"layers_cov_loss/{layer_name}",
-                        value=cov_val.item(),
-                        group="train",
-                    )
+                # for var_val, cov_val, layer_name in zip(
+                #     train_var_layers,
+                #     train_cov_layers,
+                #     self.varcov_regularizer.layer_names_to_hook,
+                # ):
+                #     self.logger.log_scalar(
+                #         task=t,
+                #         iter=e + 1,
+                #         name=f"layers_var_loss/{layer_name}",
+                #         value=var_val.item(),
+                #         group="train",
+                #     )
+                #     self.logger.log_scalar(
+                #         task=t,
+                #         iter=e + 1,
+                #         name=f"layers_cov_loss/{layer_name}",
+                #         value=cov_val.item(),
+                #         group="train",
+                #     )
 
                 self.logger.log_scalar(
                     task=t, iter=e + 1, name="loss", value=train_loss, group="train"

@@ -1,3 +1,4 @@
+import torch.nn.functional as F
 from functools import partial
 from typing import Callable, List, Optional, Type, Union
 
@@ -13,6 +14,7 @@ __all__ = ["resnet34_skips", "resnet34_skips_nobn", "resnet34_noskips"]
 class BasicBlock(BasicBlock):
     def __init__(self, *args, **kwargs):
         self.skips = kwargs.pop("skips")
+        self.varcov_reg = kwargs.pop("varcov_reg")
         super().__init__(*args, **kwargs)
 
     def forward(self, x: Tensor) -> Tensor:
@@ -32,6 +34,13 @@ class BasicBlock(BasicBlock):
         if self.skips:
             out += identity
         out = self.relu(out)
+
+        if self.varcov_reg:
+            mean = out.mean(dim=1, keepdim=True)
+            out = out - mean
+            self.varcov_reg(out)
+
+            out = self.varcov_reg(out)
 
         return out
 
@@ -79,6 +88,8 @@ class ResNet(nn.Module):
         replace_stride_with_dilation: Optional[List[bool]] = None,
         norm_layer: Optional[Callable[..., nn.Module]] = None,
         skips: bool = True,
+        varcov_reg=None,
+        mean_inplace=False,
     ) -> None:
         super().__init__()
         # _log_api_usage_once(self)
@@ -90,6 +101,7 @@ class ResNet(nn.Module):
 
         self.scale_width = width_scale
         self.skips = skips
+        self.varcov_reg = varcov_reg
 
         self.inplanes = int(64 * width_scale)
         self.dilation = 1
@@ -162,31 +174,31 @@ class ResNet(nn.Module):
                 norm_layer(planes * block.expansion),
             )
 
+        share_block = partial(
+            block,
+            planes=planes,
+            groups=self.groups,
+            base_width=self.base_width,
+            norm_layer=norm_layer,
+            skips=self.skips,
+            varcov_reg=self.varcov_reg,
+        )
+
         layers = []
         layers.append(
-            block(
-                self.inplanes,
-                planes,
-                stride,
-                downsample,
-                self.groups,
-                self.base_width,
-                previous_dilation,
-                norm_layer,
-                skips=self.skips,
+            share_block(
+                inplanes=self.inplanes,
+                stride=stride,
+                downsample=downsample,
+                dilation=previous_dilation,
             )
         )
         self.inplanes = planes * block.expansion
         for _ in range(1, blocks):
             layers.append(
-                block(
-                    self.inplanes,
-                    planes,
-                    groups=self.groups,
-                    base_width=self.base_width,
+                share_block(
+                    inplanes=self.inplanes,
                     dilation=self.dilation,
-                    norm_layer=norm_layer,
-                    skips=self.skips,
                 )
             )
 
@@ -206,6 +218,12 @@ class ResNet(nn.Module):
 
         x = self.avgpool(x)
         x = torch.flatten(x, 1)
+
+        if self.varcov_reg:
+            mean = x.mean(dim=1, keepdim=True)
+            x = x - mean
+            x = self.varcov_reg(x)
+
         x = self.fc(x)
 
         return x
@@ -218,7 +236,7 @@ def build_resnet(
     backbone_type, batchnorm_layers, width_scale, skips, num_classes=1000, **kwargs
 ):
     resnet = partial(
-        ResNet, num_classes=num_classes, width_scale=width_scale, skips=skips
+        ResNet, num_classes=num_classes, width_scale=width_scale, skips=skips, **kwargs
     )
     if not batchnorm_layers:
         resnet = partial(resnet, norm_layer=nn.Identity)
@@ -297,3 +315,14 @@ resnet34_noskips = partial(
     width_scale=1,
     skips=False,
 )
+
+# varcov_reg = partial(
+#     VarianceCovarianceRegularizationFunction.apply,
+#     alpha=0.16,
+#     beta=0.32,
+#     epsilon=10e-5,
+# )
+
+# mdl = resnet34_skips(varcov_reg=varcov_reg)
+# ex = torch.rand((16, 3, 32, 32))
+# print(mdl(ex))
