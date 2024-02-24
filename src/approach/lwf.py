@@ -345,7 +345,9 @@ class Appr(Inc_Learning_Appr):
                 total_num,
                 total_var,
                 total_cov,
-            ) = (0, 0, 0, 0, 0, 0)
+                total_layers_var,
+                total_layers_cov,
+            ) = (0, 0, 0, 0, 0, 0, 0, 0)
             self.model.eval()
             if self.model_old is not None:
                 self.model_old.eval()
@@ -377,8 +379,13 @@ class Appr(Inc_Learning_Appr):
                 hits_taw, hits_tag = self.calculate_metrics(outputs, targets)
                 # Log
                 total_loss += loss.data.cpu().numpy().item() * len(targets)
-                total_var += var_loss.item() * len(targets)
-                total_cov += cov_loss.item() * len(targets)
+
+                total_var += var_loss.sum().item() * len(targets)
+                total_cov += cov_loss.sum().item() * len(targets)
+
+                total_layers_var += var_loss * len(targets)
+                total_layers_cov += cov_loss * len(targets)
+
                 total_acc_taw += hits_taw.sum().data.cpu().numpy().item()
                 total_acc_tag += hits_tag.sum().data.cpu().numpy().item()
                 total_num += len(targets)
@@ -395,6 +402,8 @@ class Appr(Inc_Learning_Appr):
             total_cov / total_num,
             total_acc_taw / total_num,
             total_acc_tag / total_num,
+            total_layers_var / total_num,
+            total_layers_cov / total_num,
         )
 
     def cross_entropy(self, outputs, targets, exp=1.0, size_average=True, eps=1e-5):
