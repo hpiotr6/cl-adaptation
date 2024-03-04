@@ -11,6 +11,7 @@ from functools import reduce
 from dotenv import load_dotenv, find_dotenv
 
 from src.metrics import cm
+from src.networks.resnet_custom import BasicBlock
 from src.regularizers import NullVarCovRegLoss, VarCovRegLoss
 
 load_dotenv(find_dotenv())
@@ -37,10 +38,10 @@ def main(argv=None):
     parser.add_argument("--gpu", type=int, default=0, help="GPU (default=%(default)s)")
 
     parser.add_argument(
-        "--scale-feats",
-        default=False,
+        "--scale",
+        default=True,
         action="store_true",
-        help="whether to use scale features between model and head",
+        help="whether to demean representations before reg",
     )
     parser.add_argument(
         "--varcov_reg", action="store_true", help="Whether to use var_cov_regularize"
@@ -48,9 +49,14 @@ def main(argv=None):
     parser.add_argument(
         "--reg_layers",
         default=None,
-        nargs="+",
         type=str,
         required=False,
+    )
+    parser.add_argument(
+        "--smooth_cov",
+        type=float,
+        default=1,
+        help="delta for var_cov_regularize (default=%(default)s)",
     )
     parser.add_argument(
         "--var_weight",
@@ -402,10 +408,41 @@ def main(argv=None):
             args.var_weight is None and args.cov_weight is None
         ), "Do not specify var_weight/cov_weight"
 
-    if args.scale_feats:
-        scale_strategy = lambda feats: feats - feats.mean(dim=0)
-    else:
-        scale_strategy = lambda feats: feats
+    def collect_layers(model: torch.nn.Module):
+        fc = list(model.named_children())[-1]
+        match args.reg_layers:
+            case "BasicBlocks":
+                basicblocks = list(
+                    filter(
+                        lambda x: isinstance(x[1], BasicBlock),
+                        model.named_modules(),
+                    )
+                )
+                basicblocks.append(fc)
+                return basicblocks
+            case "fc":
+                return [fc]
+
+            case _:
+                raise ValueError(
+                    f"Given {args.reg_layers} which is not valid reg layer name"
+                )
+
+    def construct_varcov_loss(args):
+        if not args.varcov_reg:
+            return NullVarCovRegLoss(
+                scale=args.scale,
+            )
+
+        return VarCovRegLoss(
+            args.var_weight,
+            args.cov_weight,
+            collect_layers=collect_layers,
+            delta=args.smooth_cov,
+            scale=args.scale,
+        )
+
+    varocov_regularizer = construct_varcov_loss(args)
 
     base_kwargs = dict(
         nepochs=args.nepochs,
@@ -427,18 +464,7 @@ def main(argv=None):
         eval_on_train=args.eval_on_train,
         select_best_model_by_val_loss=True,
         scheduler_milestones=args.scheduler_milestones,
-        varcov_regularizer=(
-            VarCovRegLoss(
-                args.var_weight,
-                args.cov_weight,
-                layer_names_to_hook=args.reg_layers,
-                scale_strategy=scale_strategy,
-            )
-            if args.varcov_reg
-            else NullVarCovRegLoss(
-                scale_strategy=scale_strategy,
-            )
-        ),
+        varcov_regularizer=varocov_regularizer,
     )
 
     if args.no_cudnn_deterministic:
@@ -596,6 +622,12 @@ def main(argv=None):
         )
     src.utils.seed_everything(seed=args.seed)
     appr = Appr(net, device, **appr_kwargs)
+    if args.varcov_reg:
+        hooked_layer_names = [n_m[0] for n_m in collect_layers(net.model)]
+    else:
+        hooked_layer_names = []
+
+    appr.varcov_regularizer.hooked_layer_names = hooked_layer_names
 
     ### Add test loader for oracle evaluation during teacher finetuning
     appr.tst_loader = tst_loader
@@ -628,12 +660,8 @@ def main(argv=None):
     test_loss = np.zeros((max_task, max_task))
     test_var_loss = np.zeros((max_task, max_task))
     test_cov_loss = np.zeros((max_task, max_task))
-    test_var_layers = np.zeros(
-        (max_task, max_task, len(appr.varcov_regularizer.layer_names_to_hook))
-    )
-    test_cov_layers = np.zeros(
-        (max_task, max_task, len(appr.varcov_regularizer.layer_names_to_hook))
-    )
+    test_var_layers = np.zeros((max_task, max_task, len(hooked_layer_names)))
+    test_cov_layers = np.zeros((max_task, max_task, len(hooked_layer_names)))
 
     for t, (_, ncla) in enumerate(taskcla):
         # Early stop tasks if flag
@@ -756,26 +784,6 @@ def main(argv=None):
             )
 
         for u in range(max_task):
-            for var_val, cov_val, layer_name in zip(
-                test_var_layers[t, u],
-                test_cov_layers[t, u],
-                appr.varcov_regularizer.layer_names_to_hook,
-            ):
-                logger.log_scalar(
-                    task=u,
-                    iter=t,
-                    name=f"layers_var_loss/{layer_name}",
-                    value=var_val.item(),
-                    group="test",
-                )
-                logger.log_scalar(
-                    task=u,
-                    iter=t,
-                    name=f"layers_cov_loss/{layer_name}",
-                    value=cov_val.item(),
-                    group="test",
-                )
-
             logger.log_scalar(
                 task=u, iter=t, name="loss", group="test", value=test_loss[t, u]
             )
@@ -791,6 +799,7 @@ def main(argv=None):
             logger.log_scalar(
                 task=u, iter=t, name="acc_tag", group="test", value=100 * acc_tag[t, u]
             )
+
             logger.log_scalar(
                 task=u,
                 iter=t,
@@ -805,6 +814,29 @@ def main(argv=None):
                 group="test",
                 value=100 * forg_tag[t, u],
             )
+
+            if not args.varcov_reg:
+                continue
+
+            for var_val, cov_val, layer_name in zip(
+                test_var_layers[t, u],
+                test_cov_layers[t, u],
+                hooked_layer_names,
+            ):
+                logger.log_scalar(
+                    task=u,
+                    iter=t,
+                    name=f"layers_var_loss/{layer_name}",
+                    value=var_val.item(),
+                    group="test",
+                )
+                logger.log_scalar(
+                    task=u,
+                    iter=t,
+                    name=f"layers_cov_loss/{layer_name}",
+                    value=cov_val.item(),
+                    group="test",
+                )
 
         # Save
         print("Save at " + os.path.join(args.results_path, full_exp_name))

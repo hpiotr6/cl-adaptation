@@ -6,7 +6,7 @@ from argparse import ArgumentParser
 
 from src.loggers.exp_logger import ExperimentLogger
 from src.datasets.exemplars_dataset import ExemplarsDataset
-from src.regularizers import NullVarCovRegLoss, VarCovRegLossProtocol
+from src.regularizers import NullVarCovRegLoss
 
 
 class Inc_Learning_Appr:
@@ -38,7 +38,7 @@ class Inc_Learning_Appr:
         exemplars_dataset: ExemplarsDataset = None,
         scheduler_milestones=None,
         no_learning=False,
-        varcov_regularizer: VarCovRegLossProtocol = NullVarCovRegLoss(),
+        varcov_regularizer=NullVarCovRegLoss(),
     ):
         self.model = model
         self.device = device
@@ -463,26 +463,6 @@ class Inc_Learning_Appr:
                     end="",
                 )
 
-                for var_val, cov_val, layer_name in zip(
-                    train_var_layers,
-                    train_cov_layers,
-                    self.varcov_regularizer.layer_names_to_hook,
-                ):
-                    self.logger.log_scalar(
-                        task=t,
-                        iter=e + 1,
-                        name=f"layers_var_loss/{layer_name}",
-                        value=var_val.item(),
-                        group="train",
-                    )
-                    self.logger.log_scalar(
-                        task=t,
-                        iter=e + 1,
-                        name=f"layers_cov_loss/{layer_name}",
-                        value=cov_val.item(),
-                        group="train",
-                    )
-
                 self.logger.log_scalar(
                     task=t, iter=e + 1, name="loss", value=train_loss, group="train"
                 )
@@ -503,6 +483,27 @@ class Inc_Learning_Appr:
                 self.logger.log_scalar(
                     task=t, iter=e + 1, name="acc", value=100 * train_acc, group="train"
                 )
+                if self.varcov_regularizer.hooked_layer_names:
+                    for var_val, cov_val, layer_name in zip(
+                        train_var_layers,
+                        train_cov_layers,
+                        self.varcov_regularizer.hooked_layer_names,
+                    ):
+                        self.logger.log_scalar(
+                            task=t,
+                            iter=e + 1,
+                            name=f"layers_var_loss/{layer_name}",
+                            value=var_val.item(),
+                            group="train",
+                        )
+                        self.logger.log_scalar(
+                            task=t,
+                            iter=e + 1,
+                            name=f"layers_cov_loss/{layer_name}",
+                            value=cov_val.item(),
+                            group="train",
+                        )
+
             else:
                 print(
                     "| Epoch {:3d}, time={:5.1f}s | Train: skip eval |".format(
