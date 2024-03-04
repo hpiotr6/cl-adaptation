@@ -18,21 +18,24 @@ class VarCovRegLoss:
     _hooks: defaultdict = field(default_factory=lambda: defaultdict(lambda: None))
 
     def initialise_hooks(self, model):
-        def pre_hook(module, input):
-            (tensor,) = input
-            return (tensor - tensor.mean(0, keepdims=True),)
+
+        def scale_strategy(output):
+            if self.scale:
+                return output - output.mean(0)
+            else:
+                return output
 
         def hook_fn(layer_name):
             def hook(module, input, output):
+                output = scale_strategy(output)
                 self._hooks[layer_name] = output
+                return output
 
             return hook
 
         assert len(self.hooked_layer_names) == len(self.collect_layers(model))
 
         for name, layer in self.collect_layers(model):
-            if self.scale:
-                layer.register_forward_pre_hook(pre_hook)
             layer.register_forward_hook(hook_fn(name))
 
     def __call__(self, model: torch.nn.Module, inputs: torch.Tensor):
@@ -67,7 +70,6 @@ class VarCovRegLoss:
     def regularize_step(self, feats):
         flattened_input = feats.flatten(start_dim=0, end_dim=-2)
         n, d = flattened_input.shape
-        assert d > 1 and n > 1
         C = (flattened_input.T @ flattened_input) / (n - 1)
         v = torch.mean(F.relu(1 - torch.sqrt(C.diag() + self.eps)))
         c = self.smooth_l1(C.fill_diagonal_(0), self.delta).sum() / (d * (d - 1))
