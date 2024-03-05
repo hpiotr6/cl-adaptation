@@ -97,7 +97,7 @@ class Inc_Learning_Appr:
         varcov_loss: torch.Tensor, loss_fn: Callable, *args
     ) -> torch.Tensor:
         loss = loss_fn(*args)
-        loss += varcov_loss.sum()
+        loss += varcov_loss.mean()
         return loss
 
     def _get_scheduler(self):
@@ -592,7 +592,10 @@ class Inc_Learning_Appr:
                 self.model.model, images.to(self.device)
             )
             outputs = [head(feats) for head in self.model.heads]
-            varcov_loss = var_loss + cov_loss
+            varcov_loss = (
+                var_loss * self.varcov_regularizer.vcr_var_weight
+                + cov_loss * self.varcov_regularizer.vcr_cov_weight
+            )
             loss = self.add_varcov_loss(
                 varcov_loss, self.criterion, t, outputs, targets.to(self.device)
             )
@@ -629,15 +632,12 @@ class Inc_Learning_Appr:
                 )
                 outputs = [head(feats) for head in self.model.heads]
 
-                varcov_loss = var_loss + cov_loss
-                loss = self.add_varcov_loss(
-                    varcov_loss, self.criterion, t, outputs, targets
-                )
+                loss = self.criterion(t, outputs, targets)
 
                 # Log
                 total_loss += loss.item() * len(targets)
-                total_var += var_loss.sum().item() * len(targets)
-                total_cov += cov_loss.sum().item() * len(targets)
+                total_var += var_loss.mean().item() * len(targets)
+                total_cov += cov_loss.mean().item() * len(targets)
 
                 total_layers_var += var_loss * len(targets)
                 total_layers_cov += cov_loss * len(targets)

@@ -58,8 +58,8 @@ class VarCovRegLoss:
         covariances_t = torch.stack(covariances)
 
         return (
-            variances_t * self.vcr_var_weight,
-            covariances_t * self.vcr_cov_weight,
+            variances_t,
+            covariances_t,
             feats,
         )
 
@@ -79,6 +79,8 @@ class VarCovRegLoss:
 
 @dataclass
 class NullVarCovRegLoss:
+    vcr_var_weight: float = 0.0
+    vcr_cov_weight: float = 0.0
     scale: bool = False
     hooked_layer_names: Optional[list[str]] = None
     _dummy_zero = torch.tensor(0.0)
