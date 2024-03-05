@@ -54,8 +54,8 @@ class VarCovRegLoss:
             variances.append(v)
             covariances.append(c)
 
-        variances_t = torch.tensor(variances)
-        covariances_t = torch.tensor(covariances)
+        variances_t = torch.stack(variances)
+        covariances_t = torch.stack(covariances)
 
         return (
             variances_t * self.vcr_var_weight,
