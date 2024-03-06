@@ -39,7 +39,6 @@ def main(argv=None):
 
     parser.add_argument(
         "--scale",
-        default=True,
         action="store_true",
         help="whether to demean representations before reg",
     )
