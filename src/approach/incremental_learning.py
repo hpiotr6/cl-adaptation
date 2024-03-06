@@ -654,8 +654,8 @@ class Inc_Learning_Appr:
             total_cov / total_num,
             total_acc_taw / total_num,
             total_acc_tag / total_num,
-            total_layers_var / total_num,
-            total_layers_cov / total_num,
+            (total_layers_var / total_num).cpu(),
+            (total_layers_cov / total_num).cpu(),
         )
 
     def calculate_metrics(self, outputs, targets):
