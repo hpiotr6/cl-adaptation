@@ -1,4 +1,5 @@
 import os
+import re
 import time
 
 import torch
@@ -408,24 +409,19 @@ def main(argv=None):
         ), "Do not specify var_weight/cov_weight"
 
     def collect_layers(model: torch.nn.Module):
-        fc = list(model.named_children())[-1]
-        match args.reg_layers:
-            case "BasicBlocks":
-                basicblocks = list(
-                    filter(
-                        lambda x: isinstance(x[1], BasicBlock),
-                        model.named_modules(),
-                    )
-                )
-                basicblocks.append(fc)
-                return basicblocks
-            case "fc":
-                return [fc]
+        compiled_pattern = re.compile(args.reg_layers)
+        matched_layers = [
+            (name, module)
+            for name, module in model.named_modules()
+            if re.match(compiled_pattern, name)
+        ]
 
-            case _:
-                raise ValueError(
-                    f"Given {args.reg_layers} which is not valid reg layer name"
-                )
+        if not matched_layers:
+            raise ValueError(
+                f"No layers matching the pattern '{args.reg_layers}' were found."
+            )
+
+        return matched_layers
 
     def construct_varcov_loss(args):
         if not args.varcov_reg:
@@ -438,7 +434,6 @@ def main(argv=None):
             args.cov_weight,
             collect_layers=collect_layers,
             delta=args.smooth_cov,
-            scale=args.scale,
         )
 
     varocov_regularizer = construct_varcov_loss(args)

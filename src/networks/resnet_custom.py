@@ -20,12 +20,14 @@ class BasicBlock(BasicBlock):
         self.skips = kwargs.pop("skips", True)
         self.last_bn_off = kwargs.pop("last_bn_off", False)
         super().__init__(*args, **kwargs)
+
         if self.last_bn_off:
             self.bn2 = nn.Identity()
+        self.before_skip = nn.Identity()
+        self.before_relu = nn.Identity()
+        self.after_relu = nn.Identity()
 
     def forward(self, x: Tensor) -> Tensor:
-        if self.skips:
-            identity = x
 
         out = self.conv1(x)
         out = self.bn1(out)
@@ -33,14 +35,24 @@ class BasicBlock(BasicBlock):
 
         out = self.conv2(out)
         out = self.bn2(out)
-
-        if self.downsample is not None and self.skips:
-            identity = self.downsample(x)
-
-        if self.skips:
-            out += identity
-
+        out = self.before_skip(out)
+        out = self._skipping_connection(x, out)
+        out = self.before_relu(out)
         out = self.relu(out)
+        out = self.after_relu(out)
+
+        return out
+
+    def _skipping_connection(self, x, out):
+        if not self.skips:
+            return out
+
+        if self.downsample is not None:
+            identity = self.downsample(x)
+        else:
+            identity = x
+
+        out += identity
 
         return out
 
