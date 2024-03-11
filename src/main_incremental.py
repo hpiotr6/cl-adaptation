@@ -431,17 +431,12 @@ def main(argv=None):
             return NullVarCovRegLoss(
                 scale=args.scale,
             )
-        if args.var_weight == 0 and args.cov_weight == 0:
-            scale = False
-        else:
-            scale = True
-
         return VarCovRegLoss(
             args.var_weight,
             args.cov_weight,
             collect_layers=collect_layers,
             delta=args.smooth_cov,
-            scale=scale,
+            scale=args.scale,
         )
 
     varocov_regularizer = construct_varcov_loss(args)
