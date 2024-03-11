@@ -37,7 +37,8 @@ class LLL_Net(nn.Module):
         else:
             self.out_size = last_layer.out_features
 
-        self.modify_to_cifar()
+        if "resnet" in str(type(model)).lower():
+            self.modify_to_cifar()
 
         self.heads = nn.ModuleList()
         self.task_cls = []
