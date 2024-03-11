@@ -7,6 +7,7 @@ import argparse
 import importlib
 import numpy as np
 import torch.multiprocessing
+import distutils
 from functools import reduce
 
 from dotenv import load_dotenv, find_dotenv
@@ -40,7 +41,9 @@ def main(argv=None):
 
     parser.add_argument(
         "--scale",
-        action="store_true",
+        default=None,
+        type=lambda x: bool(distutils.util.strtobool(x)),
+        required=True,
         help="whether to demean representations before reg",
     )
     parser.add_argument(
@@ -428,12 +431,17 @@ def main(argv=None):
             return NullVarCovRegLoss(
                 scale=args.scale,
             )
+        if args.var_weight == 0 and args.cov_weight == 0:
+            scale = False
+        else:
+            scale = True
 
         return VarCovRegLoss(
             args.var_weight,
             args.cov_weight,
             collect_layers=collect_layers,
             delta=args.smooth_cov,
+            scale=scale,
         )
 
     varocov_regularizer = construct_varcov_loss(args)
