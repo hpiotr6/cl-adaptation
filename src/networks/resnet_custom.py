@@ -12,6 +12,7 @@ __all__ = [
     "resnet34_skips_nobn",
     "resnet34_noskips",
     "resnet34_no_last_bn_on_bb",
+    "resnet34_20cls_out",
 ]
 
 
@@ -292,6 +293,13 @@ def build_resnet(
     }
     model.penultimate_layer_size = renset_penultimate_layer_size[backbone_type]
 
+    return model
+
+
+def resnet34_20cls_out(*args, **kwargs):
+
+    model = resnet34_skips(*args, **kwargs)
+    model.fc = nn.Linear(512, 20)
     return model
 
 
