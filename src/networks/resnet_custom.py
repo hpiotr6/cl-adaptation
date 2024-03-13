@@ -13,6 +13,7 @@ __all__ = [
     "resnet34_noskips",
     "resnet34_no_last_bn_on_bb",
     "resnet34_20cls_out",
+    "no_last_relu",
 ]
 
 
@@ -26,6 +27,7 @@ class BasicBlock(BasicBlock):
             self.bn2 = nn.Identity()
         self.before_skip = nn.Identity()
         self.before_relu = nn.Identity()
+        self.relu2 = nn.ReLU(inplace=True)
         self.after_relu = nn.Identity()
 
     def forward(self, x: Tensor) -> Tensor:
@@ -39,7 +41,7 @@ class BasicBlock(BasicBlock):
         out = self.before_skip(out)
         out = self._skipping_connection(x, out)
         out = self.before_relu(out)
-        out = self.relu(out)
+        out = self.relu2(out)
         out = self.after_relu(out)
 
         return out
@@ -300,6 +302,13 @@ def resnet34_20cls_out(*args, **kwargs):
 
     model = resnet34_skips(*args, **kwargs)
     model.fc = nn.Linear(512, 20)
+    return model
+
+
+def no_last_relu(*args, **kwargs):
+
+    model = resnet34_skips(*args, **kwargs)
+    model.layer4[-1].relu2 = torch.nn.Identity()
     return model
 
 
