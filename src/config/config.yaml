@@ -1,0 +1,5 @@
+defaults:
+  - defaults
+  - training/vcreg: null
+  - training/approach: finetuning
+  - _self_

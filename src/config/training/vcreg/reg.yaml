@@ -1,0 +1,5 @@
+scale: true
+reg_layers: fc
+smooth_cov: 1.0
+var_weight: .1
+cov_weight: .1
