@@ -7,17 +7,30 @@ from torch import Tensor
 from torchvision.models import resnet18, resnet50
 from torchvision.models.resnet import BasicBlock, Bottleneck, conv1x1
 
-__all__ = ["resnet34_skips", "resnet34_skips_nobn", "resnet34_noskips"]
+__all__ = [
+    "resnet34_skips",
+    "resnet34_skips_nobn",
+    "resnet34_noskips",
+    "resnet34_no_last_bn_on_bb",
+    "resnet34_20cls_out",
+    "no_last_relu",
+]
 
 
 class BasicBlock(BasicBlock):
     def __init__(self, *args, **kwargs):
-        self.skips = kwargs.pop("skips")
+        self.skips = kwargs.pop("skips", True)
+        self.last_bn_off = kwargs.pop("last_bn_off", False)
         super().__init__(*args, **kwargs)
 
+        if self.last_bn_off:
+            self.bn2 = nn.Identity()
+        self.before_skip = nn.Identity()
+        self.before_relu = nn.Identity()
+        self.relu2 = nn.ReLU(inplace=True)
+        self.after_relu = nn.Identity()
+
     def forward(self, x: Tensor) -> Tensor:
-        if self.skips:
-            identity = x
 
         out = self.conv1(x)
         out = self.bn1(out)
@@ -25,13 +38,24 @@ class BasicBlock(BasicBlock):
 
         out = self.conv2(out)
         out = self.bn2(out)
+        out = self.before_skip(out)
+        out = self._skipping_connection(x, out)
+        out = self.before_relu(out)
+        out = self.relu2(out)
+        out = self.after_relu(out)
 
-        if self.downsample is not None and self.skips:
+        return out
+
+    def _skipping_connection(self, x, out):
+        if not self.skips:
+            return out
+
+        if self.downsample is not None:
             identity = self.downsample(x)
+        else:
+            identity = x
 
-        if self.skips:
-            out += identity
-        out = self.relu(out)
+        out += identity
 
         return out
 
@@ -79,6 +103,7 @@ class ResNet(nn.Module):
         replace_stride_with_dilation: Optional[List[bool]] = None,
         norm_layer: Optional[Callable[..., nn.Module]] = None,
         skips: bool = True,
+        last_bn_basicblock_off=False,
     ) -> None:
         super().__init__()
         # _log_api_usage_once(self)
@@ -90,6 +115,8 @@ class ResNet(nn.Module):
 
         self.scale_width = width_scale
         self.skips = skips
+
+        self.last_bn_basicblock_off = last_bn_basicblock_off
 
         self.inplanes = int(64 * width_scale)
         self.dilation = 1
@@ -159,34 +186,38 @@ class ResNet(nn.Module):
         if stride != 1 or self.inplanes != planes * block.expansion:
             downsample = nn.Sequential(
                 conv1x1(self.inplanes, planes * block.expansion, stride),
-                norm_layer(planes * block.expansion),
+                (
+                    norm_layer(planes * block.expansion)
+                    if not self.last_bn_basicblock_off
+                    else nn.Identity()
+                ),
             )
+
+        share_block = partial(
+            block,
+            planes=planes,
+            groups=self.groups,
+            base_width=self.base_width,
+            norm_layer=norm_layer,
+            skips=self.skips,
+            last_bn_off=self.last_bn_basicblock_off,
+        )
 
         layers = []
         layers.append(
-            block(
-                self.inplanes,
-                planes,
-                stride,
-                downsample,
-                self.groups,
-                self.base_width,
-                previous_dilation,
-                norm_layer,
-                skips=self.skips,
+            share_block(
+                inplanes=self.inplanes,
+                stride=stride,
+                downsample=downsample,
+                dilation=previous_dilation,
             )
         )
         self.inplanes = planes * block.expansion
         for _ in range(1, blocks):
             layers.append(
-                block(
-                    self.inplanes,
-                    planes,
-                    groups=self.groups,
-                    base_width=self.base_width,
+                share_block(
+                    inplanes=self.inplanes,
                     dilation=self.dilation,
-                    norm_layer=norm_layer,
-                    skips=self.skips,
                 )
             )
 
@@ -215,10 +246,20 @@ class ResNet(nn.Module):
 
 
 def build_resnet(
-    backbone_type, batchnorm_layers, width_scale, skips, num_classes=1000, **kwargs
+    backbone_type,
+    batchnorm_layers,
+    width_scale,
+    skips,
+    num_classes=1000,
+    no_last_bn_on_bb=False,
+    **kwargs,
 ):
     resnet = partial(
-        ResNet, num_classes=num_classes, width_scale=width_scale, skips=skips
+        ResNet,
+        num_classes=num_classes,
+        width_scale=width_scale,
+        skips=skips,
+        last_bn_basicblock_off=no_last_bn_on_bb,
     )
     if not batchnorm_layers:
         resnet = partial(resnet, norm_layer=nn.Identity)
@@ -257,22 +298,18 @@ def build_resnet(
     return model
 
 
-def _forward_impl(self, x: Tensor) -> Tensor:
-    # See note [TorchScript super()]
-    x = self.conv1(x)
-    x = self.bn1(x)
-    x = self.relu(x)
-    x = self.maxpool(x)
+def resnet34_20cls_out(*args, **kwargs):
 
-    x = self.layer1(x)
-    x = self.layer2(x)
-    x = self.layer3(x)
-    x = self.layer4(x)
+    model = resnet34_skips(*args, **kwargs)
+    model.fc = nn.Linear(512, 20)
+    return model
 
-    x = self.avgpool(x)
-    x = torch.flatten(x, 1)
 
-    return x
+def no_last_relu(*args, **kwargs):
+
+    model = resnet34_skips(*args, **kwargs)
+    model.layer4[-1].relu2 = torch.nn.Identity()
+    return model
 
 
 resnet34_skips = partial(
@@ -282,6 +319,16 @@ resnet34_skips = partial(
     width_scale=1,
     skips=True,
 )
+
+resnet34_no_last_bn_on_bb = partial(
+    build_resnet,
+    backbone_type="resnet34",
+    batchnorm_layers=True,
+    width_scale=1,
+    skips=True,
+    no_last_bn_on_bb=True,
+)
+
 resnet34_skips_nobn = partial(
     build_resnet,
     backbone_type="resnet34",

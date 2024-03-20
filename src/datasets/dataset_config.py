@@ -1,7 +1,7 @@
 import os
 from os.path import join
 
-_BASE_DATA_PATH = "../data"
+_BASE_DATA_PATH = "data"
 
 datasets_root = _BASE_DATA_PATH
 

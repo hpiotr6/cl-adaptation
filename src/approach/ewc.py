@@ -1,8 +1,12 @@
+from typing import Optional
+import omegaconf
 import torch
 import itertools
 from argparse import ArgumentParser
 
 from src.datasets.exemplars_dataset import ExemplarsDataset
+from src.loggers.exp_logger import ExperimentLogger
+from src.regularizers import VarCovRegLossInterface
 from .incremental_learning import Inc_Learning_Appr
 
 
@@ -15,21 +19,27 @@ class Appr(Inc_Learning_Appr):
         self,
         model,
         device,
-        lamb=5000,
-        alpha=0.5,
-        fi_sampling_type="max_pred",
-        fi_num_samples=-1,
-        **kwargs,
+        varcov_regularizer: VarCovRegLossInterface,
+        logger: Optional[ExperimentLogger] = None,
+        exemplars_dataset: Optional[ExemplarsDataset] = None,
+        *,
+        cfg,
     ):
+
         super(Appr, self).__init__(
             model,
             device,
-            **kwargs,
+            varcov_regularizer,
+            logger,
+            exemplars_dataset,
+            cfg=cfg,
         )
-        self.lamb = lamb
-        self.alpha = alpha
-        self.sampling_type = fi_sampling_type
-        self.num_samples = fi_num_samples
+        self.set_methods_defaults(cfg.approach)
+
+        self.lamb = cfg.approach.kwargs.lamb
+        self.alpha = cfg.approach.kwargs.alpha
+        self.sampling_type = cfg.approach.kwargs.fi_sampling_type
+        self.num_samples = cfg.approach.kwargs.fi_num_samples
 
         # In all cases, we only keep importance weights for the model, but not for the heads.
         feat_ext = self.model.model
@@ -50,43 +60,19 @@ class Appr(Inc_Learning_Appr):
     def exemplars_dataset_class():
         return ExemplarsDataset
 
-    @staticmethod
-    def extra_parser(args):
-        """Returns a parser containing the approach specific parameters"""
-        parser = ArgumentParser()
-        # Eq. 3: "lambda sets how important the old task is compared to the new one"
-        parser.add_argument(
-            "--lamb",
-            default=5000,
-            type=float,
-            required=False,
-            help="Forgetting-intransigence trade-off (default=%(default)s)",
-        )
-        # Define how old and new fisher is fused, by default it is a 50-50 fusion
-        parser.add_argument(
-            "--alpha",
-            default=0.5,
-            type=float,
-            required=False,
-            help="EWC alpha (default=%(default)s)",
-        )
-        parser.add_argument(
-            "--fi-sampling-type",
-            default="max_pred",
-            type=str,
-            required=False,
-            choices=["true", "max_pred", "multinomial"],
-            help="Sampling type for Fisher information (default=%(default)s)",
-        )
-        parser.add_argument(
-            "--fi-num-samples",
-            default=-1,
-            type=int,
-            required=False,
-            help="Number of samples for Fisher information (-1: all available) (default=%(default)s)",
-        )
+    def set_methods_defaults(self, cfg: omegaconf.DictConfig):
+        defaults = {
+            "lamb": 5000,
+            "alpha": 0.5,
+            "fi_sampling_type": "max_pred",
+            "fi_num_samples": -1,
+        }
 
-        return parser.parse_known_args(args)
+        if not cfg.kwargs:
+            cfg.kwargs = omegaconf.DictConfig(defaults)
+        else:
+            for key in defaults.keys():
+                cfg.kwargs.setdefault(key, defaults[key])
 
     def _get_optimizer(self):
         """Returns the optimizer"""

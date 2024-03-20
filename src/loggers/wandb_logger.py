@@ -47,7 +47,7 @@ class Logger(ExperimentLogger):
         wandb.log({key: value, iter_key: iter})
 
     def log_args(self, args):
-        wandb.config.update(args.__dict__)
+        wandb.config.update(args)
 
     def log_result(self, array, name, step, **kwargs):
         if array.ndim <= 1:

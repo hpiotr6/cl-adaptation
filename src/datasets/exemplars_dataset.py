@@ -28,33 +28,33 @@ class ExemplarsDataset(MemoryDataset):
         self.exemplars_selector = selector_cls(self)
 
     # Returns a parser containing the approach specific parameters
-    @staticmethod
-    def extra_parser(args):
-        parser = ArgumentParser("Exemplars Management Parameters")
-        _group = parser.add_mutually_exclusive_group()
-        _group.add_argument(
-            "--num-exemplars",
-            default=0,
-            type=int,
-            required=False,
-            help="Fixed memory, total number of exemplars (default=%(default)s)",
-        )
-        _group.add_argument(
-            "--num-exemplars-per-class",
-            default=0,
-            type=int,
-            required=False,
-            help="Growing memory, number of exemplars per class (default=%(default)s)",
-        )
-        parser.add_argument(
-            "--exemplar-selection",
-            default="random",
-            type=str,
-            choices=["herding", "random", "entropy", "distance"],
-            required=False,
-            help="Exemplar selection strategy (default=%(default)s)",
-        )
-        return parser.parse_known_args(args)
+    # @staticmethod
+    # def extra_parser(args):
+    #     parser = ArgumentParser("Exemplars Management Parameters")
+    #     _group = parser.add_mutually_exclusive_group()
+    #     _group.add_argument(
+    #         "--num-exemplars",
+    #         default=0,
+    #         type=int,
+    #         required=False,
+    #         help="Fixed memory, total number of exemplars (default=%(default)s)",
+    #     )
+    #     _group.add_argument(
+    #         "--num-exemplars-per-class",
+    #         default=0,
+    #         type=int,
+    #         required=False,
+    #         help="Growing memory, number of exemplars per class (default=%(default)s)",
+    #     )
+    #     parser.add_argument(
+    #         "--exemplar-selection",
+    #         default="random",
+    #         type=str,
+    #         choices=["herding", "random", "entropy", "distance"],
+    #         required=False,
+    #         help="Exemplar selection strategy (default=%(default)s)",
+    #     )
+    #     return parser.parse_known_args(args)
 
     def _is_active(self):
         return self.max_num_exemplars_per_class > 0 or self.max_num_exemplars > 0
