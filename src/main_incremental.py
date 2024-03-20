@@ -172,7 +172,6 @@ def main(cfg: DictConfig) -> None:
         save_models=cfg.misc.save_models,
         tags=cfg.misc.tags,
     )
-    logger.log_args(OmegaConf.to_container(cfg))
 
     # Loaders
     src.utils.seed_everything(seed=cfg.misc.seed)
@@ -217,6 +216,8 @@ def main(cfg: DictConfig) -> None:
     appr = Appr(
         net, device, varocov_regularizer, logger, exemplars_dataset, cfg=cfg.training
     )
+
+    logger.log_args(OmegaConf.to_container(cfg))
 
     if cfg.training.vcreg:
         hooked_layer_names = [n_m[0] for n_m in collect_layers(net.model, cfg)]
