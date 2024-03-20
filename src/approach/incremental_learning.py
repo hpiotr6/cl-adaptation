@@ -1,12 +1,14 @@
+import omegaconf
+import torch.nn as nn
 import time
-from typing import Callable
+from typing import Callable, Optional
 import torch
 import numpy as np
 from argparse import ArgumentParser
 
 from src.loggers.exp_logger import ExperimentLogger
 from src.datasets.exemplars_dataset import ExemplarsDataset
-from src.regularizers import NullVarCovRegLoss
+from src.regularizers import VarCovRegLossInterface
 
 
 class Inc_Learning_Appr:
@@ -16,65 +18,75 @@ class Inc_Learning_Appr:
         self,
         model,
         device,
-        nepochs=100,
-        lr=0.05,
-        lr_min=1e-4,
-        lr_factor=3,
-        lr_patience=5,
-        clipgrad=10000,
-        momentum=0,
-        wd=0,
-        multi_softmax=False,
-        wu_nepochs=0,
-        wu_lr=1e-1,
-        wu_fix_bn=False,
-        wu_scheduler="constant",
-        wu_patience=None,
-        wu_wd=0.0,
-        fix_bn=False,
-        eval_on_train=False,
-        select_best_model_by_val_loss=True,
-        logger: ExperimentLogger = None,
-        exemplars_dataset: ExemplarsDataset = None,
-        scheduler_milestones=None,
-        no_learning=False,
-        varcov_regularizer=NullVarCovRegLoss(),
+        varcov_regularizer: VarCovRegLossInterface,
+        logger: Optional[ExperimentLogger] = None,
+        exemplars_dataset: Optional[ExemplarsDataset] = None,
+        *,
+        cfg,
     ):
+        self.set_defaults(cfg)
+
         self.model = model
         self.device = device
-        self.nepochs = nepochs
-        self.lr = lr
-        self.lr_min = lr_min
-        self.lr_factor = lr_factor
-        self.lr_patience = lr_patience
-        self.clipgrad = clipgrad
-        self.momentum = momentum
-        self.wd = wd
-        self.multi_softmax = multi_softmax
+        self.varcov_regularizer = varcov_regularizer
         self.logger = logger
         self.exemplars_dataset = exemplars_dataset
-        self.warmup_epochs = wu_nepochs
-        self.warmup_lr = wu_lr
+
         self.warmup_loss = torch.nn.CrossEntropyLoss()
-        self.warmup_scheduler = wu_scheduler
-        self.warmup_fix_bn = wu_fix_bn
-        self.warmup_patience = wu_patience
-        self.wu_wd = wu_wd
-        self.fix_bn = fix_bn
-        self.eval_on_train = eval_on_train
-        self.select_best_model_by_val_loss = select_best_model_by_val_loss
         self.optimizer = None
-        self.scheduler_milestones = scheduler_milestones
         self.scheduler = None
         self.debug = False
-        self.no_learning = no_learning
-        self.varcov_regularizer = varcov_regularizer
 
-    @staticmethod
-    def extra_parser(args):
-        """Returns a parser containing the approach specific parameters"""
-        parser = ArgumentParser()
-        return parser.parse_known_args(args)
+        self.nepochs = cfg.nepochs
+        self.lr = cfg.lr
+        self.lr_min = cfg.early_stopping.lr_min
+        self.lr_factor = cfg.early_stopping.lr_factor
+        self.lr_patience = cfg.early_stopping.lr_patience
+        self.clipgrad = cfg.clipgrad
+        self.momentum = cfg.momentum
+        self.wd = cfg.wd
+        self.multi_softmax = cfg.multi_softmax
+        self.warmup_epochs = cfg.wu_nepochs
+        self.warmup_lr = cfg.wu_lr
+        self.warmup_fix_bn = cfg.wu_fix_bn
+        self.warmup_scheduler = cfg.wu_scheduler
+        self.warmup_patience = cfg.wu_patience
+        self.wu_wd = cfg.wu_wd
+        self.fix_bn = cfg.fix_bn
+        self.eval_on_train = cfg.eval_on_train
+        self.select_best_model_by_val_loss = cfg.select_best_model_by_val_loss
+        self.scheduler_milestones = cfg.scheduler_milestones
+        self.no_learning = cfg.no_learning
+
+    def set_defaults(self, cfg: omegaconf.DictConfig):
+        defaults = {
+            "nepochs": 100,
+            "lr": 0.05,
+            "clipgrad": 10000,
+            "momentum": 0,
+            "wd": 0,
+            "multi_softmax": False,
+            "wu_nepochs": 0,
+            "wu_lr": 1e-1,
+            "wu_fix_bn": False,
+            "wu_scheduler": "constant",
+            "wu_patience": None,
+            "wu_wd": 0.0,
+            "fix_bn": False,
+            "eval_on_train": False,
+            "select_best_model_by_val_loss": True,
+            "scheduler_milestones": None,
+            "no_learning": False,
+        }
+        defaults_early = {
+            "lr_min": 1e-4,
+            "lr_factor": 3,
+            "lr_patience": 5,
+        }
+        for key in defaults.keys():
+            cfg.setdefault(key, defaults[key])
+        for key in defaults_early.keys():
+            cfg.early_stopping.setdefault(key, defaults_early[key])
 
     @staticmethod
     def exemplars_dataset_class():
@@ -83,8 +95,46 @@ class Inc_Learning_Appr:
         """
         return None
 
+    # def get_parameter_names(self, forbidden_layer_types):
+    #     """
+    #     Returns the names of the model parameters that are not inside a forbidden layer.
+    #     """
+    #     result = []
+    #     for name, child in self.model.named_children():
+    #         result += [
+    #             f"{name}.{n}"
+    #             for n in self.get_parameter_names(child, forbidden_layer_types)
+    #             if not isinstance(child, tuple(forbidden_layer_types))
+    #         ]
+    #     # Add model specific parameters (defined with nn.Parameter) since they are not in any child.
+    #     result += list(self.model._parameters.keys())
+    #     return result
+
     def _get_optimizer(self):
         """Returns the optimizer"""
+        # decay_parameters = self.get_parameter_names(
+        #     self.model, [nn.LayerNorm, nn.BatchNorm2d]
+        # )
+        # decay_parameters = [name for name in decay_parameters if "bias" not in name]
+        # optimizer_grouped_parameters = [
+        #     {
+        #         "params": [
+        #             p for n, p in self.model.named_parameters() if n in decay_parameters
+        #         ],
+        #         "weight_decay": self.wd,
+        #     },
+        #     {
+        #         "params": [
+        #             p
+        #             for n, p in self.model.named_parameters()
+        #             if n not in decay_parameters
+        #         ],
+        #         "weight_decay": 0.0,
+        #     },
+        # ]
+
+        # return torch.optim.AdamW(optimizer_grouped_parameters)
+
         return torch.optim.SGD(
             self.model.parameters(),
             lr=self.lr,

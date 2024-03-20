@@ -5,6 +5,12 @@ import torch.nn.functional as F
 import torch
 
 
+class VarCovRegLossInterface(Protocol):
+    def __call__(
+        self, model: torch.nn.Module, inputs: torch.Tensor
+    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]: ...
+
+
 @dataclass
 class VarCovRegLoss:
     vcr_var_weight: float
