@@ -11,14 +11,14 @@ hydra:
 data:
   datasets:
     - cifar100_fixed
-  num_workers: 4
+  num_workers: 16
   batch_size: 128
-  num_tasks: 4
+  num_tasks: 5
   nc_first_task: null
   ne_first_task: null
   nc_per_task: null
   use_valid_only: false
-  use_test_as_val: false
+  use_test_as_val: true
   stop_at_task: 0
   max_classes_per_dataset: null
   max_examples_per_class_trn: null
@@ -27,17 +27,18 @@ data:
   extra_aug: ""
   exemplars:
     num_exemplars: 0
+    num_exemplars_per_class: 0
     exemplar_selection: random
 misc:
   gpu: 0
-  results_path: "results"
+  results_path: ???
   exp_name: null
   tags: null
   seed: 0
   log:
     - disk
     - wandb
-  save_models: false
+  save_models: true
   cache_first_task_model: false
   last_layer_analysis: false
   no_cudnn_deterministic: false
@@ -56,8 +57,8 @@ training:
     lr_factor: 3
     lr_patience: 5
   clipping: 100.0
-  momentum: 0.0
-  weight_decay: 0.0
+  momentum: 0.9
+  weight_decay: 0.0002
   multi_softmax: false
   fix_bn: false
   eval_on_train: true

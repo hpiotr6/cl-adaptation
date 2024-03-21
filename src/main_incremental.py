@@ -90,7 +90,7 @@ def main(cfg: DictConfig) -> None:
     src.utils.seed_everything(seed=cfg.misc.seed)
     # cfg -- CUDA
     if torch.cuda.is_available():
-        torch.cuda.set_device(cfg.gpu)
+        torch.cuda.set_device(cfg.misc.gpu)
         device = "cuda"
     else:
         print("WARNING: [CUDA unavailable] Using CPU instead!")
