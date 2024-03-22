@@ -41,8 +41,8 @@ class LLL_Net(nn.Module):
 
         if "resnet" in model_type:
             self.modify_to_cifar_resnet()
-        elif "convnext" in model_type:
-            self.modify_to_cifar_convnext()
+        # elif "convnext" in model_type:
+        #     self.modify_to_cifar_convnext()
 
         self.heads = nn.ModuleList()
         self.task_cls = []
