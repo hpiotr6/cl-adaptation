@@ -57,8 +57,6 @@ training:
     lr_factor: 3
     lr_patience: 5
   clipping: 100.0
-  momentum: 0.9
-  weight_decay: 0.0002
   multi_softmax: false
   fix_bn: false
   eval_on_train: true

@@ -150,7 +150,7 @@ class ConvNeXt(nn.Module):
         parameters_decay = set()
         parameters_no_decay = set()
         modules_weight_decay = (nn.Linear, nn.Conv2d)
-        modules_no_weight_decay = (nn.LayerNorm,)
+        modules_no_weight_decay = (nn.LayerNorm, nn.BatchNorm2d)
 
         for m_name, m in self.named_modules():
             for param_name, param in m.named_parameters():

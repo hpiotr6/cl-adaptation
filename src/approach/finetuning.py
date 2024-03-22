@@ -64,9 +64,11 @@ class Appr(Inc_Learning_Appr):
             )
         else:
             params = self.model.parameters()
-        return torch.optim.SGD(
-            params, lr=self.lr, weight_decay=self.wd, momentum=self.momentum
-        )
+        return self.optimizer_factory(params=params)
+
+    # torch.optim.SGD(
+    #         params, lr=self.lr, weight_decay=self.wd, momentum=self.momentum
+    #     )
 
     def train_loop(self, t, trn_loader, val_loader):
         """Contains the epochs loop"""

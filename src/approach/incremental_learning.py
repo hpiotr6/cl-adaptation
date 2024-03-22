@@ -1,10 +1,10 @@
+from functools import partial
 import omegaconf
 import torch.nn as nn
 import time
 from typing import Callable, Optional
 import torch
 import numpy as np
-from argparse import ArgumentParser
 
 from src.loggers.exp_logger import ExperimentLogger
 from src.datasets.exemplars_dataset import ExemplarsDataset
@@ -43,8 +43,6 @@ class Inc_Learning_Appr:
         self.lr_factor = cfg.early_stopping.lr_factor
         self.lr_patience = cfg.early_stopping.lr_patience
         self.clipgrad = cfg.clipgrad
-        self.momentum = cfg.momentum
-        self.wd = cfg.wd
         self.multi_softmax = cfg.multi_softmax
         self.warmup_epochs = cfg.wu_nepochs
         self.warmup_lr = cfg.wu_lr
@@ -58,13 +56,16 @@ class Inc_Learning_Appr:
         self.scheduler_milestones = cfg.scheduler_milestones
         self.no_learning = cfg.no_learning
 
+        optimizers = {"adam": torch.optim.AdamW, "sgd": torch.optim.SGD}
+        self.optimizer_factory = partial(
+            optimizers[cfg.optimizer.name], lr=self.lr, **cfg.optimizer.kwargs
+        )
+
     def set_defaults(self, cfg: omegaconf.DictConfig):
         defaults = {
             "nepochs": 100,
             "lr": 0.05,
             "clipgrad": 10000,
-            "momentum": 0,
-            "wd": 0,
             "multi_softmax": False,
             "wu_nepochs": 0,
             "wu_lr": 1e-1,
@@ -83,6 +84,7 @@ class Inc_Learning_Appr:
             "lr_factor": 3,
             "lr_patience": 5,
         }
+
         for key in defaults.keys():
             cfg.setdefault(key, defaults[key])
         for key in defaults_early.keys():
@@ -95,45 +97,9 @@ class Inc_Learning_Appr:
         """
         return None
 
-    # def get_parameter_names(self, forbidden_layer_types):
-    #     """
-    #     Returns the names of the model parameters that are not inside a forbidden layer.
-    #     """
-    #     result = []
-    #     for name, child in self.model.named_children():
-    #         result += [
-    #             f"{name}.{n}"
-    #             for n in self.get_parameter_names(child, forbidden_layer_types)
-    #             if not isinstance(child, tuple(forbidden_layer_types))
-    #         ]
-    #     # Add model specific parameters (defined with nn.Parameter) since they are not in any child.
-    #     result += list(self.model._parameters.keys())
-    #     return result
-
     def _get_optimizer(self):
         """Returns the optimizer"""
-        # decay_parameters = self.get_parameter_names(
-        #     self.model, [nn.LayerNorm, nn.BatchNorm2d]
-        # )
-        # decay_parameters = [name for name in decay_parameters if "bias" not in name]
-        # optimizer_grouped_parameters = [
-        #     {
-        #         "params": [
-        #             p for n, p in self.model.named_parameters() if n in decay_parameters
-        #         ],
-        #         "weight_decay": self.wd,
-        #     },
-        #     {
-        #         "params": [
-        #             p
-        #             for n, p in self.model.named_parameters()
-        #             if n not in decay_parameters
-        #         ],
-        #         "weight_decay": 0.0,
-        #     },
-        # ]
-
-        # return torch.optim.AdamW(optimizer_grouped_parameters)
+        return self.optimizer_factory(params=self.model.parameters())
 
         return torch.optim.SGD(
             self.model.parameters(),
