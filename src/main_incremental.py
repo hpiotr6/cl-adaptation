@@ -43,7 +43,7 @@ def add_and_assert_cfg(cfg):
 
 
 def collect_layers(model: torch.nn.Module, cfg):
-    compiled_pattern = re.compile(cfg.training.vcreg)
+    compiled_pattern = re.compile(cfg.training.vcreg.reg_layers)
     matched_layers = [
         (name, module)
         for name, module in model.named_modules()
@@ -52,7 +52,7 @@ def collect_layers(model: torch.nn.Module, cfg):
 
     if not matched_layers:
         raise ValueError(
-            f"No layers matching the pattern '{cfg.training.vcreg}' were found."
+            f"No layers matching the pattern '{cfg.training.vcreg.reg_layers}' were found."
         )
 
     return matched_layers
