@@ -42,7 +42,7 @@ class Inc_Learning_Appr:
         self.lr_min = cfg.early_stopping.lr_min
         self.lr_factor = cfg.early_stopping.lr_factor
         self.lr_patience = cfg.early_stopping.lr_patience
-        self.clipgrad = cfg.clipgrad
+        self.clipgrad = cfg.clipping
         self.multi_softmax = cfg.multi_softmax
         self.warmup_epochs = cfg.wu_nepochs
         self.warmup_lr = cfg.wu_lr
@@ -65,7 +65,7 @@ class Inc_Learning_Appr:
         defaults = {
             "nepochs": 100,
             "lr": 0.05,
-            "clipgrad": 10000,
+            "clipping": 10000,
             "multi_softmax": False,
             "wu_nepochs": 0,
             "wu_lr": 1e-1,
