@@ -1,5 +1,0 @@
-scale: true
-reg_layers: classifier$|.*after_skip
-smooth_cov: 1.0
-var_weight: 0.64
-cov_weight: 12.8

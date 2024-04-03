@@ -41,8 +41,9 @@ class LLL_Net(nn.Module):
 
         if "resnet" in model_type:
             self.modify_to_cifar_resnet()
-        # elif "convnext" in model_type:
-        #     self.modify_to_cifar_convnext()
+
+        elif "convnext" in model_type:
+            self.modify_to_cifar_convnext()
 
         self.heads = nn.ModuleList()
         self.task_cls = []
@@ -56,9 +57,19 @@ class LLL_Net(nn.Module):
         self.model.maxpool = nn.Identity()
 
     def modify_to_cifar_convnext(self):
+        def change_kernel_size_to(model, shape):
+            for name, layer in model.named_modules():
+                if not isinstance(layer, nn.Conv2d):
+                    continue
+
+                if layer.kernel_size == (7, 7):
+                    new_kernel_size = shape  # Define new kernel size
+                    layer.kernel_size = new_kernel_size
+
         self.model.features[0][0] = nn.Conv2d(
             3, 96, kernel_size=3, stride=1, padding=2, bias=False
         )
+        change_kernel_size_to(self.model, (4, 4))
 
     def add_head(self, num_outputs):
         """Add a new head with the corresponding number of outputs. Also update the number of classes per task and the

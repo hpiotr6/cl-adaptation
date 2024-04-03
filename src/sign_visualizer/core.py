@@ -23,8 +23,10 @@ def load_and_clean(path: str) -> dict:
     return state_dict
 
 
-def load_whole_model(path: str, task: int, num_classes: int) -> torch.nn.Module:
-    net = getattr(importlib.import_module(name="src.networks"), "no_last_relu")
+def load_whole_model(
+    path: str, task: int, num_classes: int, network="no_last_relu"
+) -> torch.nn.Module:
+    net = getattr(importlib.import_module(name="src.networks"), network)
     init_model = net(pretrained=False)
     model = LLL_Net(init_model, remove_existing_head=True)
 
@@ -51,11 +53,14 @@ def load_extractor(path: str, task: int, load_and_clean) -> torch.nn.Module:
 
 
 @torch.no_grad()
-def get_activations(model, dataloader) -> dict:
+def get_activations(model, dataloader, device="cpu") -> dict:
     # outputs = []
+    model.to(device)
     outputs = defaultdict(list)
     for batch in tqdm(dataloader):
         inputs, labels = batch
+        inputs = inputs.to(device)
+        labels = labels.to(device)
         output = model(inputs)
         for k, v in zip(labels, output):
             outputs[k.item()].append(v)
