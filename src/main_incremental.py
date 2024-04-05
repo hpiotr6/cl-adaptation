@@ -113,9 +113,9 @@ def main(cfg: DictConfig) -> None:
             importlib.import_module(name="torchvision.models"), cfg.model.network
         )
         if cfg.model.network == "googlenet":
-            init_model = tvnet(pretrained=cfg.pretrained, aux_logits=False)
+            init_model = tvnet(pretrained=cfg.model.pretrained, aux_logits=False)
         else:
-            init_model = tvnet(pretrained=cfg.pretrained)
+            init_model = tvnet(pretrained=cfg.model.pretrained)
         set_tvmodel_head_var(init_model)
     else:  # other models declared in networks package's init
         net = getattr(importlib.import_module(name="src.networks"), cfg.model.network)
@@ -320,7 +320,7 @@ def main(cfg: DictConfig) -> None:
             if cfg.data.use_test_as_val:
                 exp_tag += "_test_as_val"
             model_tag = cfg.model.network
-            if cfg.pretrained:
+            if cfg.model.pretrained:
                 model_tag += "_pretrained"
             model_tag += (
                 "_ep"
