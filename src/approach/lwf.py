@@ -354,7 +354,7 @@ class Appr(Inc_Learning_Appr):
         loss, loss_kd, loss_ce = self.criterion(
             t, outputs, targets, targets_old, return_partial_losses=True
         )
-        loss += varcov_loss
+        loss += varcov_loss.mean()
         return loss, loss_kd, loss_ce
 
     def eval(self, t, val_loader):
