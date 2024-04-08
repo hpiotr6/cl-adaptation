@@ -394,7 +394,7 @@ class Appr(Inc_Learning_Appr):
                 loss, loss_kd, loss_ce = self.criterion(
                     t, outputs, targets, targets_old, return_partial_losses=True
                 )
-                loss += varcov_loss
+                loss += varcov_loss.mean()
                 # loss, loss_kd, loss_ce = self.add_varcov_loss_lwf(
                 #     self.model, t, images, targets, targets_old
                 # )
