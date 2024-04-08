@@ -395,7 +395,7 @@ class Appr(Inc_Learning_Appr):
                     t, outputs, targets, targets_old, return_partial_losses=True
                 )
                 loss += varcov_loss.mean()
-                # loss, loss_kd, loss_ce = self.add_varcov_loss_lwf(
+                # loss, loss_kd, loss_ce = self.add_varbose_lwf(
                 #     self.model, t, images, targets, targets_old
                 # )
 
@@ -403,8 +403,8 @@ class Appr(Inc_Learning_Appr):
                 # Log
                 total_loss += loss.data.cpu().numpy().item() * len(targets)
 
-                total_var += var_loss.sum().item() * len(targets)
-                total_cov += cov_loss.sum().item() * len(targets)
+                total_var += var_loss.mean().item() * len(targets)
+                total_cov += cov_loss.mean().item() * len(targets)
 
                 total_layers_var += var_loss * len(targets)
                 total_layers_cov += cov_loss * len(targets)
