@@ -425,8 +425,8 @@ class Appr(Inc_Learning_Appr):
             total_cov / total_num,
             total_acc_taw / total_num,
             total_acc_tag / total_num,
-            total_layers_var / total_num,
-            total_layers_cov / total_num,
+            (total_layers_var / total_num).cpu(),
+            (total_layers_cov / total_num).cpu(),
         )
 
     def cross_entropy(self, outputs, targets, exp=1.0, size_average=True, eps=1e-5):

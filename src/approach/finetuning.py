@@ -23,7 +23,6 @@ class Appr(Inc_Learning_Appr):
         *,
         cfg,
     ):
-
         super(Appr, self).__init__(
             model,
             device,
