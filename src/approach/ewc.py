@@ -83,9 +83,7 @@ class Appr(Inc_Learning_Appr):
             )
         else:
             params = self.model.parameters()
-        return torch.optim.SGD(
-            params, lr=self.lr, weight_decay=self.wd, momentum=self.momentum
-        )
+        return self.optimizer_factory(params)
 
     def compute_fisher_matrix_diag(self, trn_loader):
         # Store Fisher Information

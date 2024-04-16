@@ -1,6 +1,7 @@
 defaults:
   - defaults
-  - training/vcreg: null
-  - training/approach: finetuning
-  - training/optimizer: sgd
+  - debug
+  - training/vcreg: resnet
+  - training/approach: mas
+  - training/optimizer: adam
   - _self_
