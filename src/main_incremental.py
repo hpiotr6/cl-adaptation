@@ -43,7 +43,7 @@ def add_and_assert_cfg(cfg):
 
 
 def collect_layers(model: torch.nn.Module, cfg):
-    compiled_pattern = re.compile(cfg.training.vcreg)
+    compiled_pattern = re.compile(cfg.training.vcreg.reg_layers)
     matched_layers = [
         (name, module)
         for name, module in model.named_modules()
@@ -52,7 +52,7 @@ def collect_layers(model: torch.nn.Module, cfg):
 
     if not matched_layers:
         raise ValueError(
-            f"No layers matching the pattern '{cfg.training.vcreg}' were found."
+            f"No layers matching the pattern '{cfg.training.vcreg.reg_layers}' were found."
         )
 
     return matched_layers
@@ -90,7 +90,7 @@ def main(cfg: DictConfig) -> None:
     src.utils.seed_everything(seed=cfg.misc.seed)
     # cfg -- CUDA
     if torch.cuda.is_available():
-        torch.cuda.set_device(cfg.gpu)
+        torch.cuda.set_device(cfg.misc.gpu)
         device = "cuda"
     else:
         print("WARNING: [CUDA unavailable] Using CPU instead!")
@@ -113,9 +113,9 @@ def main(cfg: DictConfig) -> None:
             importlib.import_module(name="torchvision.models"), cfg.model.network
         )
         if cfg.model.network == "googlenet":
-            init_model = tvnet(pretrained=cfg.pretrained, aux_logits=False)
+            init_model = tvnet(pretrained=cfg.model.pretrained, aux_logits=False)
         else:
-            init_model = tvnet(pretrained=cfg.pretrained)
+            init_model = tvnet(pretrained=cfg.model.pretrained)
         set_tvmodel_head_var(init_model)
     else:  # other models declared in networks package's init
         net = getattr(importlib.import_module(name="src.networks"), cfg.model.network)
@@ -320,7 +320,7 @@ def main(cfg: DictConfig) -> None:
             if cfg.data.use_test_as_val:
                 exp_tag += "_test_as_val"
             model_tag = cfg.model.network
-            if cfg.pretrained:
+            if cfg.model.pretrained:
                 model_tag += "_pretrained"
             model_tag += (
                 "_ep"

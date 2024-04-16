@@ -5,6 +5,7 @@ from .resnet32 import resnet32
 from .resnet32_ln import resnet32_ln
 from .resnet32_no_bn import resnet32_no_bn
 from .resnet_custom import *
+from .convnext_custom import *
 from .vggnet import VggNet
 
 # available torchvision models
@@ -59,6 +60,7 @@ allmodels = tvmodels + [
     "LeNet",
     "VggNet",
     *resnet_custom.__all__,
+    *convnext_custom.__all__,
 ]
 
 

@@ -88,114 +88,6 @@ class Appr(Inc_Learning_Appr):
     def exemplars_dataset_class():
         return ExemplarsDataset
 
-    # @staticmethod
-    # def extra_parser(args):
-    #     """Returns a parser containing the approach specific parameters"""
-    #     parser = ArgumentParser()
-    #     # Page 5: "lambda is a loss balance weight, set to 1 for most our experiments. Making lambda larger will favor
-    #     # the old task performance over the new task’s, so we can obtain a old-task-new-task performance line by
-    #     # changing lambda."
-    #     parser.add_argument(
-    #         "--lamb",
-    #         default=1,
-    #         type=float,
-    #         required=False,
-    #         help="Forgetting-intransigence trade-off (default=%(default)s)",
-    #     )
-    #     # Page 5: "We use T=2 according to a grid search on a held out set, which aligns with the authors’
-    #     #  recommendations." -- Using a higher value for T produces a softer probability distribution over classes.
-    #     parser.add_argument(
-    #         "--T",
-    #         default=2,
-    #         type=int,
-    #         required=False,
-    #         help="Temperature scaling (default=%(default)s)",
-    #     )
-    #     parser.add_argument(
-    #         "--mc",
-    #         default=False,
-    #         action="store_true",
-    #         required=False,
-    #         help="If set, will use LwF.MC variant from iCaRL. (default=%(default)s)",
-    #     )
-    #     parser.add_argument(
-    #         "--taskwise-kd",
-    #         default=False,
-    #         action="store_true",
-    #         required=False,
-    #         help="If set, will use task-wise KD loss as defined in SSIL. (default=%(default)s)",
-    #     )
-
-    #     parser.add_argument(
-    #         "--ta",
-    #         default=False,
-    #         action="store_true",
-    #         required=False,
-    #         help="Teacher adaptation. If set, will update old model batch norm params "
-    #         "during training the new task. (default=%(default)s)",
-    #     )
-
-    #     parser.add_argument(
-    #         "--tp",
-    #         default=False,
-    #         action="store_true",
-    #         required=False,
-    #         help="Teacher pretraining instead of TA. (default=%(default)s)",
-    #     )
-    #     parser.add_argument(
-    #         "--ctt",
-    #         default=False,
-    #         action="store_true",
-    #         required=False,
-    #         help="Continuous teacher training instead of TA. (default=%(default)s)",
-    #     )
-    #     parser.add_argument(
-    #         "--bnp",
-    #         default=False,
-    #         action="store_true",
-    #         required=False,
-    #         help="Batch norm pretraining instead of TA. (default=%(default)s)",
-    #     )
-    #     parser.add_argument(
-    #         "--cbnt",
-    #         default=False,
-    #         action="store_true",
-    #         required=False,
-    #         help="Continuous batch norm training instead of TA. (default=%(default)s)",
-    #     )
-    #     parser.add_argument(
-    #         "--pretraining-epochs",
-    #         default=5,
-    #         type=int,
-    #         required=False,
-    #         help="Number of epochs for pretraining. (default=%(default)s)",
-    #     )
-    #     parser.add_argument(
-    #         "--ta-lr",
-    #         default=1e-5,
-    #         type=float,
-    #         required=False,
-    #         help="Teacher adaptation learning rate. (default=%(default)s)",
-    #     )
-
-    #     parser.add_argument(
-    #         "--cka",
-    #         default=False,
-    #         action="store_true",
-    #         required=False,
-    #         help="If set, will compute CKA between current representations and representations at "
-    #         "the start of the task. (default=%(default)s)",
-    #     )
-    #     parser.add_argument(
-    #         "--debug-loss",
-    #         default=False,
-    #         action="store_true",
-    #         required=False,
-    #         help="If set, will log intermediate loss values. (default=%(default)s)",
-    #     )
-
-    #     return parser.parse_known_args(args)
-
     def pre_train_process(self, t, trn_loader):
         if t > 0:
             if self.ctt or self.cbnt or self.tp or self.bnp:
@@ -349,12 +241,15 @@ class Appr(Inc_Learning_Appr):
     def add_varcov_loss_lwf(self, model, t, images, targets, targets_old):
         var_loss, cov_loss, feats = self.varcov_regularizer(model.model, images)
         outputs = [head(feats) for head in model.heads]
-        varcov_loss = var_loss + cov_loss
+        varcov_loss = (
+            var_loss * self.varcov_regularizer.vcr_var_weight
+            + cov_loss * self.varcov_regularizer.vcr_cov_weight
+        )
 
         loss, loss_kd, loss_ce = self.criterion(
             t, outputs, targets, targets_old, return_partial_losses=True
         )
-        loss += varcov_loss
+        loss += varcov_loss.mean()
         return loss, loss_kd, loss_ce
 
     def eval(self, t, val_loader):
@@ -389,13 +284,13 @@ class Appr(Inc_Learning_Appr):
                     self.model.model, images
                 )
                 outputs = [head(feats) for head in self.model.heads]
-                varcov_loss = var_loss + cov_loss
+                # varcov_loss = var_loss + cov_loss
 
                 loss, loss_kd, loss_ce = self.criterion(
                     t, outputs, targets, targets_old, return_partial_losses=True
                 )
-                loss += varcov_loss
-                # loss, loss_kd, loss_ce = self.add_varcov_loss_lwf(
+                # loss += varcov_loss.mean()
+                # loss, loss_kd, loss_ce = self.add_varbose_lwf(
                 #     self.model, t, images, targets, targets_old
                 # )
 
@@ -403,8 +298,8 @@ class Appr(Inc_Learning_Appr):
                 # Log
                 total_loss += loss.data.cpu().numpy().item() * len(targets)
 
-                total_var += var_loss.sum().item() * len(targets)
-                total_cov += cov_loss.sum().item() * len(targets)
+                total_var += var_loss.mean().item() * len(targets)
+                total_cov += cov_loss.mean().item() * len(targets)
 
                 total_layers_var += var_loss * len(targets)
                 total_layers_cov += cov_loss * len(targets)
@@ -425,8 +320,8 @@ class Appr(Inc_Learning_Appr):
             total_cov / total_num,
             total_acc_taw / total_num,
             total_acc_tag / total_num,
-            total_layers_var / total_num,
-            total_layers_cov / total_num,
+            (total_layers_var / total_num).cpu(),
+            (total_layers_cov / total_num).cpu(),
         )
 
     def cross_entropy(self, outputs, targets, exp=1.0, size_average=True, eps=1e-5):
