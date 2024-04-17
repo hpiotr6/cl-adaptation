@@ -1,4 +1,5 @@
 import io
+import re
 import os
 from typing import List, Optional
 import warnings
@@ -27,9 +28,16 @@ class Logger(ExperimentLogger):
     ):
         super(Logger, self).__init__(exp_path, exp_name)
 
-        current_date = date.today().strftime("%Y-%m-%d")
+        pattern = r".*/(\d{2}\.\d{2})/.*"
+        matches = re.findall(pattern, exp_path)
+        if len(matches) == 1:
+            project_name = matches[0]
+        else:
+            current_date = date.today().strftime("%Y-%m-%d")
+            project_name = current_date
+
         wandb.init(
-            group=exp_name, tags=tags, entity="tunnels-ssl", project=current_date
+            group=exp_name, tags=tags, entity="tunnels-ssl", project=project_name
         )
         self.metrics = []
 
