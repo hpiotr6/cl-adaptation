@@ -1,6 +1,6 @@
 name: lwf
 kwargs:
-  lamb: 10
+  lamb: 5
   T: 2
 
   mc: false
