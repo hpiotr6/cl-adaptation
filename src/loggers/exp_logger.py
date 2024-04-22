@@ -40,7 +40,9 @@ class ExperimentLogger(ABC):
 class MultiLogger(ExperimentLogger):
     """This class allows to use multiple loggers"""
 
-    def __init__(self, log_path, exp_name, loggers=None, save_models=True, tags=None):
+    def __init__(
+        self, log_path, exp_name, loggers=None, save_models=True, tags=None, **kwargs
+    ):
         super(MultiLogger, self).__init__(log_path, exp_name)
         if os.path.exists(self.exp_path):
             print("WARNING: {} already exists!".format(self.exp_path))
@@ -57,7 +59,9 @@ class MultiLogger(ExperimentLogger):
                 importlib.import_module(name="src.loggers." + l + "_logger"), "Logger"
             )
             if l == "wandb":
-                self.loggers.append(lclass(self.log_path, self.exp_name, tags))
+                self.loggers.append(
+                    lclass(self.log_path, self.exp_name, tags, **kwargs)
+                )
                 self.wandb_id = i
             else:
                 self.loggers.append(lclass(self.log_path, self.exp_name))

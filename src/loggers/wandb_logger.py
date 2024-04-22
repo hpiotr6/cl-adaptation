@@ -25,21 +25,30 @@ class Logger(ExperimentLogger):
         exp_path: str,
         exp_name: Optional[str] = None,
         tags: Optional[List[str]] = None,
+        **kwargs,
     ):
         super(Logger, self).__init__(exp_path, exp_name)
 
-        pattern = r".*/(\d{2}\.\d{2})/.*"
-        matches = re.findall(pattern, exp_path)
-        if len(matches) == 1:
-            project_name = matches[0]
-        else:
-            current_date = date.today().strftime("%Y-%m-%d")
-            project_name = current_date
+        project_name = self.get_project_name(exp_path, kwargs)
 
         wandb.init(
             group=exp_name, tags=tags, entity="tunnels-ssl", project=project_name
         )
         self.metrics = []
+
+    def get_project_name(self, exp_path, kwargs):
+        if custom_name := kwargs.get("project_name", None):
+            return custom_name
+
+        pattern = r".*/(\d{2}\.\d{2})/.*"
+        matches = re.findall(pattern, exp_path)
+
+        if len(matches) == 1:
+            return matches[0]
+
+        current_date = date.today().strftime("%Y-%m-%d")
+
+        return current_date
 
     def log_scalar(self, task, iter, name, value, group=None, curtime=None):
         if task is not None:

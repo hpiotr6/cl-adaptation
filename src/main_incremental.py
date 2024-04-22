@@ -172,6 +172,7 @@ def main(cfg: DictConfig) -> None:
         loggers=cfg.misc.log,
         save_models=cfg.misc.save_models,
         tags=cfg.misc.tags,
+        **cfg.wandb,
     )
 
     # Loaders

@@ -68,3 +68,5 @@ training:
     wu_scheduler: constant
     wu_patience: null
     wu_wd: 0.001
+wandb:
+  project_name: null
