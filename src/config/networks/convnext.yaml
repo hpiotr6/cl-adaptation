@@ -1,0 +1,12 @@
+# @package _global_
+defaults:
+  - /training/optimizer: adam
+  - _self_
+
+training:
+  lr: 1e-3
+
+model:
+  network: convnext_tiny
+
+

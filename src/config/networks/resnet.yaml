@@ -1,0 +1,4 @@
+# @package _global_
+defaults:
+  - /training/optimizer: sgd
+  - _self_
