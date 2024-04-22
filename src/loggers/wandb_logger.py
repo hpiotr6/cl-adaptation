@@ -108,8 +108,8 @@ class Logger(ExperimentLogger):
     def save_model(self, state_dict, task):
         warnings.warn("Saving model is not implemented in wandb logger")
 
-    def __del__(self):
-        wandb.finish()
+    # def __del__(self):
+    #     wandb.finish()
 
 
 def _plot_to_wandb(plot):
