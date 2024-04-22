@@ -1,6 +1,6 @@
 name: ewc
 kwargs:
-  lamb: 10_000
+  lamb: 5_000
   alpha: 0.5
   fi_sampling_type: "max_pred"
   fi_num_samples: -1
