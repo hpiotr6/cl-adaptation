@@ -93,9 +93,10 @@ def main(cfg: DictConfig) -> None:
         torch.cuda.set_device(cfg.misc.gpu)
         device = "cuda"
     else:
+        if cfg.misc.gpu != "cpu":
+            raise EnvironmentError("No GPU available")
         print("WARNING: [CUDA unavailable] Using CPU instead!")
         device = "cpu"
-        # raise EnvironmentError("No GPU available")
 
     # In case the dataset is too large
     torch.multiprocessing.set_sharing_strategy("file_system")
