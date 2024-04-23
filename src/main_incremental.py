@@ -69,6 +69,7 @@ def construct_varcov_loss(cfg):
         collect_layers=partial(collect_layers, cfg=cfg),
         delta=cfg.training.vcreg.smooth_cov,
         scale=cfg.training.vcreg.scale,
+        n_first_task=cfg.training.vcreg.n_first_task,
     )
 
 

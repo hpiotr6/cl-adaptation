@@ -205,7 +205,7 @@ class Inc_Learning_Appr:
                     targets = targets.to(self.device, non_blocking=True)
 
                     var_loss, cov_loss, feats = self.varcov_regularizer(
-                        self.model.model, images
+                        self.model.model, images, t
                     )
                     varcov_loss = var_loss + cov_loss
                     outputs = [head(feats) for head in self.model.heads]
@@ -230,7 +230,7 @@ class Inc_Learning_Appr:
                             self.device
                         )
                         var_loss, cov_loss, feats = self.varcov_regularizer(
-                            self.model.model, images
+                            self.model.model, images, t
                         )
                         outputs = [head(feats) for head in self.model.heads]
 
@@ -605,7 +605,7 @@ class Inc_Learning_Appr:
         for images, targets in trn_loader:
             # Forward current model
             var_loss, cov_loss, feats = self.varcov_regularizer(
-                self.model.model, images.to(self.device)
+                self.model.model, images.to(self.device), t
             )
             outputs = [head(feats) for head in self.model.heads]
             varcov_loss = (
@@ -644,7 +644,7 @@ class Inc_Learning_Appr:
                 images, targets = images.to(self.device), targets.to(self.device)
 
                 var_loss, cov_loss, feats = self.varcov_regularizer(
-                    self.model.model, images
+                    self.model.model, images, t
                 )
                 outputs = [head(feats) for head in self.model.heads]
 

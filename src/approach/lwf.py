@@ -227,7 +227,8 @@ class Appr(Inc_Learning_Appr):
                     value=float(loss),
                 )
 
-            assert not torch.isnan(loss), "Loss is NaN"
+            if torch.isnan(loss):
+                raise ValueError("Loss is NaN! Training cannot continue.")
 
             # Backward
             self.optimizer.zero_grad()
@@ -239,7 +240,7 @@ class Appr(Inc_Learning_Appr):
             self.scheduler.step()
 
     def add_varcov_loss_lwf(self, model, t, images, targets, targets_old):
-        var_loss, cov_loss, feats = self.varcov_regularizer(model.model, images)
+        var_loss, cov_loss, feats = self.varcov_regularizer(model.model, images, t)
         outputs = [head(feats) for head in model.heads]
         varcov_loss = (
             var_loss * self.varcov_regularizer.vcr_var_weight
@@ -281,7 +282,7 @@ class Appr(Inc_Learning_Appr):
                 # outputs = self.model(images)
                 # loss = self.criterion(t, outputs, targets, targets_old)
                 var_loss, cov_loss, feats = self.varcov_regularizer(
-                    self.model.model, images
+                    self.model.model, images, t
                 )
                 outputs = [head(feats) for head in self.model.heads]
                 # varcov_loss = var_loss + cov_loss

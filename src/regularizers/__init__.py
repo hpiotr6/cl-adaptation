@@ -7,7 +7,10 @@ import torch
 
 class VarCovRegLossInterface(Protocol):
     def __call__(
-        self, model: torch.nn.Module, inputs: torch.Tensor
+        self,
+        model: torch.nn.Module,
+        inputs: torch.Tensor,
+        t: int,
     ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]: ...
 
 
@@ -20,6 +23,7 @@ class VarCovRegLoss:
     hooked_layer_names: Optional[list[str]] = None
     eps: float = 1e-4
     scale: bool = True
+    n_first_task: int = -1
     _initialised: bool = False
     _hooks: defaultdict = field(default_factory=lambda: defaultdict(lambda: None))
 
@@ -44,13 +48,17 @@ class VarCovRegLoss:
         for name, layer in self.collect_layers(model):
             layer.register_forward_hook(hook_fn(name))
 
-    def __call__(self, model: torch.nn.Module, inputs: torch.Tensor):
+    def __call__(self, model: torch.nn.Module, inputs: torch.Tensor, t: int):
 
         if not self._initialised:
             self.initialise_hooks(model)
             self._initialised = True
 
         feats = model(inputs)
+
+        if self.n_first_task >= 0 and t >= self.n_first_task:
+            dummy_zero = torch.zeros(len(self.hooked_layer_names))
+            return dummy_zero, dummy_zero, feats
 
         variances = []
         covariances = []
@@ -98,7 +106,7 @@ class NullVarCovRegLoss:
         else:
             return lambda feats: feats
 
-    def __call__(self, model, inputs):
+    def __call__(self, model, inputs, t):
         feats = model(inputs)
 
         return self._dummy_zero, self._dummy_zero, self.scale_strategy(feats)
