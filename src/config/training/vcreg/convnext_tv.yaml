@@ -1,6 +1,6 @@
 scale: true
-reg_layers: classifier$|.*after_skipping
+reg_layers: classifier$
 smooth_cov: 1.0
-var_weight: 0.64
-cov_weight: 12.8
+var_weight: 4.72
+cov_weight: 4.72
 n_first_task: -1
