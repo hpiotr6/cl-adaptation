@@ -1,0 +1,3 @@
+num_exemplars: 2_000
+num_exemplars_per_class: 0
+exemplar_selection: random

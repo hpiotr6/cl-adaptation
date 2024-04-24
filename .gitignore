@@ -197,7 +197,7 @@ pyrightconfig.json
 poetry.lock
 slurm*
 
-data
+/data
 analysis
 wandb
 runs
