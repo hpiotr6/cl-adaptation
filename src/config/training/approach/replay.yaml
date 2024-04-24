@@ -1,11 +1,4 @@
-
-# @package _global_
 defaults:
-- finetuning
-- _self_
-
-data:
-  exemplars:
-    num_exemplars: 2_000
-    num_exemplars_per_class: 0
-    exemplar_selection: random
+  - finetuning
+  - /data/exemplars@_group_: replay
+  - _self_
