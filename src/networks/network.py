@@ -6,7 +6,7 @@ from copy import deepcopy
 class LLL_Net(nn.Module):
     """Basic class for implementing networks"""
 
-    def __init__(self, model, remove_existing_head=False):
+    def __init__(self, model, is_cifar, remove_existing_head=False):
         head_var = model.head_var
         assert type(head_var) == str
         assert not remove_existing_head or hasattr(
@@ -39,11 +39,12 @@ class LLL_Net(nn.Module):
 
         model_type = str(type(model)).lower()
 
-        if "resnet" in model_type:
-            self.modify_to_cifar_resnet()
+        if is_cifar:
+            if "resnet" in model_type:
+                self.modify_to_cifar_resnet()
 
-        elif "convnext" in model_type:
-            self.modify_to_cifar_convnext()
+            elif "convnext" in model_type:
+                self.modify_to_cifar_convnext()
 
         self.heads = nn.ModuleList()
         self.task_cls = []

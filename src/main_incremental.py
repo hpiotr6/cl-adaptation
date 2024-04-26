@@ -203,7 +203,14 @@ def main(cfg: DictConfig) -> None:
 
     # Network and Approach instances
     src.utils.seed_everything(seed=cfg.misc.seed)
-    net = LLL_Net(init_model, remove_existing_head=not cfg.model.keep_existing_head)
+    if len(cfg.data.datasets):
+        raise ValueError(f"Networks are modified to cifar by first occurance")
+
+    net = LLL_Net(
+        init_model,
+        is_cifar="cifar" in cfg.data.datasets[0],
+        remove_existing_head=not cfg.model.keep_existing_head,
+    )
     src.utils.seed_everything(seed=cfg.misc.seed)
     # taking transformations and class indices from first train dataset
     first_train_ds = trn_loader[0].dataset
