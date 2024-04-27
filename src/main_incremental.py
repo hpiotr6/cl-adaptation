@@ -203,7 +203,7 @@ def main(cfg: DictConfig) -> None:
 
     # Network and Approach instances
     src.utils.seed_everything(seed=cfg.misc.seed)
-    if len(cfg.data.datasets):
+    if len(cfg.data.datasets) > 1:
         raise ValueError(f"Networks are modified to cifar by first occurance")
 
     net = LLL_Net(
