@@ -17,7 +17,7 @@ def torch_calculate_eigens_directclr(embeddings):
 
     cov = torch.cov(embeddings)
 
-    d = torch.linalg.svd(cov)
+    _, d, _ = torch.linalg.svd(cov)
     return d
 
 
