@@ -7,6 +7,7 @@ import importlib
 import os
 from pathlib import Path
 from pprint import pprint
+import re
 
 from tqdm import tqdm
 
@@ -80,6 +81,9 @@ class ModelFactory:
         cifar_in_data = "cifar" in self.cfg.data.datasets[0]
         model = LLL_Net(init_model, is_cifar=cifar_in_data, remove_existing_head=True)
 
+        if self.cfg.training.vcreg:
+            self._initialise_hooks(model.model)
+
         path = self._choose_task(task)
         for _ in range(task + 1):
             model.add_head(num_classes)
@@ -88,6 +92,35 @@ class ModelFactory:
         info = model.load_state_dict(state, strict=False)
         pprint(info)
         return model
+
+    def _initialise_hooks(self, model):
+        def scale_strategy(output):
+            return output - output.mean(0)
+
+        def hook_fn(layer_name):
+            def hook(module, input, output):
+                output = scale_strategy(output)
+                return output
+
+            return hook
+
+        for name, layer in self._collect_layers(model):
+            layer.register_forward_hook(hook_fn(name))
+
+    def _collect_layers(self, model: torch.nn.Module):
+        compiled_pattern = re.compile(self.cfg.training.vcreg.reg_layers)
+        matched_layers = [
+            (name, module)
+            for name, module in model.named_modules()
+            if re.match(compiled_pattern, name)
+        ]
+
+        if not matched_layers:
+            raise ValueError(
+                f"No layers matching the pattern '{self.cfg.training.vcreg.reg_layers}' were found."
+            )
+
+        return matched_layers
 
 
 class DataFactory:
