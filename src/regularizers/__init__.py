@@ -11,7 +11,8 @@ class VarCovRegLossInterface(Protocol):
         model: torch.nn.Module,
         inputs: torch.Tensor,
         t: int,
-    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]: ...
+    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        ...
 
 
 @dataclass
@@ -28,7 +29,6 @@ class VarCovRegLoss:
     _hooks: defaultdict = field(default_factory=lambda: defaultdict(lambda: None))
 
     def initialise_hooks(self, model):
-
         def scale_strategy(output):
             if self.scale:
                 return output - output.mean(0)
@@ -49,7 +49,6 @@ class VarCovRegLoss:
             layer.register_forward_hook(hook_fn(name))
 
     def __call__(self, model: torch.nn.Module, inputs: torch.Tensor, t: int):
-
         if not self._initialised:
             self.initialise_hooks(model)
             self._initialised = True
@@ -84,6 +83,9 @@ class VarCovRegLoss:
     def regularize_step(self, feats):
         flattened_input = feats.flatten(start_dim=0, end_dim=-2)
         n, d = flattened_input.shape
+        if not self.scale:
+            flattened_input = flattened_input - flattened_input.mean(0)
+
         C = (flattened_input.T @ flattened_input) / (n - 1)
         v = torch.mean(F.relu(1 - torch.sqrt(C.diag() + self.eps)))
         c = self.smooth_l1(C.fill_diagonal_(0), self.delta).sum() / (d * (d - 1))
