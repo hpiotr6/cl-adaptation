@@ -31,7 +31,6 @@ class BasicBlock(BasicBlock):
         self.after_relu = nn.Identity()
 
     def forward(self, x: Tensor) -> Tensor:
-
         out = self.conv1(x)
         out = self.bn1(out)
         out = self.relu(out)
@@ -299,14 +298,12 @@ def build_resnet(
 
 
 def resnet34_20cls_out(*args, **kwargs):
-
     model = resnet34_skips(*args, **kwargs)
     model.fc = nn.Linear(512, 20)
     return model
 
 
 def no_last_relu(*args, **kwargs):
-
     model = resnet34_skips(*args, **kwargs)
     model.layer4[-1].relu2 = torch.nn.Identity()
     return model
@@ -315,6 +312,14 @@ def no_last_relu(*args, **kwargs):
 resnet34_skips = partial(
     build_resnet,
     backbone_type="resnet34",
+    batchnorm_layers=True,
+    width_scale=1,
+    skips=True,
+)
+
+resnet18_skips = partial(
+    build_resnet,
+    backbone_type="resnet18",
     batchnorm_layers=True,
     width_scale=1,
     skips=True,

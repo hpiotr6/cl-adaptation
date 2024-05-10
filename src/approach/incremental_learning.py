@@ -44,12 +44,12 @@ class Inc_Learning_Appr:
         self.lr_patience = cfg.early_stopping.lr_patience
         self.clipgrad = cfg.clipping
         self.multi_softmax = cfg.multi_softmax
-        self.warmup_epochs = cfg.wu_nepochs
-        self.warmup_lr = cfg.wu_lr
-        self.warmup_fix_bn = cfg.wu_fix_bn
-        self.warmup_scheduler = cfg.wu_scheduler
-        self.warmup_patience = cfg.wu_patience
-        self.wu_wd = cfg.wu_wd
+        self.warmup_epochs = cfg.warmup.wu_nepochs
+        self.warmup_lr = cfg.warmup.wu_lr
+        self.warmup_fix_bn = cfg.warmup.wu_fix_bn
+        self.warmup_scheduler = cfg.warmup.wu_scheduler
+        self.warmup_patience = cfg.warmup.wu_patience
+        self.wu_wd = cfg.warmup.wu_wd
         self.fix_bn = cfg.fix_bn
         self.eval_on_train = cfg.eval_on_train
         self.select_best_model_by_val_loss = cfg.select_best_model_by_val_loss
@@ -67,12 +67,6 @@ class Inc_Learning_Appr:
             "lr": 0.05,
             "clipping": 10000,
             "multi_softmax": False,
-            "wu_nepochs": 0,
-            "wu_lr": 1e-1,
-            "wu_fix_bn": False,
-            "wu_scheduler": "constant",
-            "wu_patience": None,
-            "wu_wd": 0.0,
             "fix_bn": False,
             "eval_on_train": False,
             "select_best_model_by_val_loss": True,
@@ -85,10 +79,21 @@ class Inc_Learning_Appr:
             "lr_patience": 5,
         }
 
+        defaults_warmup = {
+            "wu_nepochs": 0,
+            "wu_lr": 1e-1,
+            "wu_fix_bn": False,
+            "wu_scheduler": "constant",
+            "wu_patience": None,
+            "wu_wd": 0.0,
+        }
+
         for key in defaults.keys():
             cfg.setdefault(key, defaults[key])
         for key in defaults_early.keys():
             cfg.early_stopping.setdefault(key, defaults_early[key])
+        for key in defaults_warmup.keys():
+            cfg.warmup.setdefault(key, defaults_warmup[key])
 
     @staticmethod
     def exemplars_dataset_class():
@@ -207,7 +212,10 @@ class Inc_Learning_Appr:
                     var_loss, cov_loss, feats = self.varcov_regularizer(
                         self.model.model, images, t
                     )
-                    varcov_loss = var_loss + cov_loss
+                    varcov_loss = (
+                        var_loss * self.varcov_regularizer.vcr_var_weight
+                        + cov_loss * self.varcov_regularizer.vcr_cov_weight
+                    )
                     outputs = [head(feats) for head in self.model.heads]
                     loss = self.add_varcov_loss(
                         varcov_loss,
@@ -234,7 +242,10 @@ class Inc_Learning_Appr:
                         )
                         outputs = [head(feats) for head in self.model.heads]
 
-                        varcov_loss = var_loss + cov_loss
+                        varcov_loss = (
+                            var_loss * self.varcov_regularizer.vcr_var_weight
+                            + cov_loss * self.varcov_regularizer.vcr_cov_weight
+                        )
 
                         loss = self.add_varcov_loss(
                             varcov_loss,
