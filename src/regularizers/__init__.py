@@ -81,10 +81,10 @@ class VarCovRegLoss:
         return torch.where(abs_x <= delta, x**2, 2 * delta * abs_x - delta**2)
 
     def regularize_step(self, feats):
+        if not self.scale:
+            feats = feats - feats.mean(0)
         flattened_input = feats.flatten(start_dim=0, end_dim=-2)
         n, d = flattened_input.shape
-        if not self.scale:
-            flattened_input = flattened_input - flattened_input.mean(0)
 
         C = (flattened_input.T @ flattened_input) / (n - 1)
         v = torch.mean(F.relu(1 - torch.sqrt(C.diag() + self.eps)))
