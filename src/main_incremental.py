@@ -50,7 +50,7 @@ def collect_layers(model: torch.nn.Module, cfg):
         if re.match(compiled_pattern, name)
     ]
 
-    if not matched_layers:
+    if not len(matched_layers):
         raise ValueError(
             f"No layers matching the pattern '{cfg.training.vcreg.reg_layers}' were found."
         )
