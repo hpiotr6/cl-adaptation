@@ -1,0 +1,6 @@
+scale: true
+reg_layers: .*after_skipping
+smooth_cov: 1.0
+var_weight: 1.74
+cov_weight: 4.72
+n_first_task: -1
