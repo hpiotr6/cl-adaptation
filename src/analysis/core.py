@@ -16,6 +16,7 @@ from omegaconf import DictConfig, OmegaConf
 import torch
 
 from src.networks.network import LLL_Net
+from src.networks import allmodels, set_tvmodel_head_var, tvmodels
 
 
 def create_cfg(dir_path):
@@ -39,7 +40,9 @@ def create_cfg(dir_path):
 
 @torch.no_grad()
 def get_activations(model, dataloader, device="cpu") -> dict:
+    """returns {label: activs}"""
     model.to(device)
+    model.eval()
     outputs = defaultdict(list)
     for batch in tqdm(dataloader):
         inputs, labels = batch
@@ -74,10 +77,26 @@ class ModelFactory:
         return str(res[0])
 
     def create_model(self, task: int, num_classes: int) -> torch.nn.Module:
-        net = getattr(
-            importlib.import_module(name="src.networks"), self.cfg.model.network
-        )
-        init_model = net(pretrained=False)
+        assert 0, "scale can be false!!!"
+        if self.cfg.model.network in tvmodels:  # torchvision models
+            tvnet = getattr(
+                importlib.import_module(name="torchvision.models"),
+                self.cfg.model.network,
+            )
+            if self.cfg.model.network == "googlenet":
+                init_model = tvnet(
+                    pretrained=self.cfg.model.pretrained, aux_logits=False
+                )
+            else:
+                init_model = tvnet(pretrained=self.cfg.model.pretrained)
+            set_tvmodel_head_var(init_model)
+        else:  # other models declared in networks package's init
+            net = getattr(
+                importlib.import_module(name="src.networks"), self.cfg.model.network
+            )
+            # WARNING: fixed to pretrained False for other model (non-torchvision)
+            init_model = net(pretrained=False)
+
         cifar_in_data = "cifar" in self.cfg.data.datasets[0]
         model = LLL_Net(init_model, is_cifar=cifar_in_data, remove_existing_head=True)
 
@@ -89,8 +108,9 @@ class ModelFactory:
             model.add_head(num_classes)
 
         state = torch.load(path, map_location=self.device)
-        info = model.load_state_dict(state, strict=False)
+        info = model.load_state_dict(state)
         pprint(info)
+        model.to(self.device)
         return model
 
     def _initialise_hooks(self, model):
