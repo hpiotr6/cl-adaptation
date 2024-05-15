@@ -8,5 +8,6 @@ misc:
 
 hydra:
   launcher:
-    submitit_folder: test_results/.submitit/%j
     gpus_per_node: 1
+  sweep:
+    dir: test_results/${now:%m.%d}/${now:%H-%M-%S}
