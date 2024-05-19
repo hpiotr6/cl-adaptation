@@ -77,7 +77,6 @@ class ModelFactory:
         return str(res[0])
 
     def create_model(self, task: int, num_classes: int) -> torch.nn.Module:
-        assert 0, "scale can be false!!!"
         if self.cfg.model.network in tvmodels:  # torchvision models
             tvnet = getattr(
                 importlib.import_module(name="torchvision.models"),
@@ -115,7 +114,10 @@ class ModelFactory:
 
     def _initialise_hooks(self, model):
         def scale_strategy(output):
-            return output - output.mean(0)
+            if self.cfg.training.vcreg.scale:
+                return output - output.mean(0)
+            else:
+                return output
 
         def hook_fn(layer_name):
             def hook(module, input, output):
