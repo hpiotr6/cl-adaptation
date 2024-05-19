@@ -22,4 +22,4 @@ num_tasks,approach,reg_layers,avg_acc_tag,dataset,seed
 20,ewc,False,6.32,cifar100_fixed,0
 20,ewc,True,11.33,cifar100_fixed,0
 20,lwf,False,17.62,cifar100_fixed,0
-20,lwf,True,20.82,cifar100_fixed,0
+20,lwf,True,21.46,cifar100_fixed,0

@@ -1,9 +1,0 @@
-reg_layers,real_name,wavg_acc_tag,misc.seed,data.datasets
-True,replay,35.87,0,c
-True,lwf,54.09,0,c
-True,finetuning,29.37,0,c
-True,ewc,39.28,0,c
-False,lwf,44.83,0,c
-False,ewc,30.409999999999997,0,c
-False,replay,29.15,0,c
-False,finetuning,23.22,0,c
