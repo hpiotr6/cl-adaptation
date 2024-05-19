@@ -1,0 +1,9 @@
+reg_layers,real_name,wavg_acc_tag,misc.seed,data.datasets
+True,replay,34.309999999999995,2,cifar100_fixed
+True,ewc,36.27,2,cifar100_fixed
+True,lwf,51.52,2,cifar100_fixed
+True,finetuning,26.83,2,cifar100_fixed
+False,lwf,42.34,2,cifar100_fixed
+False,ewc,25.61,2,cifar100_fixed
+False,replay,28.790000000000006,2,cifar100_fixed
+False,finetuning,20.39,2,cifar100_fixed
