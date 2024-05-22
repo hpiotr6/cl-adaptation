@@ -11,7 +11,7 @@ data:
   max_examples_per_class_val: 10
   max_examples_per_class_tst: 10
 misc:
-  results_path: "results"
+  results_path: "test_results"
   exp_name: null
   gpu: cpu
   log:
