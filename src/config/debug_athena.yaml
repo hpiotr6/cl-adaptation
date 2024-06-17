@@ -1,0 +1,13 @@
+defaults:
+- override hydra/launcher: submitit_local
+- _self_
+
+misc:
+  log:
+    - disk
+
+hydra:
+  launcher:
+    gpus_per_node: 1
+  sweep:
+    dir: test_results/${now:%m.%d}/${now:%H-%M-%S}

@@ -55,7 +55,7 @@ class Logger(ExperimentLogger):
         with open(
             os.path.join(self.exp_path, "args-{}.txt".format(self.begin_time_str)), "w"
         ) as f:
-            json.dump(args.__dict__, f, separators=(",\n", " : "), sort_keys=True)
+            json.dump(args, f, separators=(",\n", " : "), sort_keys=True)
 
     def log_result(self, array, name, step, **kwargs):
         if array.ndim <= 1:

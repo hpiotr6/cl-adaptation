@@ -1,0 +1,7 @@
+training.approach.name,training.vcreg.reg_layers,training.vcreg.var_weight,training.vcreg.cov_weight,data.num_tasks,model.network,misc.seed,avg_acc_tag
+ewc,fc$,0.64,12.8,20,resnet34_skips,0,9.22
+ewc,fc$,0.64,12.8,10,resnet34_skips,0,14.6
+ewc,.*after_relu,0.64,12.8,20,resnet34_skips,2,3.9
+ewc,.*after_relu,0.64,12.8,20,resnet34_skips,1,5.4
+ewc,.*after_relu,0.64,12.8,10,resnet34_skips,2,15.64
+ewc,.*after_relu,0.64,12.8,10,resnet34_skips,1,14.74

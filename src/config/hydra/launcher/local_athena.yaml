@@ -1,0 +1,5 @@
+defaults:
+  - submitit_local
+  - _self_
+
+gpus_per_node: 1

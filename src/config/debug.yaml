@@ -1,0 +1,27 @@
+data:
+  datasets:
+    - cifar100_fixed
+  num_workers: 0
+  batch_size: 64
+  num_tasks: 2
+  use_valid_only: false
+  use_test_as_val: false
+  max_classes_per_dataset: null
+  max_examples_per_class_trn: 10
+  max_examples_per_class_val: 10
+  max_examples_per_class_tst: 10
+misc:
+  results_path: "test_results"
+  exp_name: null
+  gpu: cpu
+  log:
+    - disk
+  save_models: false
+model:
+  network: resnet34_skips
+  keep_existing_head: false
+  pretrained: false
+training:
+  nepochs: 1
+  lr: 0.1
+  scheduler_milestones: [30, 60, 80]

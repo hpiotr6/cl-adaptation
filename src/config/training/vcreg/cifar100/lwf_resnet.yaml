@@ -1,0 +1,7 @@
+# @package training.vcreg
+scale: true
+reg_layers: .*after_relu
+smooth_cov: 1.0
+var_weight: 12.8
+cov_weight: 0.64
+n_first_task: -1

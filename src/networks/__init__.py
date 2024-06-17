@@ -1,12 +1,12 @@
 from torchvision import models
 
 from .lenet import LeNet
-from .vggnet import VggNet
 from .resnet32 import resnet32
-from .resnet32_no_bn import resnet32_no_bn
 from .resnet32_ln import resnet32_ln
+from .resnet32_no_bn import resnet32_no_bn
 from .resnet_custom import *
-
+from .convnext_custom import *
+from .vggnet import VggNet
 
 # available torchvision models
 tvmodels = [
@@ -50,6 +50,7 @@ tvmodels = [
     "efficientnet_b5",
     "efficientnet_b6",
     "efficientnet_b7",
+    "convnext_tiny",
 ]
 
 allmodels = tvmodels + [
@@ -59,31 +60,31 @@ allmodels = tvmodels + [
     "LeNet",
     "VggNet",
     *resnet_custom.__all__,
+    *convnext_custom.__all__,
 ]
 
 
 def set_tvmodel_head_var(model):
-    if type(model) == models.AlexNet:
-        model.head_var = "classifier"
-    elif type(model) == models.DenseNet:
-        model.head_var = "classifier"
-    elif type(model) == models.EfficientNet:
-        model.head_var = "classifier"
-    elif type(model) == models.Inception3:
-        model.head_var = "fc"
-    elif type(model) == models.ResNet:
-        model.head_var = "fc"
-    elif type(model) == models.VGG:
-        model.head_var = "classifier"
-    elif type(model) == models.GoogLeNet:
-        model.head_var = "fc"
-    elif type(model) == models.MobileNetV2:
-        model.head_var = "classifier"
-    elif type(model) == models.ShuffleNetV2:
-        model.head_var = "fc"
-    elif type(model) == models.SqueezeNet:
-        model.head_var = "classifier"
-    elif type(model) == models.MobileNetV3:
-        model.head_var = "classifier"
-    else:
-        raise ModuleNotFoundError
+    match type(model):
+        case (
+            models.AlexNet
+            | models.DenseNet
+            | models.EfficientNet
+            | models.MobileNetV2
+            | models.ConvNeXt
+        ):
+            model.head_var = "classifier"
+        case (
+            models.Inception3
+            | models.ResNet
+            | models.VGG
+            | models.SqueezeNet
+            | models.MobileNetV3
+            | models.GoogLeNet
+            | models.ShuffleNetV2
+        ):
+            model.head_var = "fc"
+        # case models.ConvNeXt:
+        #     model.head_var = "head.fc"
+        case _:
+            raise ModuleNotFoundError

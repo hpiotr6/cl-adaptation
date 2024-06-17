@@ -1,0 +1,16 @@
+name: lwf
+kwargs:
+  lamb: 5
+  T: 2
+
+  mc: false
+  taskwise_kd: false
+  ta: false
+  tp: false
+  ctt: false
+  bnp: false
+  cbnt: false
+  pretraining_epochs: 5
+  ta_lr: 1e-5
+  cka: false
+  debug_loss: false

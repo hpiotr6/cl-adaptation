@@ -1,0 +1,7 @@
+defaults:
+  - defaults
+  - debug
+  - training/vcreg: resnet
+  - training/approach: finetuning
+  - training/optimizer: sgd
+  - _self_

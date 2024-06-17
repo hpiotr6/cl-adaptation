@@ -1,12 +1,14 @@
+from functools import partial
+import omegaconf
+import torch.nn as nn
 import time
-from typing import Callable
+from typing import Callable, Optional
 import torch
 import numpy as np
-from argparse import ArgumentParser
 
 from src.loggers.exp_logger import ExperimentLogger
 from src.datasets.exemplars_dataset import ExemplarsDataset
-from src.regularizers import NullVarCovRegLoss, VarCovRegLossProtocol
+from src.regularizers import VarCovRegLossInterface
 
 
 class Inc_Learning_Appr:
@@ -16,65 +18,82 @@ class Inc_Learning_Appr:
         self,
         model,
         device,
-        nepochs=100,
-        lr=0.05,
-        lr_min=1e-4,
-        lr_factor=3,
-        lr_patience=5,
-        clipgrad=10000,
-        momentum=0,
-        wd=0,
-        multi_softmax=False,
-        wu_nepochs=0,
-        wu_lr=1e-1,
-        wu_fix_bn=False,
-        wu_scheduler="constant",
-        wu_patience=None,
-        wu_wd=0.0,
-        fix_bn=False,
-        eval_on_train=False,
-        select_best_model_by_val_loss=True,
-        logger: ExperimentLogger = None,
-        exemplars_dataset: ExemplarsDataset = None,
-        scheduler_milestones=None,
-        no_learning=False,
-        varcov_regularizer: VarCovRegLossProtocol = NullVarCovRegLoss(),
+        varcov_regularizer: VarCovRegLossInterface,
+        logger: Optional[ExperimentLogger] = None,
+        exemplars_dataset: Optional[ExemplarsDataset] = None,
+        *,
+        cfg,
     ):
+        self.set_defaults(cfg)
+
         self.model = model
         self.device = device
-        self.nepochs = nepochs
-        self.lr = lr
-        self.lr_min = lr_min
-        self.lr_factor = lr_factor
-        self.lr_patience = lr_patience
-        self.clipgrad = clipgrad
-        self.momentum = momentum
-        self.wd = wd
-        self.multi_softmax = multi_softmax
+        self.varcov_regularizer = varcov_regularizer
         self.logger = logger
         self.exemplars_dataset = exemplars_dataset
-        self.warmup_epochs = wu_nepochs
-        self.warmup_lr = wu_lr
+
         self.warmup_loss = torch.nn.CrossEntropyLoss()
-        self.warmup_scheduler = wu_scheduler
-        self.warmup_fix_bn = wu_fix_bn
-        self.warmup_patience = wu_patience
-        self.wu_wd = wu_wd
-        self.fix_bn = fix_bn
-        self.eval_on_train = eval_on_train
-        self.select_best_model_by_val_loss = select_best_model_by_val_loss
         self.optimizer = None
-        self.scheduler_milestones = scheduler_milestones
         self.scheduler = None
         self.debug = False
-        self.no_learning = no_learning
-        self.varcov_regularizer = varcov_regularizer
 
-    @staticmethod
-    def extra_parser(args):
-        """Returns a parser containing the approach specific parameters"""
-        parser = ArgumentParser()
-        return parser.parse_known_args(args)
+        self.nepochs = cfg.nepochs
+        self.lr = cfg.lr
+        self.lr_min = cfg.early_stopping.lr_min
+        self.lr_factor = cfg.early_stopping.lr_factor
+        self.lr_patience = cfg.early_stopping.lr_patience
+        self.clipgrad = cfg.clipping
+        self.multi_softmax = cfg.multi_softmax
+        self.warmup_epochs = cfg.warmup.wu_nepochs
+        self.warmup_lr = cfg.warmup.wu_lr
+        self.warmup_fix_bn = cfg.warmup.wu_fix_bn
+        self.warmup_scheduler = cfg.warmup.wu_scheduler
+        self.warmup_patience = cfg.warmup.wu_patience
+        self.wu_wd = cfg.warmup.wu_wd
+        self.fix_bn = cfg.fix_bn
+        self.eval_on_train = cfg.eval_on_train
+        self.select_best_model_by_val_loss = cfg.select_best_model_by_val_loss
+        self.scheduler_milestones = cfg.scheduler_milestones
+        self.no_learning = cfg.no_learning
+
+        optimizers = {"adam": torch.optim.AdamW, "sgd": torch.optim.SGD}
+        self.optimizer_factory = partial(
+            optimizers[cfg.optimizer.name], lr=self.lr, **cfg.optimizer.kwargs
+        )
+
+    def set_defaults(self, cfg: omegaconf.DictConfig):
+        defaults = {
+            "nepochs": 100,
+            "lr": 0.05,
+            "clipping": 10000,
+            "multi_softmax": False,
+            "fix_bn": False,
+            "eval_on_train": False,
+            "select_best_model_by_val_loss": True,
+            "scheduler_milestones": None,
+            "no_learning": False,
+        }
+        defaults_early = {
+            "lr_min": 1e-4,
+            "lr_factor": 3,
+            "lr_patience": 5,
+        }
+
+        defaults_warmup = {
+            "wu_nepochs": 0,
+            "wu_lr": 1e-1,
+            "wu_fix_bn": False,
+            "wu_scheduler": "constant",
+            "wu_patience": None,
+            "wu_wd": 0.0,
+        }
+
+        for key in defaults.keys():
+            cfg.setdefault(key, defaults[key])
+        for key in defaults_early.keys():
+            cfg.early_stopping.setdefault(key, defaults_early[key])
+        for key in defaults_warmup.keys():
+            cfg.warmup.setdefault(key, defaults_warmup[key])
 
     @staticmethod
     def exemplars_dataset_class():
@@ -85,6 +104,8 @@ class Inc_Learning_Appr:
 
     def _get_optimizer(self):
         """Returns the optimizer"""
+        return self.optimizer_factory(params=self.model.parameters())
+
         return torch.optim.SGD(
             self.model.parameters(),
             lr=self.lr,
@@ -97,7 +118,7 @@ class Inc_Learning_Appr:
         varcov_loss: torch.Tensor, loss_fn: Callable, *args
     ) -> torch.Tensor:
         loss = loss_fn(*args)
-        loss += varcov_loss
+        loss += varcov_loss.mean()
         return loss
 
     def _get_scheduler(self):
@@ -189,9 +210,12 @@ class Inc_Learning_Appr:
                     targets = targets.to(self.device, non_blocking=True)
 
                     var_loss, cov_loss, feats = self.varcov_regularizer(
-                        self.model.model, images
+                        self.model.model, images, t
                     )
-                    varcov_loss = var_loss + cov_loss
+                    varcov_loss = (
+                        var_loss * self.varcov_regularizer.vcr_var_weight
+                        + cov_loss * self.varcov_regularizer.vcr_cov_weight
+                    )
                     outputs = [head(feats) for head in self.model.heads]
                     loss = self.add_varcov_loss(
                         varcov_loss,
@@ -214,11 +238,14 @@ class Inc_Learning_Appr:
                             self.device
                         )
                         var_loss, cov_loss, feats = self.varcov_regularizer(
-                            self.model.model, images
+                            self.model.model, images, t
                         )
                         outputs = [head(feats) for head in self.model.heads]
 
-                        varcov_loss = var_loss + cov_loss
+                        varcov_loss = (
+                            var_loss * self.varcov_regularizer.vcr_var_weight
+                            + cov_loss * self.varcov_regularizer.vcr_cov_weight
+                        )
 
                         loss = self.add_varcov_loss(
                             varcov_loss,
@@ -442,9 +469,15 @@ class Inc_Learning_Appr:
             self.train_epoch(t, trn_loader)
             clock1 = time.time()
             if self.eval_on_train:
-                train_loss, train_var_loss, train_cov_loss, train_acc, _ = self.eval(
-                    t, trn_loader
-                )
+                (
+                    train_loss,
+                    train_var_loss,
+                    train_cov_loss,
+                    train_acc,
+                    _,
+                    train_var_layers,
+                    train_cov_layers,
+                ) = self.eval(t, trn_loader)
                 clock2 = time.time()
                 print(
                     "| Epoch {:3d}, time={:5.1f}s/{:5.1f}s | Train: loss={:.3f}, TAw acc={:5.1f}% |".format(
@@ -456,6 +489,7 @@ class Inc_Learning_Appr:
                     ),
                     end="",
                 )
+
                 self.logger.log_scalar(
                     task=t, iter=e + 1, name="loss", value=train_loss, group="train"
                 )
@@ -476,6 +510,27 @@ class Inc_Learning_Appr:
                 self.logger.log_scalar(
                     task=t, iter=e + 1, name="acc", value=100 * train_acc, group="train"
                 )
+                if self.varcov_regularizer.hooked_layer_names:
+                    for var_val, cov_val, layer_name in zip(
+                        train_var_layers,
+                        train_cov_layers,
+                        self.varcov_regularizer.hooked_layer_names,
+                    ):
+                        self.logger.log_scalar(
+                            task=t,
+                            iter=e + 1,
+                            name=f"layers_var_loss/{layer_name}",
+                            value=var_val.item(),
+                            group="train",
+                        )
+                        self.logger.log_scalar(
+                            task=t,
+                            iter=e + 1,
+                            name=f"layers_cov_loss/{layer_name}",
+                            value=cov_val.item(),
+                            group="train",
+                        )
+
             else:
                 print(
                     "| Epoch {:3d}, time={:5.1f}s | Train: skip eval |".format(
@@ -486,7 +541,7 @@ class Inc_Learning_Appr:
 
             # Valid
             clock3 = time.time()
-            valid_loss, valid_var_loss, valid_cov_loss, valid_acc, _ = self.eval(
+            valid_loss, valid_var_loss, valid_cov_loss, valid_acc, _, _, _ = self.eval(
                 t, val_loader
             )
             clock4 = time.time()
@@ -561,10 +616,13 @@ class Inc_Learning_Appr:
         for images, targets in trn_loader:
             # Forward current model
             var_loss, cov_loss, feats = self.varcov_regularizer(
-                self.model.model, images.to(self.device)
+                self.model.model, images.to(self.device), t
             )
             outputs = [head(feats) for head in self.model.heads]
-            varcov_loss = var_loss + cov_loss
+            varcov_loss = (
+                var_loss * self.varcov_regularizer.vcr_var_weight
+                + cov_loss * self.varcov_regularizer.vcr_cov_weight
+            )
             loss = self.add_varcov_loss(
                 varcov_loss, self.criterion, t, outputs, targets.to(self.device)
             )
@@ -588,37 +646,43 @@ class Inc_Learning_Appr:
                 total_num,
                 total_var,
                 total_cov,
-            ) = (0, 0, 0, 0, 0, 0)
+                total_layers_var,
+                total_layers_cov,
+            ) = (0, 0, 0, 0, 0, 0, 0, 0)
             self.model.eval()
             for images, targets in val_loader:
                 # Forward current model
                 images, targets = images.to(self.device), targets.to(self.device)
 
                 var_loss, cov_loss, feats = self.varcov_regularizer(
-                    self.model.model, images
+                    self.model.model, images, t
                 )
                 outputs = [head(feats) for head in self.model.heads]
 
-                varcov_loss = var_loss + cov_loss
-                loss = self.add_varcov_loss(
-                    varcov_loss, self.criterion, t, outputs, targets
-                )
+                loss = self.criterion(t, outputs, targets)
 
-                hits_taw, hits_tag = self.calculate_metrics(outputs, targets)
                 # Log
                 total_loss += loss.item() * len(targets)
-                total_var += var_loss.item() * len(targets)
-                total_cov += cov_loss.item() * len(targets)
+                total_var += var_loss.mean().item() * len(targets)
+                total_cov += cov_loss.mean().item() * len(targets)
 
+                total_layers_var += var_loss * len(targets)
+                total_layers_cov += cov_loss * len(targets)
+
+                hits_taw, hits_tag = self.calculate_metrics(outputs, targets)
                 total_acc_taw += hits_taw.sum().item()
                 total_acc_tag += hits_tag.sum().item()
+
                 total_num += len(targets)
+
         return (
             total_loss / total_num,
             total_var / total_num,
             total_cov / total_num,
             total_acc_taw / total_num,
             total_acc_tag / total_num,
+            (total_layers_var / total_num).cpu(),
+            (total_layers_cov / total_num).cpu(),
         )
 
     def calculate_metrics(self, outputs, targets):

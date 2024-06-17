@@ -1,4 +1,5 @@
 import io
+import re
 import os
 from typing import List, Optional
 import warnings
@@ -24,14 +25,30 @@ class Logger(ExperimentLogger):
         exp_path: str,
         exp_name: Optional[str] = None,
         tags: Optional[List[str]] = None,
+        **kwargs,
     ):
         super(Logger, self).__init__(exp_path, exp_name)
 
-        current_date = date.today().strftime("%Y-%m-%d")
+        project_name = self.get_project_name(exp_path, kwargs)
+
         wandb.init(
-            group=exp_name, tags=tags, entity="tunnels-ssl", project=current_date
+            group=exp_name, tags=tags, entity="tunnels-ssl", project=project_name
         )
         self.metrics = []
+
+    def get_project_name(self, exp_path, kwargs):
+        if custom_name := kwargs.get("project_name", None):
+            return custom_name
+
+        pattern = r".*/(\d{2}\.\d{2})/.*"
+        matches = re.findall(pattern, exp_path)
+
+        if len(matches) == 1:
+            return matches[0]
+
+        current_date = date.today().strftime("%Y-%m-%d")
+
+        return current_date
 
     def log_scalar(self, task, iter, name, value, group=None, curtime=None):
         if task is not None:
@@ -47,7 +64,7 @@ class Logger(ExperimentLogger):
         wandb.log({key: value, iter_key: iter})
 
     def log_args(self, args):
-        wandb.config.update(args.__dict__)
+        wandb.config.update(args)
 
     def log_result(self, array, name, step, **kwargs):
         if array.ndim <= 1:
@@ -100,8 +117,8 @@ class Logger(ExperimentLogger):
     def save_model(self, state_dict, task):
         warnings.warn("Saving model is not implemented in wandb logger")
 
-    def __del__(self):
-        wandb.finish()
+    # def __del__(self):
+    #     wandb.finish()
 
 
 def _plot_to_wandb(plot):

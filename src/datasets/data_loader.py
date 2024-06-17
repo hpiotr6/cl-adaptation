@@ -510,6 +510,14 @@ def _ensure_imagenet_subset_prepared(path):
     assert os.path.exists(
         path
     ), f"Please first download and extract dataset from: https://www.kaggle.com/datasets/arjunashok33/imagenet-subset-for-inc-learn to dir: {path}"
+    if all(
+        map(
+            lambda x: os.path.exists(os.path.join(path, x)),
+            ["train.txt", "test.txt"],
+        )
+    ):
+        return
+
     ds_conf = dataset_config["imagenet_subset_kaggle"]
     clsss2idx = {c: i for i, c in enumerate(ds_conf["lbl_order"])}
     print(f"Generating train/test splits for ImageNet-Subset directory: {path}")

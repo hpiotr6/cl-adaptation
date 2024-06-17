@@ -1,8 +1,12 @@
+from typing import Optional
+import omegaconf
 import torch
 from copy import deepcopy
 from argparse import ArgumentParser
+from src.loggers.exp_logger import ExperimentLogger
 
 from src.metrics import cka
+from src.regularizers import VarCovRegLossInterface
 from .incremental_learning import Inc_Learning_Appr
 from src.datasets.exemplars_dataset import ExemplarsDataset
 
@@ -19,201 +23,70 @@ class Appr(Inc_Learning_Appr):
         self,
         model,
         device,
-        nepochs=100,
-        lr=0.05,
-        lr_min=1e-4,
-        lr_factor=3,
-        lr_patience=5,
-        clipgrad=10000,
-        momentum=0,
-        wd=0,
-        multi_softmax=False,
-        wu_nepochs=0,
-        wu_lr=1e-1,
-        wu_fix_bn=False,
-        wu_scheduler="constant",
-        wu_patience=None,
-        wu_wd=0.0,
-        fix_bn=False,
-        eval_on_train=False,
-        select_best_model_by_val_loss=True,
-        logger=None,
-        exemplars_dataset=None,
-        scheduler_milestones=None,
-        lamb=1,
-        T=2,
-        mc=False,
-        taskwise_kd=False,
-        ta=False,
-        cka=False,
-        debug_loss=False,
-        tp=False,
-        ctt=False,
-        bnp=False,
-        cbnt=False,
-        pretraining_epochs=5,
-        ta_lr=1e-5,
-        **kwargs,
+        varcov_regularizer: VarCovRegLossInterface,
+        logger: Optional[ExperimentLogger] = None,
+        exemplars_dataset: Optional[ExemplarsDataset] = None,
+        *,
+        cfg,
     ):
         super(Appr, self).__init__(
             model,
             device,
-            nepochs,
-            lr,
-            lr_min,
-            lr_factor,
-            lr_patience,
-            clipgrad,
-            momentum,
-            wd,
-            multi_softmax,
-            wu_nepochs,
-            wu_lr,
-            wu_fix_bn,
-            wu_scheduler,
-            wu_patience,
-            wu_wd,
-            fix_bn,
-            eval_on_train,
-            select_best_model_by_val_loss,
+            varcov_regularizer,
             logger,
             exemplars_dataset,
-            scheduler_milestones,
-            **kwargs,
+            cfg=cfg,
         )
+
+        self.set_methods_defaults(cfg.approach)
+
         self.model_old = None
-        self.lamb = lamb
-        self.T = T
-        self.mc = mc
-        self.taskwise_kd = taskwise_kd
+        self.lamb = cfg.approach.kwargs.lamb
+        self.T = cfg.approach.kwargs.T
+        self.mc = cfg.approach.kwargs.mc
+        self.taskwise_kd = cfg.approach.kwargs.taskwise_kd
 
-        self.ta = ta
+        self.ta = cfg.approach.kwargs.ta
 
-        self.tp = tp
-        self.ctt = ctt
-        self.bnp = bnp
-        self.cbnt = cbnt
+        self.tp = cfg.approach.kwargs.tp
+        self.ctt = cfg.approach.kwargs.ctt
+        self.bnp = cfg.approach.kwargs.bnp
+        self.cbnt = cfg.approach.kwargs.cbnt
         if self.tp or self.ctt or self.bnp or self.cbnt:
             assert not self.ta, "Cannot use both TA and TP/CTT/BNP/CBNT"
         if sum([self.tp, self.ctt, self.bnp, self.cbnt]) > 1:
             assert not self.ta, "Cannot use both TP and CTT and BNP and CBNT"
-        self.pretraining_epochs = pretraining_epochs
-        self.ta_lr = ta_lr
+        self.pretraining_epochs = cfg.approach.kwargs.pretraining_epochs
+        self.ta_lr = cfg.approach.kwargs.ta_lr
 
         self.cka = cka
-        self.debug_loss = debug_loss
+        self.debug_loss = cfg.approach.kwargs.debug_loss
+
+    def set_methods_defaults(self, cfg: omegaconf.DictConfig):
+        defaults = {
+            "lamb": 1,
+            "T": 2,
+            "mc": False,
+            "taskwise_kd": False,
+            "ta": False,
+            "tp": False,
+            "ctt": False,
+            "bnp": False,
+            "cbnt": False,
+            "pretraining_epochs": 5,
+            "ta_lr": 1e-5,
+            "cka": False,
+            "debug_loss": False,
+        }
+        if not cfg.kwargs:
+            cfg.kwargs = omegaconf.DictConfig(defaults)
+        else:
+            for key in defaults.keys():
+                cfg.kwargs.setdefault(key, defaults[key])
 
     @staticmethod
     def exemplars_dataset_class():
         return ExemplarsDataset
-
-    @staticmethod
-    def extra_parser(args):
-        """Returns a parser containing the approach specific parameters"""
-        parser = ArgumentParser()
-        # Page 5: "lambda is a loss balance weight, set to 1 for most our experiments. Making lambda larger will favor
-        # the old task performance over the new task’s, so we can obtain a old-task-new-task performance line by
-        # changing lambda."
-        parser.add_argument(
-            "--lamb",
-            default=1,
-            type=float,
-            required=False,
-            help="Forgetting-intransigence trade-off (default=%(default)s)",
-        )
-        # Page 5: "We use T=2 according to a grid search on a held out set, which aligns with the authors’
-        #  recommendations." -- Using a higher value for T produces a softer probability distribution over classes.
-        parser.add_argument(
-            "--T",
-            default=2,
-            type=int,
-            required=False,
-            help="Temperature scaling (default=%(default)s)",
-        )
-        parser.add_argument(
-            "--mc",
-            default=False,
-            action="store_true",
-            required=False,
-            help="If set, will use LwF.MC variant from iCaRL. (default=%(default)s)",
-        )
-        parser.add_argument(
-            "--taskwise-kd",
-            default=False,
-            action="store_true",
-            required=False,
-            help="If set, will use task-wise KD loss as defined in SSIL. (default=%(default)s)",
-        )
-
-        parser.add_argument(
-            "--ta",
-            default=False,
-            action="store_true",
-            required=False,
-            help="Teacher adaptation. If set, will update old model batch norm params "
-            "during training the new task. (default=%(default)s)",
-        )
-
-        parser.add_argument(
-            "--tp",
-            default=False,
-            action="store_true",
-            required=False,
-            help="Teacher pretraining instead of TA. (default=%(default)s)",
-        )
-        parser.add_argument(
-            "--ctt",
-            default=False,
-            action="store_true",
-            required=False,
-            help="Continuous teacher training instead of TA. (default=%(default)s)",
-        )
-        parser.add_argument(
-            "--bnp",
-            default=False,
-            action="store_true",
-            required=False,
-            help="Batch norm pretraining instead of TA. (default=%(default)s)",
-        )
-        parser.add_argument(
-            "--cbnt",
-            default=False,
-            action="store_true",
-            required=False,
-            help="Continuous batch norm training instead of TA. (default=%(default)s)",
-        )
-        parser.add_argument(
-            "--pretraining-epochs",
-            default=5,
-            type=int,
-            required=False,
-            help="Number of epochs for pretraining. (default=%(default)s)",
-        )
-        parser.add_argument(
-            "--ta-lr",
-            default=1e-5,
-            type=float,
-            required=False,
-            help="Teacher adaptation learning rate. (default=%(default)s)",
-        )
-
-        parser.add_argument(
-            "--cka",
-            default=False,
-            action="store_true",
-            required=False,
-            help="If set, will compute CKA between current representations and representations at "
-            "the start of the task. (default=%(default)s)",
-        )
-        parser.add_argument(
-            "--debug-loss",
-            default=False,
-            action="store_true",
-            required=False,
-            help="If set, will log intermediate loss values. (default=%(default)s)",
-        )
-
-        return parser.parse_known_args(args)
 
     def pre_train_process(self, t, trn_loader):
         if t > 0:
@@ -354,7 +227,8 @@ class Appr(Inc_Learning_Appr):
                     value=float(loss),
                 )
 
-            assert not torch.isnan(loss), "Loss is NaN"
+            if torch.isnan(loss):
+                raise ValueError("Loss is NaN! Training cannot continue.")
 
             # Backward
             self.optimizer.zero_grad()
@@ -366,14 +240,17 @@ class Appr(Inc_Learning_Appr):
             self.scheduler.step()
 
     def add_varcov_loss_lwf(self, model, t, images, targets, targets_old):
-        var_loss, cov_loss, feats = self.varcov_regularizer(model.model, images)
+        var_loss, cov_loss, feats = self.varcov_regularizer(model.model, images, t)
         outputs = [head(feats) for head in model.heads]
-        varcov_loss = var_loss + cov_loss
+        varcov_loss = (
+            var_loss * self.varcov_regularizer.vcr_var_weight
+            + cov_loss * self.varcov_regularizer.vcr_cov_weight
+        )
 
         loss, loss_kd, loss_ce = self.criterion(
             t, outputs, targets, targets_old, return_partial_losses=True
         )
-        loss += varcov_loss
+        loss += varcov_loss.mean()
         return loss, loss_kd, loss_ce
 
     def eval(self, t, val_loader):
@@ -387,7 +264,9 @@ class Appr(Inc_Learning_Appr):
                 total_num,
                 total_var,
                 total_cov,
-            ) = (0, 0, 0, 0, 0, 0)
+                total_layers_var,
+                total_layers_cov,
+            ) = (0, 0, 0, 0, 0, 0, 0, 0)
             self.model.eval()
             if self.model_old is not None:
                 self.model_old.eval()
@@ -403,24 +282,29 @@ class Appr(Inc_Learning_Appr):
                 # outputs = self.model(images)
                 # loss = self.criterion(t, outputs, targets, targets_old)
                 var_loss, cov_loss, feats = self.varcov_regularizer(
-                    self.model.model, images
+                    self.model.model, images, t
                 )
                 outputs = [head(feats) for head in self.model.heads]
-                varcov_loss = var_loss + cov_loss
+                # varcov_loss = var_loss + cov_loss
 
                 loss, loss_kd, loss_ce = self.criterion(
                     t, outputs, targets, targets_old, return_partial_losses=True
                 )
-                loss += varcov_loss
-                # loss, loss_kd, loss_ce = self.add_varcov_loss_lwf(
+                # loss += varcov_loss.mean()
+                # loss, loss_kd, loss_ce = self.add_varbose_lwf(
                 #     self.model, t, images, targets, targets_old
                 # )
 
                 hits_taw, hits_tag = self.calculate_metrics(outputs, targets)
                 # Log
                 total_loss += loss.data.cpu().numpy().item() * len(targets)
-                total_var += var_loss.item() * len(targets)
-                total_cov += cov_loss.item() * len(targets)
+
+                total_var += var_loss.mean().item() * len(targets)
+                total_cov += cov_loss.mean().item() * len(targets)
+
+                total_layers_var += var_loss * len(targets)
+                total_layers_cov += cov_loss * len(targets)
+
                 total_acc_taw += hits_taw.sum().data.cpu().numpy().item()
                 total_acc_tag += hits_tag.sum().data.cpu().numpy().item()
                 total_num += len(targets)
@@ -437,6 +321,8 @@ class Appr(Inc_Learning_Appr):
             total_cov / total_num,
             total_acc_taw / total_num,
             total_acc_tag / total_num,
+            (total_layers_var / total_num).cpu(),
+            (total_layers_cov / total_num).cpu(),
         )
 
     def cross_entropy(self, outputs, targets, exp=1.0, size_average=True, eps=1e-5):

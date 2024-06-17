@@ -1,0 +1,4 @@
+defaults:
+  - finetuning
+  - /data/exemplars@_group_: replay
+  - _self_

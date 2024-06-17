@@ -1,6 +1,11 @@
+from typing import Optional
+import omegaconf
 import torch
 import itertools
 from argparse import ArgumentParser
+
+from src.loggers.exp_logger import ExperimentLogger
+from src.regularizers import VarCovRegLossInterface
 
 from .incremental_learning import Inc_Learning_Appr
 from src.datasets.exemplars_dataset import ExemplarsDataset
@@ -16,21 +21,25 @@ class Appr(Inc_Learning_Appr):
         self,
         model,
         device,
-        lamb=1,
-        alpha=0.5,
-        fi_num_samples=-1,
-        *args,
-        **kwargs,
+        varcov_regularizer: VarCovRegLossInterface,
+        logger: Optional[ExperimentLogger] = None,
+        exemplars_dataset: Optional[ExemplarsDataset] = None,
+        *,
+        cfg,
     ):
         super(Appr, self).__init__(
             model,
             device,
-            *args,
-            **kwargs,
+            varcov_regularizer,
+            logger,
+            exemplars_dataset,
+            cfg=cfg,
         )
-        self.lamb = lamb
-        self.alpha = alpha
-        self.num_samples = fi_num_samples
+        self.set_methods_defaults(cfg.approach)
+
+        self.lamb = cfg.approach.kwargs.lamb
+        self.alpha = cfg.approach.kwargs.alpha
+        self.num_samples = cfg.approach.kwargs.fi_num_samples
 
         # In all cases, we only keep importance weights for the model, but not for the heads.
         feat_ext = self.model.model
@@ -51,35 +60,17 @@ class Appr(Inc_Learning_Appr):
     def exemplars_dataset_class():
         return ExemplarsDataset
 
-    @staticmethod
-    def extra_parser(args):
-        """Returns a parser containing the approach specific parameters"""
-        parser = ArgumentParser()
-        # Eq. 3: lambda is the regularizer trade-off -- In original code: MAS.ipynb block [4]: lambda set to 1
-        parser.add_argument(
-            "--lamb",
-            default=1,
-            type=float,
-            required=False,
-            help="Forgetting-intransigence trade-off  (default=%(default)s)",
-        )
-        # Define how old and new importance is fused, by default it is a 50-50 fusion
-        parser.add_argument(
-            "--alpha",
-            default=0.5,
-            type=float,
-            required=False,
-            help="MAS alpha (default=%(default)s)",
-        )
-        # Number of samples from train for estimating importance
-        parser.add_argument(
-            "--fi-num-samples",
-            default=-1,
-            type=int,
-            required=False,
-            help="Number of samples for Fisher information (-1: all available) (default=%(default)s)",
-        )
-        return parser.parse_known_args(args)
+    def set_methods_defaults(self, cfg: omegaconf.DictConfig):
+        defaults = {
+            "lamb": 1,
+            "aplha": 0.5,
+            "fi_num_samples": -1,
+        }
+        if not cfg.kwargs:
+            cfg.kwargs = omegaconf.DictConfig(defaults)
+        else:
+            for key in defaults.keys():
+                cfg.kwargs.setdefault(key, defaults[key])
 
     def _get_optimizer(self):
         """Returns the optimizer"""
@@ -90,9 +81,7 @@ class Appr(Inc_Learning_Appr):
             )
         else:
             params = self.model.parameters()
-        return torch.optim.SGD(
-            params, lr=self.lr, weight_decay=self.wd, momentum=self.momentum
-        )
+        return self.optimizer_factory(params)
 
     # Section 4.1: MAS (global) is implemented since the paper shows is more efficient than l-MAS (local)
     def estimate_parameter_importance(self, trn_loader):
