@@ -1,0 +1,48 @@
+root: analysis/2024/01.08/cifar10/
+plots:
+  - type: representation_spectra
+    filename: cifar10_fixed_finetuning_resnet34_skips_reg_1000_cov_deeper/representation_spectra_from_4.pt
+    plot_kwargs:
+      label: reg_1000_cov_deeper
+      fmt: o--
+  - type: representation_spectra
+    filename: cifar10_fixed_finetuning_resnet34_skips_reg_deeper/representation_spectra_from_4.pt
+    plot_kwargs:
+      label: reg_deeper
+      fmt: o--
+  - type: representation_spectra
+    filename: cifar10_fixed_finetuning_resnet34_skips_reg_deeper_1000/representation_spectra_from_4.pt
+    plot_kwargs:
+      label: reg_deeper_1000/
+      fmt: o--
+
+  - type: early_exit
+    filename: cifar10_fixed_finetuning_resnet34_skips_reg_1000_cov_deeper/early_exit_from_4.pt
+    plot_kwargs:
+      label: Acc reg_1000_cov_deeper
+      fmt: o-
+
+  - type: early_exit
+    filename: cifar10_fixed_finetuning_resnet34_skips_reg_deeper/early_exit_from_4.pt
+    plot_kwargs:
+      label: Acc reg_deeper
+      fmt: o-
+
+
+  - type: early_exit
+    filename: cifar10_fixed_finetuning_resnet34_skips_reg_deeper_1000/early_exit_from_4.pt
+    plot_kwargs:
+      label: Acc reg_deeper_1000
+      fmt: o-
+
+  # - type: early_exit
+  #   filename: early_exit_from_3.pt
+  #   plot_kwargs:
+  #     label: Acc 3
+  #     fmt: o-
+
+  # - type: early_exit
+  #   filename: early_exit_from_4.pt
+  #   plot_kwargs:
+  #     label: Acc 4 
+  #     fmt: o-

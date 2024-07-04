@@ -77,6 +77,17 @@ class ModelFactory:
         return str(res[0])
 
     def create_model(self, task: int, num_classes: int) -> torch.nn.Module:
+        model = self.load_model(task, num_classes)
+
+        path = self._choose_task(task)
+
+        state = torch.load(path, map_location=self.device)
+        info = model.load_state_dict(state)
+        pprint(info)
+        model.to(self.device)
+        return model
+
+    def load_model(self, task, num_classes):
         if self.cfg.model.network in tvmodels:  # torchvision models
             tvnet = getattr(
                 importlib.import_module(name="torchvision.models"),
@@ -102,14 +113,8 @@ class ModelFactory:
         if self.cfg.training.vcreg:
             self._initialise_hooks(model.model)
 
-        path = self._choose_task(task)
         for _ in range(task + 1):
             model.add_head(num_classes)
-
-        state = torch.load(path, map_location=self.device)
-        info = model.load_state_dict(state)
-        pprint(info)
-        model.to(self.device)
         return model
 
     def _initialise_hooks(self, model):

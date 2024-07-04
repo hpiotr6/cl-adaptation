@@ -1,0 +1,6 @@
+# @package _global_
+defaults:
+  - /training/approach: lwf
+  - /networks: convnext
+  - /training/vcreg/imagenet: ${training/approach}_${networks}
+  - _self_

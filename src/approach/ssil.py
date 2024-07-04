@@ -3,9 +3,14 @@ import torch
 from copy import deepcopy
 from argparse import ArgumentParser
 import torch.nn.functional as F
+from typing import Optional
+import omegaconf
+
+from src.loggers.exp_logger import ExperimentLogger
 
 from .incremental_learning import Inc_Learning_Appr
 from src.datasets.exemplars_dataset import ExemplarsDataset
+from src.regularizers import VarCovRegLossInterface
 
 
 class Appr(Inc_Learning_Appr):
@@ -20,61 +25,29 @@ class Appr(Inc_Learning_Appr):
         self,
         model,
         device,
-        nepochs=100,
-        lr=0.05,
-        lr_min=1e-4,
-        lr_factor=3,
-        lr_patience=5,
-        clipgrad=10000,
-        momentum=0,
-        wd=0,
-        multi_softmax=False,
-        wu_nepochs=0,
-        wu_lr=1e-1,
-        wu_fix_bn=False,
-        wu_scheduler="constant",
-        wu_patience=None,
-        fix_bn=False,
-        eval_on_train=False,
-        select_best_model_by_val_loss=True,
-        logger=None,
-        exemplars_dataset=None,
-        scheduler_milestones=None,
-        lamb=1,
-        T=2,
-        replay_batch_size=32,
-        ta=False,
+        varcov_regularizer: VarCovRegLossInterface,
+        logger: Optional[ExperimentLogger] = None,
+        exemplars_dataset: Optional[ExemplarsDataset] = None,
+        *,
+        cfg,
     ):
         super(Appr, self).__init__(
             model,
             device,
-            nepochs,
-            lr,
-            lr_min,
-            lr_factor,
-            lr_patience,
-            clipgrad,
-            momentum,
-            wd,
-            multi_softmax,
-            wu_nepochs,
-            wu_lr,
-            wu_fix_bn,
-            wu_scheduler,
-            wu_patience,
-            fix_bn,
-            eval_on_train,
-            select_best_model_by_val_loss,
+            varcov_regularizer,
             logger,
             exemplars_dataset,
-            scheduler_milestones,
+            cfg=cfg,
         )
-        self.model_old = None
-        self.lamb = lamb
-        self.T = T
-        self.replay_batch_size = replay_batch_size
 
-        self.ta = ta
+        self.set_methods_defaults(cfg.approach)
+
+        self.model_old = None
+        self.lamb = cfg.approach.kwargs.lamb
+        self.T = cfg.approach.kwargs.T
+        self.replay_batch_size = cfg.approach.kwargs.replay_batch_size
+
+        self.ta = cfg.approach.kwargs.ta
 
         self.loss = torch.nn.CrossEntropyLoss(reduction="sum")
 
@@ -93,48 +66,18 @@ class Appr(Inc_Learning_Appr):
     def exemplars_dataset_class():
         return ExemplarsDataset
 
-    @staticmethod
-    def extra_parser(args):
-        """Returns a parser containing the approach specific parameters"""
-        parser = ArgumentParser()
-        parser.add_argument(
-            "--lamb",
-            default=1,
-            type=float,
-            required=False,
-            help="Forgetting-intransigence trade-off (default=%(default)s)",
-        )
-        parser.add_argument(
-            "--T",
-            default=2,
-            type=int,
-            required=False,
-            help="Temperature scaling (default=%(default)s)",
-        )
-        parser.add_argument(
-            "--replay-batch-size",
-            default=32,
-            type=int,
-            required=False,
-            help="Replay batch size (default=%(default)s)",
-        )
-
-        parser.add_argument(
-            "--ta",
-            default=False,
-            action="store_true",
-            required=False,
-            help="Teacher adaptation. If set, will update old model batch norm params "
-            "during training the new task. (default=%(default)s)",
-        )
-
-        return parser.parse_known_args(args)
-
-    def _get_optimizer(self):
-        params = self.model.parameters()
-        return torch.optim.SGD(
-            params, lr=self.lr, weight_decay=self.wd, momentum=self.momentum
-        )
+    def set_methods_defaults(self, cfg: omegaconf.DictConfig):
+        defaults = {
+            "lamb": 1,
+            "T": 2,
+            "ta": False,
+            "replay_batch_size": 32,
+        }
+        if not cfg.kwargs:
+            cfg.kwargs = omegaconf.DictConfig(defaults)
+        else:
+            for key in defaults.keys():
+                cfg.kwargs.setdefault(key, defaults[key])
 
     def train_loop(self, t, trn_loader, val_loader):
         """Contains the epochs loop"""
@@ -194,8 +137,18 @@ class Appr(Inc_Learning_Appr):
                 target_r = None
                 targets_old = None
             # Forward current model
-            outputs = self.model(data)
+            var_loss, cov_loss, feats = self.varcov_regularizer(
+                self.model.model, data, t
+            )
+            outputs = [head(feats) for head in self.model.heads]
+            varcov_loss = (
+                var_loss * self.varcov_regularizer.vcr_var_weight
+                + cov_loss * self.varcov_regularizer.vcr_cov_weight
+            )
+
             loss = self.criterion(t, outputs, target, target_r, targets_old)
+            loss += varcov_loss.mean()
+
             # Backward
             self.optimizer.zero_grad()
             loss.backward()

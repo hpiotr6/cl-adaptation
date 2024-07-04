@@ -1,0 +1,10 @@
+defaults:
+  - /data/exemplars@_group_: replay
+  - _self_
+
+name: ssil
+kwargs:
+  lamb: 0.25
+  T: 2
+  replay_batch_size: 32
+  ta: false

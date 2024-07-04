@@ -1,0 +1,59 @@
+root: analysis/2024/01.08/cifar10/cifar10_fixed_finetuning_resnet34_skips_reg_deeper_1000
+plots:
+  - type: representation_spectra
+    filename: representation_spectra_from_0.pt
+    plot_kwargs:
+      label: Rank 0
+      fmt: o--
+  - type: representation_spectra
+    filename: representation_spectra_from_1.pt
+    plot_kwargs:
+      label: Rank 1
+      fmt: o--
+  - type: representation_spectra
+    filename: representation_spectra_from_2.pt
+    plot_kwargs:
+      label: Rank 2
+      fmt: o--
+  - type: representation_spectra
+    filename: representation_spectra_from_3.pt
+    plot_kwargs:
+      label: Rank 3
+      fmt: o--
+
+  - type: representation_spectra
+    filename: representation_spectra_from_4.pt
+    plot_kwargs:
+      label: Rank 4
+      fmt: o--
+
+  - type: early_exit
+    filename: early_exit_from_0.pt
+    plot_kwargs:
+      label: Acc 0 
+      fmt: o-
+
+  - type: early_exit
+    filename: early_exit_from_1.pt
+    plot_kwargs:
+      label: Acc 1
+      fmt: o-
+
+
+  - type: early_exit
+    filename: early_exit_from_2.pt
+    plot_kwargs:
+      label: Acc 2
+      fmt: o-
+
+  - type: early_exit
+    filename: early_exit_from_3.pt
+    plot_kwargs:
+      label: Acc 3
+      fmt: o-
+
+  - type: early_exit
+    filename: early_exit_from_4.pt
+    plot_kwargs:
+      label: Acc 4 
+      fmt: o-

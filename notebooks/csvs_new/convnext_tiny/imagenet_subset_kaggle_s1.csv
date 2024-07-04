@@ -1,0 +1,17 @@
+num_tasks,approach,reg_layers,avg_acc_tag,dataset,seed
+10,finetuning,False,17.599999999999998,imagenet_subset_kaggle,1
+10,finetuning,True,24.579999999999995,imagenet_subset_kaggle,1
+10,replay,False,33.36,imagenet_subset_kaggle,1
+10,replay,True,33.85999999999999,imagenet_subset_kaggle,1
+10,ewc,False,21.1,imagenet_subset_kaggle,1
+10,ewc,True,34.52,imagenet_subset_kaggle,1
+10,lwf,False,43.44,imagenet_subset_kaggle,1
+10,lwf,True,43.26,imagenet_subset_kaggle,1
+20,finetuning,False,7.359999999999999,imagenet_subset_kaggle,1
+20,finetuning,True,13.199999999999998,imagenet_subset_kaggle,1
+20,replay,False,30.43999999999999,imagenet_subset_kaggle,1
+20,replay,True,30.680000000000003,imagenet_subset_kaggle,1
+20,ewc,False,11.14,imagenet_subset_kaggle,1
+20,ewc,True,22.3,imagenet_subset_kaggle,1
+20,lwf,False,28.76,imagenet_subset_kaggle,1
+20,lwf,True,27.82,imagenet_subset_kaggle,1
