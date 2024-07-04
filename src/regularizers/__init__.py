@@ -11,8 +11,7 @@ class VarCovRegLossInterface(Protocol):
         model: torch.nn.Module,
         inputs: torch.Tensor,
         t: int,
-    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-        ...
+    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]: ...
 
 
 @dataclass
@@ -83,6 +82,8 @@ class VarCovRegLoss:
     def regularize_step(self, feats):
         if not self.scale:
             feats = feats - feats.mean(0)
+        if len(feats.shape) > 2:
+            feats = feats.permute(0, 3, 2, 1)
         flattened_input = feats.flatten(start_dim=0, end_dim=-2)
         n, d = flattened_input.shape
 
