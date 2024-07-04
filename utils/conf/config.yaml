@@ -1,0 +1,25 @@
+root: "analysis/11.22/2_tasks/cifar100_finetuning_0_noreg"
+plots:
+  - type: representation_spectra
+    filename: representation_spectra_from_0.pt
+    plot_kwargs:
+      label: Rank_0
+      fmt: o--
+
+  - type: representation_spectra
+    filename: representation_spectra_from_1.pt
+    plot_kwargs:
+      label: Rank_1
+      fmt: o--
+
+  - type: early_exit
+    filename: early_exit_from_0.pt
+    plot_kwargs:
+      label: Acc_0
+      fmt: o-
+
+  - type: early_exit
+    filename: early_exit_from_1.pt
+    plot_kwargs:
+      label: Acc_1
+      fmt: o-

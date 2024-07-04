@@ -1,0 +1,7 @@
+root: analysis/12.09/cifar100_fixed_finetuning_resnet34_skips_reg_more/
+plots:
+  - type: representation_spectra
+    filename: black.pt
+    plot_kwargs:
+      label: Rank
+      fmt: o--
