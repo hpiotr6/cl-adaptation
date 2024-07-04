@@ -1,7 +1,7 @@
 # @package training.vcreg
 scale: false
-reg_layers: classifier$
-var_weight: 1.74
-cov_weight: 12.8
+reg_layers: .*after_skipping
+var_weight: 4.72
+cov_weight: 4.72
 smooth_cov: 1.0
 n_first_task: -1

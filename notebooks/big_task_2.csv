@@ -1,0 +1,9 @@
+reg_layers,real_name,wavg_acc_tag,misc.seed,data.datasets
+True,finetuning,28.4,2,imagenet_subset_kaggle
+False,lwf,53.5,2,imagenet_subset_kaggle
+True,lwf,54.3,2,imagenet_subset_kaggle
+True,ewc,43.6,2,imagenet_subset_kaggle
+True,replay,37.28,2,imagenet_subset_kaggle
+False,replay,33.98,2,imagenet_subset_kaggle
+False,finetuning,19.74,2,imagenet_subset_kaggle
+False,ewc,33.72,2,imagenet_subset_kaggle
