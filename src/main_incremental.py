@@ -1,5 +1,3 @@
-import argparse
-import distutils
 import importlib
 import os
 import re
@@ -16,7 +14,6 @@ from src.regularizers import NullVarCovRegLoss, VarCovRegLoss
 
 load_dotenv(find_dotenv())
 
-import os
 
 import hydra
 from omegaconf import DictConfig, OmegaConf
@@ -93,6 +90,8 @@ def main(cfg: DictConfig) -> None:
     if torch.cuda.is_available():
         torch.cuda.set_device(cfg.misc.gpu)
         device = "cuda"
+    elif torch.backends.mps.is_available():
+        device = "mps"
     else:
         if cfg.misc.gpu != "cpu":
             raise EnvironmentError("No GPU available")
@@ -279,6 +278,7 @@ def main(cfg: DictConfig) -> None:
         print("*" * 108)
         print("Task {:2d}".format(t))
         print("*" * 108)
+        print("\n")
 
         # Add head for current task
         net.add_head(taskcla[t][1])
