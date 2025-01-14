@@ -207,5 +207,7 @@ runs
 .vscode
 results
 outputs
+activations
+sign_mass_results
 
 .DS_Store
