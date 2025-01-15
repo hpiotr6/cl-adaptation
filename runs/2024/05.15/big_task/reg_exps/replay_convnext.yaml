@@ -1,0 +1,6 @@
+# @package _global_
+defaults:
+  - /training/approach: replay
+  - /networks: convnext
+  - /training/vcreg: ${training/approach}_${networks}
+  - _self_

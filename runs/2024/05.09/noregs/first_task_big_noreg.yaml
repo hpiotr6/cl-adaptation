@@ -1,0 +1,21 @@
+defaults:
+  - defaults
+  - networks: resnet
+  - training/approach: finetuning
+  - override hydra/launcher: slurm
+  - _self_
+
+
+hydra:
+  searchpath:
+    - file://src/config
+  mode: MULTIRUN
+  launcher:
+    timeout_min: 120
+  sweep:
+    dir: results/2024/${now:%m.%d}/${now:%H-%M-%S}
+misc:
+  results_path: ${hydra:sweep.dir}/${hydra:sweep.subdir}
+  save_models: false
+data:
+  nc_first_task: 50

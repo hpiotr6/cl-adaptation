@@ -1,0 +1,6 @@
+# @package _global_
+defaults:
+  - /training/approach: ewc
+  - /networks: resnet
+  - /training/vcreg/imagenet: ${training/approach}_${networks}
+  - _self_

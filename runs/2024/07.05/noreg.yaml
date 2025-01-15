@@ -1,0 +1,33 @@
+defaults:
+  - defaults
+  - training/approach: finetuning
+  - override hydra/launcher: slurm
+  - _self_
+
+
+hydra:
+  searchpath:
+    - file://src/config
+  mode: MULTIRUN
+  launcher:
+    timeout_min: 240
+  sweep:
+    dir: results/2024/${now:%m.%d}/${now:%H-%M-%S}
+  sweeper:
+      params:
+        +networks: resnet, convnext
+        data.datasets: "[imagenet_subset_kaggle], [cifar100_fixed]"
+
+misc:
+  results_path: ${hydra:sweep.dir}/${hydra:sweep.subdir}
+  save_models: false 
+data:
+  num_workers: 16
+  stop_at_task: 3
+  num_tasks: 10
+
+training:
+  nepochs: 40
+
+wandb:
+  project_name: "07.04"

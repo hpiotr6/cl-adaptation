@@ -1,0 +1,37 @@
+defaults:
+  - defaults
+  - training/vcreg: resnet
+  - training/approach: finetuning
+  - training/optimizer: sgd
+  - override hydra/launcher: slurm
+  - _self_
+
+
+hydra:
+  searchpath:
+    - file://src/config
+  mode: MULTIRUN
+  launcher:
+    timeout_min: 60
+  sweep:
+    dir: results/2024/${now:%m.%d}/${now:%H-%M-%S}
+  sweeper:
+      params:
+        data.exemplars.num_exemplars: 0, 2_000
+        training.vcreg.reg_layers: fc$, .*after_relu
+        training.vcreg.var_weight: 0.64, 1.74, 4.72, 12.80
+        training.vcreg.cov_weight: 0.64, 1.74, 4.72, 12.80
+
+
+
+misc:
+  results_path: ${hydra:sweep.dir}/${hydra:sweep.subdir}
+  save_models: false 
+data:
+  num_workers: 16
+  stop_at_task: 3
+
+training:
+  nepochs: 40
+
+

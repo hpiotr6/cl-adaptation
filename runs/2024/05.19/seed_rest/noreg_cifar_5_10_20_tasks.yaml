@@ -1,0 +1,24 @@
+defaults:
+  - defaults
+  - training/approach: lwfa
+  - override hydra/launcher: slurm
+  - _self_
+
+
+hydra:
+  searchpath:
+    - file://src/config
+  mode: MULTIRUN
+  launcher:
+    timeout_min: 2800
+  sweep:
+    dir: results/2024/${now:%m.%d}/${now:%H-%M-%S}
+  sweeper:
+      params:
+        +networks: resnet, convnext
+        data.num_tasks: 5,10,20
+        misc.seed: 1,2
+
+misc:
+  results_path: ${hydra:sweep.dir}/${hydra:sweep.subdir}
+

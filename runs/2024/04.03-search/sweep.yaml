@@ -1,0 +1,54 @@
+defaults:
+  - defaults
+  - training/vcreg: resnet
+  - training/optimizer: adam
+  - training/approach: lwf
+  - override hydra/launcher: submitit_slurm
+  - _self_
+
+misc:
+  results_path: results/2024/04.08
+  save_models: false 
+data:
+  stop_at_task: 3
+  num_workers: 16
+training:
+  nepochs: 40
+
+hydra:
+  verbose: true
+  launcher:
+    timeout_min: 60 
+    tasks_per_node: 1
+    cpus_per_task: 16
+    account: plggenerativepw2-gpu-a100
+    mem_gb: 40
+    gres: gpu:1
+    partition: plgrid-gpu-a100
+    nodes: 1
+    signal_delay_s: 600
+    max_num_timeout: 20
+    array_parallelism: 20
+    setup:
+      - module load GCC/11.2.0
+      - module load OpenMPI/4.1.2-CUDA-11.6.0
+      - eval "$(conda shell.bash hook)"
+      - source activate /net/tscratch/people/plghpiotr/.conda/mgr_env
+      - export HYDRA_FULL_ERROR=1
+
+  searchpath:
+    - file://src/config
+  mode: MULTIRUN
+  sweeper:
+      params:
+        training.approach.kwargs.lamb: 1,5,10 
+        training.vcreg.reg_layers: fc$, .*after_relu
+        training.vcreg.var_weight: 1.28, 0.64, 0.32, 0.16
+        training.vcreg.cov_weight: 0.16, 0.08, 0.04, 0.01
+
+
+
+
+
+
+            

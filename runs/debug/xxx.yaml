@@ -1,0 +1,21 @@
+defaults:
+  - defaults
+  - debug
+  - training/approach: finetuning
+  - networks: resnet
+  # - override hydra/launcher: slurm
+  - _self_
+
+
+hydra:
+  searchpath:
+    - file://src/config
+
+
+misc:
+  save_models: false 
+  gpu: 0
+data:
+  num_workers: 16
+  stop_at_task: 3
+

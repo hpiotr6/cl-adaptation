@@ -1,0 +1,21 @@
+defaults:
+  # - debug_athena
+  - override hydra/launcher: slurm
+
+hydra:
+  searchpath:
+    - file://src/config
+  mode: MULTIRUN
+  launcher:
+    timeout_min: 60
+  sweep:
+    dir: results/2024/${now:%m.%d}/${now:%H-%M-%S}
+  sweeper:
+      params:
+        +data_task: 0,1,2,3,4
+
+
+max_epochs: 100
+root: from_scratch_scheduler
+device: "cuda"
+# data_task: 1

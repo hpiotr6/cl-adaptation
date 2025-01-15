@@ -1,0 +1,6 @@
+# @package _global_
+defaults:
+  - /training/approach: lwf
+  - /networks: resnet
+  - /training/vcreg: ${training/approach}_${networks}
+  - _self_

@@ -1,0 +1,27 @@
+defaults:
+  - defaults
+  - override hydra/launcher: slurm
+  - _self_
+
+
+hydra:
+  searchpath:
+    - file://src/config
+  mode: MULTIRUN
+  launcher:
+    timeout_min: 720
+  sweep:
+    dir: results/2024/${now:%m.%d}/${now:%H-%M-%S}
+  sweeper:
+      params:
+        +exps: lwf_resnet
+
+misc:
+  results_path: ${hydra:sweep.dir}/${hydra:sweep.subdir}
+  seed: 42
+
+
+data:
+  datasets:
+    - cifar100_fixed
+  num_tasks: 20

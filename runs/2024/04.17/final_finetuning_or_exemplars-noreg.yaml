@@ -1,0 +1,30 @@
+defaults:
+  - defaults
+  - training/vcreg: null
+  - training/approach: finetuning
+  - training/optimizer: sgd
+  - override hydra/launcher: slurm
+  - _self_
+
+
+hydra:
+  searchpath:
+    - file://src/config
+  mode: MULTIRUN
+  launcher:
+    timeout_min: 120
+  sweep:
+    dir: results/2024/${now:%m.%d}/${now:%H-%M-%S}
+  sweeper:
+      params:
+        data.exemplars.num_exemplars: 0, 2_000
+
+
+misc:
+  results_path: ${hydra:sweep.dir}/${hydra:sweep.subdir}
+  save_models: true
+  exp_name: final_checkpoint
+data:
+  num_workers: 16
+
+

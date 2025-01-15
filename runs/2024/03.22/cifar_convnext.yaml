@@ -1,0 +1,17 @@
+hydra:
+  searchpath:
+    - file://src/config
+
+defaults:
+  - defaults
+  - training/vcreg: convnext
+  - training/approach: finetuning
+  - training/optimizer: adam
+  - _self_
+
+model:
+  network: convnext_cifar
+training:
+  lr: 0.001
+
+

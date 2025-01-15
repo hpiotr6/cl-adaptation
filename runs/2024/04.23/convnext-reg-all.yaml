@@ -1,0 +1,25 @@
+defaults:
+  - defaults
+  - networks: convnext
+  - training/vcreg: convnext_tv
+  - override hydra/launcher: slurm
+  - _self_
+
+
+hydra:
+  searchpath:
+    - file://src/config
+  mode: MULTIRUN
+  launcher:
+    timeout_min: 400
+  sweep:
+    dir: results/2024/${now:%m.%d}/${now:%H-%M-%S}
+  sweeper:
+      params:
+        +training/approach: finetuning, replay, ewc, lwf
+        training.vcreg.n_first_task: -1, 1
+misc:
+  results_path: ${hydra:sweep.dir}/${hydra:sweep.subdir}
+  save_models: true
+data:
+  num_workers: 16

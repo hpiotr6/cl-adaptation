@@ -1,0 +1,9 @@
+# @package _global_
+defaults:
+  - /training/approach: replay
+  - _self_
+
+training:
+  vcreg:
+    var_weight: 1.74
+    cov_weight: 12.8

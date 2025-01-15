@@ -1,0 +1,67 @@
+defaults:
+  - defaults
+  - networks: convnext
+  - training/vcreg: convnext_tv
+  - training/approach: lwf
+  - override hydra/launcher: slurm
+  - _self_
+
+
+hydra:
+  searchpath:
+    - file://src/config
+  mode: MULTIRUN
+  launcher:
+    timeout_min: 100
+  sweep:
+    dir: results/2024/${now:%m.%d}/${now:%H-%M-%S}
+  sweeper:
+      params:
+        training.vcreg: "
+          {reg_layers: .*after_skipping,
+          var_weight: 12.8,
+          cov_weight: 12.8},
+          {reg_layers: classifier$, var_weight: 0.64, cov_weight: 0.64},
+          {reg_layers: .*after_skipping,
+          var_weight: 0.64,
+          cov_weight: 0.64},
+          {reg_layers: .*after_skipping,
+          var_weight: 0.64,
+          cov_weight: 1.74},
+          {reg_layers: .*after_skipping,
+          var_weight: 4.72,
+          cov_weight: 4.72},
+          {reg_layers: .*after_skipping,
+          var_weight: 4.72,
+          cov_weight: 0.64},
+          {reg_layers: .*after_skipping,
+          var_weight: 4.72,
+          cov_weight: 12.8},
+          {reg_layers: .*after_skipping,
+          var_weight: 0.64,
+          cov_weight: 4.72},
+          {reg_layers: classifier$, var_weight: 0.64, cov_weight: 12.8},
+          {reg_layers: .*after_skipping,
+          var_weight: 1.74,
+          cov_weight: 0.64},
+          {reg_layers: .*after_skipping,
+          var_weight: 0.64,
+          cov_weight: 12.8}"
+
+
+
+misc:
+  results_path: ${hydra:sweep.dir}/${hydra:sweep.subdir}
+  save_models: false 
+data:
+  num_workers: 16
+  stop_at_task: 3
+training:
+  nepochs: 40
+wandb:
+  project_name: "04.19"
+
+
+
+
+

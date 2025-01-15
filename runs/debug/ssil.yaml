@@ -1,0 +1,27 @@
+defaults:
+  - defaults
+  - debug
+  - training/approach: ssil
+  - training/vcreg: lwf_resnet
+  - networks: resnet
+  # - override hydra/launcher: slurm
+  - _self_
+
+
+hydra:
+  searchpath:
+    - file://src/config
+
+
+
+data:
+  datasets:
+    - cifar100_fixed
+  num_tasks: 5
+  max_examples_per_class_trn: null
+  max_examples_per_class_val: null
+  max_examples_per_class_tst: null
+
+misc:
+  gpu: 0
+

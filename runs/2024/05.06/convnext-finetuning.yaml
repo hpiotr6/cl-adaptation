@@ -1,0 +1,26 @@
+defaults:
+  - defaults
+  - networks: convnext
+  - training/approach: finetuning
+  - override hydra/launcher: slurm
+  - _self_
+
+
+hydra:
+  searchpath:
+    - file://src/config
+  mode: MULTIRUN
+  launcher:
+    timeout_min: 900
+  sweep:
+    dir: results/2024/${now:%m.%d}/${now:%H-%M-%S}
+  sweeper:
+      params:
+        +training/vcreg: noreg, convnext_tv
+        data.num_tasks: 10, 20
+        data.datasets: "[imagenet_subset_kaggle], [cifar100_fixed]"
+misc:
+  results_path: ${hydra:sweep.dir}/${hydra:sweep.subdir}
+  save_models: true
+data:
+  num_workers: 16

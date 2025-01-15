@@ -1,0 +1,25 @@
+defaults:
+  - defaults
+  - override hydra/launcher: slurm
+  - _self_
+
+
+hydra:
+  searchpath:
+    - file://src/config
+  mode: MULTIRUN
+  launcher:
+    timeout_min: 1800
+  sweep:
+    dir: results/2024/${now:%m.%d}/${now:%H-%M-%S}
+  sweeper:
+      params:
+        +training/approach: finetuning, replay, ewc, lwf
+        +networks: resnet, convnext
+        data.datasets: "[imagenet_subset_kaggle], [cifar100_fixed]"
+
+misc:
+  results_path: ${hydra:sweep.dir}/${hydra:sweep.subdir}
+
+data:
+  num_tasks: 20

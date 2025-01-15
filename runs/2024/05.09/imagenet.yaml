@@ -1,0 +1,40 @@
+defaults:
+  - defaults
+  - networks: resnet
+  - training/approach: finetuning
+  - training/vcreg: resnet
+  # - override hydra/launcher: local
+  - _self_
+
+
+hydra:
+  searchpath:
+    - file://src/config
+
+data:
+  datasets:
+    - imagenet_subset_kaggle
+  batch_size: 64
+  
+  # extra_aug: "fetril"
+
+training:
+  # optimizer:
+  #   kwargs:
+  #     weight_decay: 0.002
+  vcreg:
+    scale: true
+    reg_layers: fc$
+    smooth_cov: 1.0
+    var_weight: 0.64
+    cov_weight: 12.8
+    n_first_task: -1
+
+
+
+
+wandb:
+  project_name: test_imagenet
+
+misc:
+  results_path: test

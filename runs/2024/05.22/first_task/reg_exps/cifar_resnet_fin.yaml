@@ -1,0 +1,6 @@
+# @package _global_
+defaults:
+  - /training/approach: finetuning
+  - /networks: resnet
+  - /training/vcreg: finetuning_${networks}
+  - _self_

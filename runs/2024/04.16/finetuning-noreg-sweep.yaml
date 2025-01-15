@@ -1,0 +1,36 @@
+defaults:
+  - defaults
+  - training/vcreg: null
+  - training/approach: finetuning
+  # - training/optimizer: null
+  - override hydra/launcher: slurm
+  - _self_
+
+
+hydra:
+  searchpath:
+    - file://src/config
+  mode: MULTIRUN
+  launcher:
+    timeout_min: 60
+  sweep:
+    dir: results/2024/${now:%m.%d}/${now:%H-%M-%S}
+  sweeper:
+      params:
+        +training/optimizer: sgd, adam
+        training.optimizer.kwargs.weight_decay: 0.002, 0.0002
+        training.clipping: 100, 10000
+
+
+
+misc:
+  results_path: ${hydra:sweep.dir}/${hydra:sweep.subdir}
+  save_models: false 
+data:
+  num_workers: 16
+  stop_at_task: 3
+
+training:
+  nepochs: 40
+
+

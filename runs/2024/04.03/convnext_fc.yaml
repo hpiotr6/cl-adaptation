@@ -1,0 +1,24 @@
+hydra:
+  searchpath:
+    - file://src/config
+
+defaults:
+  - defaults
+  - training/vcreg: convnext_tv
+  - training/optimizer: adam
+  - training/approach: finetuning
+  - _self_
+
+model:
+  network: convnext_tiny
+training:
+  lr: 1e-3
+  clipping: 1000.
+
+  vcreg:
+    reg_layers: classifier$
+
+
+
+
+

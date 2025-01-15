@@ -1,0 +1,16 @@
+hydra:
+  searchpath:
+    - file://src/config
+
+defaults:
+  - defaults
+  - training/vcreg: null
+  - training/optimizer: sgd
+  - training/approach: finetuning
+  - _self_
+
+model:
+  network: no_last_relu
+
+
+
