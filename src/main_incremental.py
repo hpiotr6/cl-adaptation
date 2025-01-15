@@ -412,6 +412,13 @@ def main(cfg: DictConfig) -> None:
                 task=u, iter=t, name="cov_loss", group="test", value=test_cov_loss[t, u]
             )
             logger.log_scalar(
+                task=u,
+                iter=t,
+                name="corr_loss",
+                group="test",
+                value=test_corr_loss[t, u],
+            )
+            logger.log_scalar(
                 task=u, iter=t, name="acc_taw", group="test", value=100 * acc_taw[t, u]
             )
             logger.log_scalar(
@@ -436,9 +443,10 @@ def main(cfg: DictConfig) -> None:
             if not cfg.training.vcreg:
                 continue
 
-            for var_val, cov_val, layer_name in zip(
+            for var_val, cov_val, corr_val, layer_name in zip(
                 test_var_layers[t, u],
                 test_cov_layers[t, u],
+                test_corr_layers[t, u],
                 hooked_layer_names,
             ):
                 logger.log_scalar(
@@ -453,6 +461,13 @@ def main(cfg: DictConfig) -> None:
                     iter=t,
                     name=f"layers_cov_loss/{layer_name}",
                     value=cov_val.item(),
+                    group="test",
+                )
+                logger.log_scalar(
+                    task=u,
+                    iter=t,
+                    name=f"layers_corr_loss/{layer_name}",
+                    value=corr_val.item(),
                     group="test",
                 )
 
