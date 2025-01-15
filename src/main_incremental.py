@@ -267,8 +267,10 @@ def main(cfg: DictConfig) -> None:
     test_loss = np.zeros((max_task, max_task))
     test_var_loss = np.zeros((max_task, max_task))
     test_cov_loss = np.zeros((max_task, max_task))
+    test_corr_loss = np.zeros((max_task, max_task))
     test_var_layers = np.zeros((max_task, max_task, len(hooked_layer_names)))
     test_cov_layers = np.zeros((max_task, max_task, len(hooked_layer_names)))
+    test_corr_layers = np.zeros((max_task, max_task, len(hooked_layer_names)))
 
     for t, (_, ncla) in enumerate(taskcla):
         # Early stop tasks if flag
@@ -377,10 +379,12 @@ def main(cfg: DictConfig) -> None:
                 test_loss[t, u],
                 test_var_loss[t, u],
                 test_cov_loss[t, u],
+                test_corr_loss[t, u],
                 acc_taw[t, u],
                 acc_tag[t, u],
                 test_var_layers[t, u],
                 test_cov_layers[t, u],
+                test_corr_layers[t, u],
             ) = appr.eval(u, tst_loader[u])
             if u < t:
                 forg_taw[t, u] = acc_taw[:t, u].max(0) - acc_taw[t, u]

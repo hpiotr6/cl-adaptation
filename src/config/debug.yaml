@@ -13,7 +13,7 @@ data:
 misc:
   results_path: "test_results"
   exp_name: null
-  gpu: cpu
+  gpu: mps
   log:
     - disk
   save_models: false

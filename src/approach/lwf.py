@@ -122,8 +122,9 @@ class Appr(Inc_Learning_Appr):
 
                 for epoch in range(self.pretraining_epochs):
                     for images, targets in trn_loader:
-                        images, targets = images.to(self.device), targets.to(
-                            self.device
+                        images, targets = (
+                            images.to(self.device),
+                            targets.to(self.device),
                         )
                         outputs = self.model_old(images)
                         loss = self.criterion(t, outputs, targets)
@@ -240,7 +241,9 @@ class Appr(Inc_Learning_Appr):
             self.scheduler.step()
 
     def add_varcov_loss_lwf(self, model, t, images, targets, targets_old):
-        var_loss, cov_loss, feats = self.varcov_regularizer(model.model, images, t)
+        var_loss, cov_loss, corrs, feats = self.varcov_regularizer(
+            model.model, images, t
+        )
         outputs = [head(feats) for head in model.heads]
         varcov_loss = (
             var_loss * self.varcov_regularizer.vcr_var_weight
@@ -264,9 +267,11 @@ class Appr(Inc_Learning_Appr):
                 total_num,
                 total_var,
                 total_cov,
+                total_corr,
                 total_layers_var,
                 total_layers_cov,
-            ) = (0, 0, 0, 0, 0, 0, 0, 0)
+                total_layers_corr,
+            ) = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
             self.model.eval()
             if self.model_old is not None:
                 self.model_old.eval()
@@ -281,8 +286,8 @@ class Appr(Inc_Learning_Appr):
 
                 # outputs = self.model(images)
                 # loss = self.criterion(t, outputs, targets, targets_old)
-                var_loss, cov_loss, feats = self.varcov_regularizer(
-                    self.model.model, images, t
+                var_loss, cov_loss, corrs, feats = self.varcov_regularizer(
+                    self.model.model, images, t, compute_corr=True
                 )
                 outputs = [head(feats) for head in self.model.heads]
                 # varcov_loss = var_loss + cov_loss
@@ -301,9 +306,11 @@ class Appr(Inc_Learning_Appr):
 
                 total_var += var_loss.mean().item() * len(targets)
                 total_cov += cov_loss.mean().item() * len(targets)
+                total_corr += corrs.mean().item() * len(targets)
 
                 total_layers_var += var_loss * len(targets)
                 total_layers_cov += cov_loss * len(targets)
+                total_layers_corr += corrs * len(targets)
 
                 total_acc_taw += hits_taw.sum().data.cpu().numpy().item()
                 total_acc_tag += hits_tag.sum().data.cpu().numpy().item()
@@ -319,10 +326,12 @@ class Appr(Inc_Learning_Appr):
             total_loss / total_num,
             total_var / total_num,
             total_cov / total_num,
+            total_corr / total_num,
             total_acc_taw / total_num,
             total_acc_tag / total_num,
             (total_layers_var / total_num).cpu(),
             (total_layers_cov / total_num).cpu(),
+            (total_layers_corr / total_num).cpu(),
         )
 
     def cross_entropy(self, outputs, targets, exp=1.0, size_average=True, eps=1e-5):
@@ -347,8 +356,9 @@ class Appr(Inc_Learning_Appr):
         """Returns the loss value"""
         if t > 0 and outputs_old is not None:
             # Knowledge distillation loss for all previous tasks
-            kd_outputs, kd_outputs_old = torch.cat(outputs[:t], dim=1), torch.cat(
-                outputs_old[:t], dim=1
+            kd_outputs, kd_outputs_old = (
+                torch.cat(outputs[:t], dim=1),
+                torch.cat(outputs_old[:t], dim=1),
             )
 
             if self.mc:
