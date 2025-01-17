@@ -1,0 +1,25 @@
+[2024-08-16 09:44:34,172][HYDRA] Submitit 'slurm' sweep output dir : results/2024/08.16/09-44-30
+[2024-08-16 09:44:34,174][HYDRA] 	#0 : +training/approach=finetuning data.num_tasks=10 misc.seed=0
+[2024-08-16 09:44:34,181][HYDRA] 	#1 : +training/approach=finetuning data.num_tasks=10 misc.seed=1
+[2024-08-16 09:44:34,187][HYDRA] 	#2 : +training/approach=finetuning data.num_tasks=10 misc.seed=2
+[2024-08-16 09:44:34,194][HYDRA] 	#3 : +training/approach=finetuning data.num_tasks=20 misc.seed=0
+[2024-08-16 09:44:34,200][HYDRA] 	#4 : +training/approach=finetuning data.num_tasks=20 misc.seed=1
+[2024-08-16 09:44:34,207][HYDRA] 	#5 : +training/approach=finetuning data.num_tasks=20 misc.seed=2
+[2024-08-16 09:44:34,213][HYDRA] 	#6 : +training/approach=replay data.num_tasks=10 misc.seed=0
+[2024-08-16 09:44:34,220][HYDRA] 	#7 : +training/approach=replay data.num_tasks=10 misc.seed=1
+[2024-08-16 09:44:34,226][HYDRA] 	#8 : +training/approach=replay data.num_tasks=10 misc.seed=2
+[2024-08-16 09:44:34,232][HYDRA] 	#9 : +training/approach=replay data.num_tasks=20 misc.seed=0
+[2024-08-16 09:44:34,239][HYDRA] 	#10 : +training/approach=replay data.num_tasks=20 misc.seed=1
+[2024-08-16 09:44:34,245][HYDRA] 	#11 : +training/approach=replay data.num_tasks=20 misc.seed=2
+[2024-08-16 09:44:34,253][HYDRA] 	#12 : +training/approach=lwf data.num_tasks=10 misc.seed=0
+[2024-08-16 09:44:34,260][HYDRA] 	#13 : +training/approach=lwf data.num_tasks=10 misc.seed=1
+[2024-08-16 09:44:34,267][HYDRA] 	#14 : +training/approach=lwf data.num_tasks=10 misc.seed=2
+[2024-08-16 09:44:34,274][HYDRA] 	#15 : +training/approach=lwf data.num_tasks=20 misc.seed=0
+[2024-08-16 09:44:34,280][HYDRA] 	#16 : +training/approach=lwf data.num_tasks=20 misc.seed=1
+[2024-08-16 09:44:34,287][HYDRA] 	#17 : +training/approach=lwf data.num_tasks=20 misc.seed=2
+[2024-08-16 09:44:34,294][HYDRA] 	#18 : +training/approach=ewc data.num_tasks=10 misc.seed=0
+[2024-08-16 09:44:34,300][HYDRA] 	#19 : +training/approach=ewc data.num_tasks=10 misc.seed=1
+[2024-08-16 09:44:34,307][HYDRA] 	#20 : +training/approach=ewc data.num_tasks=10 misc.seed=2
+[2024-08-16 09:44:34,314][HYDRA] 	#21 : +training/approach=ewc data.num_tasks=20 misc.seed=0
+[2024-08-16 09:44:34,320][HYDRA] 	#22 : +training/approach=ewc data.num_tasks=20 misc.seed=1
+[2024-08-16 09:44:34,327][HYDRA] 	#23 : +training/approach=ewc data.num_tasks=20 misc.seed=2

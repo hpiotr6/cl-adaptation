@@ -1,0 +1,12 @@
+[2024-04-23 00:08:33,551][HYDRA] Submitit 'slurm' sweep output dir : results/2024/04.23/00-08-32
+[2024-04-23 00:08:33,553][HYDRA] 	#0 : training.vcreg={reg_layers:.*after_skipping,var_weight:12.8,cov_weight:12.8}
+[2024-04-23 00:08:33,560][HYDRA] 	#1 : training.vcreg={reg_layers:classifier$,var_weight:0.64,cov_weight:0.64}
+[2024-04-23 00:08:33,567][HYDRA] 	#2 : training.vcreg={reg_layers:.*after_skipping,var_weight:0.64,cov_weight:0.64}
+[2024-04-23 00:08:33,574][HYDRA] 	#3 : training.vcreg={reg_layers:.*after_skipping,var_weight:0.64,cov_weight:1.74}
+[2024-04-23 00:08:33,581][HYDRA] 	#4 : training.vcreg={reg_layers:.*after_skipping,var_weight:4.72,cov_weight:4.72}
+[2024-04-23 00:08:33,587][HYDRA] 	#5 : training.vcreg={reg_layers:.*after_skipping,var_weight:4.72,cov_weight:0.64}
+[2024-04-23 00:08:33,594][HYDRA] 	#6 : training.vcreg={reg_layers:.*after_skipping,var_weight:4.72,cov_weight:12.8}
+[2024-04-23 00:08:33,729][HYDRA] 	#7 : training.vcreg={reg_layers:.*after_skipping,var_weight:0.64,cov_weight:4.72}
+[2024-04-23 00:08:33,736][HYDRA] 	#8 : training.vcreg={reg_layers:classifier$,var_weight:0.64,cov_weight:12.8}
+[2024-04-23 00:08:33,743][HYDRA] 	#9 : training.vcreg={reg_layers:.*after_skipping,var_weight:1.74,cov_weight:0.64}
+[2024-04-23 00:08:33,751][HYDRA] 	#10 : training.vcreg={reg_layers:.*after_skipping,var_weight:0.64,cov_weight:12.8}

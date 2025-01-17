@@ -1,0 +1,22 @@
+[2024-05-12 18:28:42,212][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.12/18-28-40
+[2024-05-12 18:28:42,214][HYDRA] 	#0 : +training/approach=finetuning data.datasets=[imagenet_subset_kaggle]
+[2024-05-12 18:28:42,221][HYDRA] 	#1 : +training/approach=finetuning data.datasets=[cifar100_fixed]
+[2024-05-12 18:28:42,228][HYDRA] 	#2 : +training/approach=ewc data.datasets=[imagenet_subset_kaggle]
+[2024-05-12 18:28:42,234][HYDRA] 	#3 : +training/approach=ewc data.datasets=[cifar100_fixed]
+[2024-05-12 18:28:42,240][HYDRA] 	#4 : +training/approach=lwf data.datasets=[imagenet_subset_kaggle]
+[2024-05-12 18:28:42,247][HYDRA] 	#5 : +training/approach=lwf data.datasets=[cifar100_fixed]
+[2024-05-12 18:28:42,253][HYDRA] 	#6 : +training/approach=replay data.datasets=[imagenet_subset_kaggle]
+[2024-05-12 18:28:42,260][HYDRA] 	#7 : +training/approach=replay data.datasets=[cifar100_fixed]
+Error executing job with overrides: ['+training/approach=finetuning', 'data.datasets=[imagenet_subset_kaggle]']
+Traceback (most recent call last):
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 466, in <lambda>
+    lambda: hydra.multirun(
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/hydra.py", line 162, in multirun
+    ret = sweeper.sweep(arguments=task_overrides)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/core_plugins/basic_sweeper.py", line 181, in sweep
+    _ = r.return_value
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+submitit.core.utils.UncompletedJobError: Job not requeued because: timed-out too many times.

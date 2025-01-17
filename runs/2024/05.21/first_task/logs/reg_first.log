@@ -1,0 +1,3 @@
+[2024-05-21 18:49:04,653][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.21/18-49-03
+[2024-05-21 18:49:04,655][HYDRA] 	#0 : +reg_exps=cifar_resnet_fin misc.seed=1
+[2024-05-21 18:49:04,662][HYDRA] 	#1 : +reg_exps=cifar_resnet_fin misc.seed=2

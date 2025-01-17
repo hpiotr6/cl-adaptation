@@ -1,0 +1,9 @@
+[2024-05-20 17:32:09,538][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.20/17-32-08
+[2024-05-20 17:32:09,541][HYDRA] 	#0 : +imagenet_reg_exps=ewc_resnet data.num_tasks=10 misc.seed=1
+[2024-05-20 17:32:09,548][HYDRA] 	#1 : +imagenet_reg_exps=ewc_resnet data.num_tasks=10 misc.seed=2
+[2024-05-20 17:32:09,555][HYDRA] 	#2 : +imagenet_reg_exps=ewc_resnet data.num_tasks=20 misc.seed=1
+[2024-05-20 17:32:09,562][HYDRA] 	#3 : +imagenet_reg_exps=ewc_resnet data.num_tasks=20 misc.seed=2
+[2024-05-20 17:32:09,569][HYDRA] 	#4 : +imagenet_reg_exps=lwf_convnext data.num_tasks=10 misc.seed=1
+[2024-05-20 17:32:09,576][HYDRA] 	#5 : +imagenet_reg_exps=lwf_convnext data.num_tasks=10 misc.seed=2
+[2024-05-20 17:32:09,584][HYDRA] 	#6 : +imagenet_reg_exps=lwf_convnext data.num_tasks=20 misc.seed=1
+[2024-05-20 17:32:09,591][HYDRA] 	#7 : +imagenet_reg_exps=lwf_convnext data.num_tasks=20 misc.seed=2

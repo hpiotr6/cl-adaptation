@@ -1,0 +1,6 @@
+[2024-07-18 16:58:05,935][HYDRA] Submitit 'slurm' sweep output dir : results/2024/07.18/16-58-05
+[2024-07-18 16:58:05,937][HYDRA] 	#0 : training.vcreg.var_weight=0.64
+[2024-07-18 16:58:05,944][HYDRA] 	#1 : training.vcreg.var_weight=1.74
+[2024-07-18 16:58:05,951][HYDRA] 	#2 : training.vcreg.var_weight=4.72
+[2024-07-18 16:58:05,958][HYDRA] 	#3 : training.vcreg.var_weight=12.8
+[2024-07-18 16:58:05,965][HYDRA] 	#4 : training.vcreg.var_weight=25.6

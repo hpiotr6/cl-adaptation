@@ -1,0 +1,38 @@
+[2024-07-11 23:58:21,586][HYDRA] Submitit 'slurm' sweep output dir : results/2024/07.11/23-58-18
+[2024-07-11 23:58:21,587][HYDRA] 	#0 : +training/approach=finetuning data.num_tasks=5 training.vcreg={var_weight:12.8,cov_weight:4.72}
+[2024-07-11 23:58:21,594][HYDRA] 	#1 : +training/approach=finetuning data.num_tasks=5 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:58:21,601][HYDRA] 	#2 : +training/approach=finetuning data.num_tasks=10 training.vcreg={var_weight:12.8,cov_weight:4.72}
+[2024-07-11 23:58:21,608][HYDRA] 	#3 : +training/approach=finetuning data.num_tasks=10 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:58:21,615][HYDRA] 	#4 : +training/approach=finetuning data.num_tasks=20 training.vcreg={var_weight:12.8,cov_weight:4.72}
+[2024-07-11 23:58:21,622][HYDRA] 	#5 : +training/approach=finetuning data.num_tasks=20 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:58:21,629][HYDRA] 	#6 : +training/approach=replay data.num_tasks=5 training.vcreg={var_weight:12.8,cov_weight:4.72}
+[2024-07-11 23:58:21,636][HYDRA] 	#7 : +training/approach=replay data.num_tasks=5 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:58:21,644][HYDRA] 	#8 : +training/approach=replay data.num_tasks=10 training.vcreg={var_weight:12.8,cov_weight:4.72}
+[2024-07-11 23:58:21,651][HYDRA] 	#9 : +training/approach=replay data.num_tasks=10 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:58:21,658][HYDRA] 	#10 : +training/approach=replay data.num_tasks=20 training.vcreg={var_weight:12.8,cov_weight:4.72}
+[2024-07-11 23:58:21,665][HYDRA] 	#11 : +training/approach=replay data.num_tasks=20 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:58:21,672][HYDRA] 	#12 : +training/approach=lwf data.num_tasks=5 training.vcreg={var_weight:12.8,cov_weight:4.72}
+[2024-07-11 23:58:21,679][HYDRA] 	#13 : +training/approach=lwf data.num_tasks=5 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:58:21,686][HYDRA] 	#14 : +training/approach=lwf data.num_tasks=10 training.vcreg={var_weight:12.8,cov_weight:4.72}
+[2024-07-11 23:58:21,693][HYDRA] 	#15 : +training/approach=lwf data.num_tasks=10 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:58:21,700][HYDRA] 	#16 : +training/approach=lwf data.num_tasks=20 training.vcreg={var_weight:12.8,cov_weight:4.72}
+[2024-07-11 23:58:21,707][HYDRA] 	#17 : +training/approach=lwf data.num_tasks=20 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:58:21,714][HYDRA] 	#18 : +training/approach=ewc data.num_tasks=5 training.vcreg={var_weight:12.8,cov_weight:4.72}
+[2024-07-11 23:58:21,722][HYDRA] 	#19 : +training/approach=ewc data.num_tasks=5 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:58:21,729][HYDRA] 	#20 : +training/approach=ewc data.num_tasks=10 training.vcreg={var_weight:12.8,cov_weight:4.72}
+[2024-07-11 23:58:21,736][HYDRA] 	#21 : +training/approach=ewc data.num_tasks=10 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:58:21,743][HYDRA] 	#22 : +training/approach=ewc data.num_tasks=20 training.vcreg={var_weight:12.8,cov_weight:4.72}
+[2024-07-11 23:58:21,750][HYDRA] 	#23 : +training/approach=ewc data.num_tasks=20 training.vcreg={var_weight:1.74,cov_weight:12.8}
+Error executing job with overrides: ['+training/approach=finetuning', 'data.num_tasks=20', 'training.vcreg={var_weight:1.74,cov_weight:12.8}']
+Traceback (most recent call last):
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 466, in <lambda>
+    lambda: hydra.multirun(
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/hydra.py", line 162, in multirun
+    ret = sweeper.sweep(arguments=task_overrides)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/core_plugins/basic_sweeper.py", line 181, in sweep
+    _ = r.return_value
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+OSError: No GPU available

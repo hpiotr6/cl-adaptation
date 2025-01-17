@@ -1,0 +1,4 @@
+[2024-05-20 13:12:59,232][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.20/13-12-58
+[2024-05-20 13:12:59,234][HYDRA] 	#0 : misc.seed=0
+[2024-05-20 13:12:59,241][HYDRA] 	#1 : misc.seed=1
+[2024-05-20 13:12:59,248][HYDRA] 	#2 : misc.seed=2

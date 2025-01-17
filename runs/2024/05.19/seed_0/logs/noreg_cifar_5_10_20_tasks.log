@@ -1,0 +1,7 @@
+[2024-05-20 01:42:30,402][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.20/01-42-29
+[2024-05-20 01:42:30,404][HYDRA] 	#0 : +networks=resnet data.num_tasks=5
+[2024-05-20 01:42:30,412][HYDRA] 	#1 : +networks=resnet data.num_tasks=10
+[2024-05-20 01:42:30,418][HYDRA] 	#2 : +networks=resnet data.num_tasks=20
+[2024-05-20 01:42:30,424][HYDRA] 	#3 : +networks=convnext data.num_tasks=5
+[2024-05-20 01:42:30,431][HYDRA] 	#4 : +networks=convnext data.num_tasks=10
+[2024-05-20 01:42:30,437][HYDRA] 	#5 : +networks=convnext data.num_tasks=20

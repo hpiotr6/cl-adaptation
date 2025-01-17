@@ -1,0 +1,25 @@
+[2024-07-11 23:57:58,976][HYDRA] Submitit 'slurm' sweep output dir : results/2024/07.11/23-57-55
+[2024-07-11 23:57:58,978][HYDRA] 	#0 : +training/approach=finetuning data.num_tasks=5 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:57:58,985][HYDRA] 	#1 : +training/approach=finetuning data.num_tasks=5 training.vcreg={var_weight:0.64,cov_weight:12.8}
+[2024-07-11 23:57:58,991][HYDRA] 	#2 : +training/approach=finetuning data.num_tasks=10 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:57:58,998][HYDRA] 	#3 : +training/approach=finetuning data.num_tasks=10 training.vcreg={var_weight:0.64,cov_weight:12.8}
+[2024-07-11 23:57:59,004][HYDRA] 	#4 : +training/approach=finetuning data.num_tasks=20 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:57:59,011][HYDRA] 	#5 : +training/approach=finetuning data.num_tasks=20 training.vcreg={var_weight:0.64,cov_weight:12.8}
+[2024-07-11 23:57:59,017][HYDRA] 	#6 : +training/approach=replay data.num_tasks=5 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:57:59,024][HYDRA] 	#7 : +training/approach=replay data.num_tasks=5 training.vcreg={var_weight:0.64,cov_weight:12.8}
+[2024-07-11 23:57:59,030][HYDRA] 	#8 : +training/approach=replay data.num_tasks=10 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:57:59,036][HYDRA] 	#9 : +training/approach=replay data.num_tasks=10 training.vcreg={var_weight:0.64,cov_weight:12.8}
+[2024-07-11 23:57:59,043][HYDRA] 	#10 : +training/approach=replay data.num_tasks=20 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:57:59,049][HYDRA] 	#11 : +training/approach=replay data.num_tasks=20 training.vcreg={var_weight:0.64,cov_weight:12.8}
+[2024-07-11 23:57:59,056][HYDRA] 	#12 : +training/approach=lwf data.num_tasks=5 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:57:59,063][HYDRA] 	#13 : +training/approach=lwf data.num_tasks=5 training.vcreg={var_weight:0.64,cov_weight:12.8}
+[2024-07-11 23:57:59,069][HYDRA] 	#14 : +training/approach=lwf data.num_tasks=10 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:57:59,076][HYDRA] 	#15 : +training/approach=lwf data.num_tasks=10 training.vcreg={var_weight:0.64,cov_weight:12.8}
+[2024-07-11 23:57:59,082][HYDRA] 	#16 : +training/approach=lwf data.num_tasks=20 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:57:59,089][HYDRA] 	#17 : +training/approach=lwf data.num_tasks=20 training.vcreg={var_weight:0.64,cov_weight:12.8}
+[2024-07-11 23:57:59,095][HYDRA] 	#18 : +training/approach=ewc data.num_tasks=5 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:57:59,101][HYDRA] 	#19 : +training/approach=ewc data.num_tasks=5 training.vcreg={var_weight:0.64,cov_weight:12.8}
+[2024-07-11 23:57:59,108][HYDRA] 	#20 : +training/approach=ewc data.num_tasks=10 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:57:59,115][HYDRA] 	#21 : +training/approach=ewc data.num_tasks=10 training.vcreg={var_weight:0.64,cov_weight:12.8}
+[2024-07-11 23:57:59,121][HYDRA] 	#22 : +training/approach=ewc data.num_tasks=20 training.vcreg={var_weight:1.74,cov_weight:12.8}
+[2024-07-11 23:57:59,127][HYDRA] 	#23 : +training/approach=ewc data.num_tasks=20 training.vcreg={var_weight:0.64,cov_weight:12.8}

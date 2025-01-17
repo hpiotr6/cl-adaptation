@@ -1,0 +1,19 @@
+[2024-05-10 18:15:04,670][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.10/18-15-02
+[2024-05-10 18:15:04,672][HYDRA] 	#0 : training.vcreg.reg_layers=.*before_relu training.vcreg.var_weight=0.64 training.vcreg.cov_weight=0.64
+[2024-05-10 18:15:04,678][HYDRA] 	#1 : training.vcreg.reg_layers=.*before_relu training.vcreg.var_weight=0.64 training.vcreg.cov_weight=1.74
+[2024-05-10 18:15:04,685][HYDRA] 	#2 : training.vcreg.reg_layers=.*before_relu training.vcreg.var_weight=0.64 training.vcreg.cov_weight=12.8
+[2024-05-10 18:15:04,691][HYDRA] 	#3 : training.vcreg.reg_layers=.*before_relu training.vcreg.var_weight=1.74 training.vcreg.cov_weight=0.64
+[2024-05-10 18:15:04,698][HYDRA] 	#4 : training.vcreg.reg_layers=.*before_relu training.vcreg.var_weight=1.74 training.vcreg.cov_weight=1.74
+[2024-05-10 18:15:04,704][HYDRA] 	#5 : training.vcreg.reg_layers=.*before_relu training.vcreg.var_weight=1.74 training.vcreg.cov_weight=12.8
+[2024-05-10 18:15:04,711][HYDRA] 	#6 : training.vcreg.reg_layers=.*before_relu training.vcreg.var_weight=12.8 training.vcreg.cov_weight=0.64
+[2024-05-10 18:15:04,717][HYDRA] 	#7 : training.vcreg.reg_layers=.*before_relu training.vcreg.var_weight=12.8 training.vcreg.cov_weight=1.74
+[2024-05-10 18:15:04,724][HYDRA] 	#8 : training.vcreg.reg_layers=.*before_relu training.vcreg.var_weight=12.8 training.vcreg.cov_weight=12.8
+[2024-05-10 18:15:04,730][HYDRA] 	#9 : training.vcreg.reg_layers=.*before_skip training.vcreg.var_weight=0.64 training.vcreg.cov_weight=0.64
+[2024-05-10 18:15:04,737][HYDRA] 	#10 : training.vcreg.reg_layers=.*before_skip training.vcreg.var_weight=0.64 training.vcreg.cov_weight=1.74
+[2024-05-10 18:15:04,743][HYDRA] 	#11 : training.vcreg.reg_layers=.*before_skip training.vcreg.var_weight=0.64 training.vcreg.cov_weight=12.8
+[2024-05-10 18:15:04,750][HYDRA] 	#12 : training.vcreg.reg_layers=.*before_skip training.vcreg.var_weight=1.74 training.vcreg.cov_weight=0.64
+[2024-05-10 18:15:04,757][HYDRA] 	#13 : training.vcreg.reg_layers=.*before_skip training.vcreg.var_weight=1.74 training.vcreg.cov_weight=1.74
+[2024-05-10 18:15:04,763][HYDRA] 	#14 : training.vcreg.reg_layers=.*before_skip training.vcreg.var_weight=1.74 training.vcreg.cov_weight=12.8
+[2024-05-10 18:15:04,770][HYDRA] 	#15 : training.vcreg.reg_layers=.*before_skip training.vcreg.var_weight=12.8 training.vcreg.cov_weight=0.64
+[2024-05-10 18:15:04,776][HYDRA] 	#16 : training.vcreg.reg_layers=.*before_skip training.vcreg.var_weight=12.8 training.vcreg.cov_weight=1.74
+[2024-05-10 18:15:04,783][HYDRA] 	#17 : training.vcreg.reg_layers=.*before_skip training.vcreg.var_weight=12.8 training.vcreg.cov_weight=12.8

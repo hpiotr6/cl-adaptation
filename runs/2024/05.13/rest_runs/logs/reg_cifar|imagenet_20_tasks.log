@@ -1,0 +1,39 @@
+[2024-05-13 13:30:14,582][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.13/13-30-12
+[2024-05-13 13:30:14,583][HYDRA] 	#0 : +reg_exps=ewc_convnext data.datasets=[imagenet_subset_kaggle]
+[2024-05-13 13:30:14,591][HYDRA] 	#1 : +reg_exps=ewc_convnext data.datasets=[cifar100_fixed]
+[2024-05-13 13:30:14,597][HYDRA] 	#2 : +reg_exps=ewc_resnet data.datasets=[imagenet_subset_kaggle]
+[2024-05-13 13:30:14,604][HYDRA] 	#3 : +reg_exps=ewc_resnet data.datasets=[cifar100_fixed]
+[2024-05-13 13:30:14,610][HYDRA] 	#4 : +reg_exps=finetuning_convnext data.datasets=[imagenet_subset_kaggle]
+[2024-05-13 13:30:14,617][HYDRA] 	#5 : +reg_exps=finetuning_convnext data.datasets=[cifar100_fixed]
+[2024-05-13 13:30:14,623][HYDRA] 	#6 : +reg_exps=finetuning_resnet data.datasets=[imagenet_subset_kaggle]
+[2024-05-13 13:30:14,630][HYDRA] 	#7 : +reg_exps=finetuning_resnet data.datasets=[cifar100_fixed]
+[2024-05-13 13:30:14,636][HYDRA] 	#8 : +reg_exps=lwf_convnext data.datasets=[imagenet_subset_kaggle]
+[2024-05-13 13:30:14,643][HYDRA] 	#9 : +reg_exps=lwf_convnext data.datasets=[cifar100_fixed]
+[2024-05-13 13:30:14,649][HYDRA] 	#10 : +reg_exps=lwf_resnet data.datasets=[imagenet_subset_kaggle]
+[2024-05-13 13:30:14,656][HYDRA] 	#11 : +reg_exps=lwf_resnet data.datasets=[cifar100_fixed]
+[2024-05-13 13:30:14,662][HYDRA] 	#12 : +reg_exps=replay_convnext data.datasets=[imagenet_subset_kaggle]
+[2024-05-13 13:30:14,669][HYDRA] 	#13 : +reg_exps=replay_convnext data.datasets=[cifar100_fixed]
+[2024-05-13 13:30:14,675][HYDRA] 	#14 : +reg_exps=replay_resnet data.datasets=[imagenet_subset_kaggle]
+[2024-05-13 13:30:14,682][HYDRA] 	#15 : +reg_exps=replay_resnet data.datasets=[cifar100_fixed]
+Error executing job with overrides: ['+reg_exps=lwf_convnext', 'data.datasets=[imagenet_subset_kaggle]']
+Traceback (most recent call last):
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 466, in <lambda>
+    lambda: hydra.multirun(
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/hydra.py", line 162, in multirun
+    ret = sweeper.sweep(arguments=task_overrides)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/core_plugins/basic_sweeper.py", line 181, in sweep
+    _ = r.return_value
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+submitit.core.utils.UncompletedJobError: Job not requeued because: timed-out too many times.
+ra_submitit_launcher/submitit_launcher.py", line 146, in <listcomp>
+    return [j.results()[0] for j in jobs]
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/core.py", line 289, in results
+    outcome, result = self._get_outcome_and_result()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/core.py", line 384, in _get_outcome_and_result
+    raise utils.UncompletedJobError("\n".join(message))
+submitit.core.utils.UncompletedJobError: Job 696636_0 (task: 0) with path /net/tscratch/people/plghpiotr/cl-adaptation/results/2024/05.13/13-09-36/.submitit/696636_0/696636_0_0_result.pkl
+has not produced any output (state: CANCELLED by 114263)
+No output/error stream produced ! Check: /net/tscratch/people/plghpiotr/cl-adaptation/results/2024/05.13/13-09-36/.submitit/696636_0/696636_0_0_log.out

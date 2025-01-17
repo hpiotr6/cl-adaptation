@@ -1,0 +1,2 @@
+[2024-05-17 16:50:20,701][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.17/16-50-20
+[2024-05-17 16:50:20,704][HYDRA] 	#0 : +exps=lwf_resnet

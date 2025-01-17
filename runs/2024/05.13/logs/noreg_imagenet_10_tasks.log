@@ -1,0 +1,22 @@
+[2024-05-13 12:59:02,861][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.13/12-59-01
+[2024-05-13 12:59:02,863][HYDRA] 	#0 : +training/approach=finetuning +networks=resnet
+[2024-05-13 12:59:02,870][HYDRA] 	#1 : +training/approach=finetuning +networks=convnext
+[2024-05-13 12:59:02,877][HYDRA] 	#2 : +training/approach=replay +networks=resnet
+[2024-05-13 12:59:02,884][HYDRA] 	#3 : +training/approach=replay +networks=convnext
+[2024-05-13 12:59:02,891][HYDRA] 	#4 : +training/approach=ewc +networks=resnet
+[2024-05-13 12:59:02,897][HYDRA] 	#5 : +training/approach=ewc +networks=convnext
+[2024-05-13 12:59:02,904][HYDRA] 	#6 : +training/approach=lwf +networks=resnet
+[2024-05-13 12:59:02,910][HYDRA] 	#7 : +training/approach=lwf +networks=convnext
+Error executing job with overrides: ['+training/approach=lwf', '+networks=convnext']
+Traceback (most recent call last):
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 466, in <lambda>
+    lambda: hydra.multirun(
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/hydra.py", line 162, in multirun
+    ret = sweeper.sweep(arguments=task_overrides)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/core_plugins/basic_sweeper.py", line 181, in sweep
+    _ = r.return_value
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+submitit.core.utils.UncompletedJobError: Job not requeued because: timed-out too many times.

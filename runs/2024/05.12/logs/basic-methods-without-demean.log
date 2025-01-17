@@ -1,0 +1,5 @@
+[2024-05-12 13:34:57,886][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.12/13-34-57
+[2024-05-12 13:34:57,888][HYDRA] 	#0 : +training/approach=finetuning
+[2024-05-12 13:34:57,895][HYDRA] 	#1 : +training/approach=ewc
+[2024-05-12 13:34:57,902][HYDRA] 	#2 : +training/approach=lwf
+[2024-05-12 13:34:57,909][HYDRA] 	#3 : +training/approach=replay

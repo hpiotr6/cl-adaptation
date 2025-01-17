@@ -1,0 +1,19 @@
+[2024-06-17 17:59:03,633][HYDRA] Submitit 'slurm' sweep output dir : results/2024/06.17/17-59-00
+[2024-06-17 17:59:03,635][HYDRA] 	#0 : +imagenet_reg_exps=ewc_resnet data.num_tasks=10 misc.seed=0
+[2024-06-17 17:59:03,642][HYDRA] 	#1 : +imagenet_reg_exps=ewc_resnet data.num_tasks=10 misc.seed=1
+[2024-06-17 17:59:03,648][HYDRA] 	#2 : +imagenet_reg_exps=ewc_resnet data.num_tasks=10 misc.seed=2
+[2024-06-17 17:59:03,656][HYDRA] 	#3 : +imagenet_reg_exps=ewc_resnet data.num_tasks=20 misc.seed=0
+[2024-06-17 17:59:03,662][HYDRA] 	#4 : +imagenet_reg_exps=ewc_resnet data.num_tasks=20 misc.seed=1
+[2024-06-17 17:59:03,669][HYDRA] 	#5 : +imagenet_reg_exps=ewc_resnet data.num_tasks=20 misc.seed=2
+[2024-06-17 17:59:03,675][HYDRA] 	#6 : +imagenet_reg_exps=finetuning_resnet data.num_tasks=10 misc.seed=0
+[2024-06-17 17:59:03,681][HYDRA] 	#7 : +imagenet_reg_exps=finetuning_resnet data.num_tasks=10 misc.seed=1
+[2024-06-17 17:59:03,688][HYDRA] 	#8 : +imagenet_reg_exps=finetuning_resnet data.num_tasks=10 misc.seed=2
+[2024-06-17 17:59:03,695][HYDRA] 	#9 : +imagenet_reg_exps=finetuning_resnet data.num_tasks=20 misc.seed=0
+[2024-06-17 17:59:03,701][HYDRA] 	#10 : +imagenet_reg_exps=finetuning_resnet data.num_tasks=20 misc.seed=1
+[2024-06-17 17:59:03,708][HYDRA] 	#11 : +imagenet_reg_exps=finetuning_resnet data.num_tasks=20 misc.seed=2
+[2024-06-17 17:59:03,714][HYDRA] 	#12 : +imagenet_reg_exps=lwf_convnext data.num_tasks=10 misc.seed=0
+[2024-06-17 17:59:03,720][HYDRA] 	#13 : +imagenet_reg_exps=lwf_convnext data.num_tasks=10 misc.seed=1
+[2024-06-17 17:59:03,727][HYDRA] 	#14 : +imagenet_reg_exps=lwf_convnext data.num_tasks=10 misc.seed=2
+[2024-06-17 17:59:03,733][HYDRA] 	#15 : +imagenet_reg_exps=lwf_convnext data.num_tasks=20 misc.seed=0
+[2024-06-17 17:59:03,740][HYDRA] 	#16 : +imagenet_reg_exps=lwf_convnext data.num_tasks=20 misc.seed=1
+[2024-06-17 17:59:03,747][HYDRA] 	#17 : +imagenet_reg_exps=lwf_convnext data.num_tasks=20 misc.seed=2

@@ -1,0 +1,5 @@
+[2024-04-23 17:44:13,596][HYDRA] Submitit 'slurm' sweep output dir : results/2024/04.23/17-44-12
+[2024-04-23 17:44:13,598][HYDRA] 	#0 : training.vcreg={reg_layers:.*after_skipping,var_weight:1.74,cov_weight:4.72} training.vcreg.n_first_task=-1
+[2024-04-23 17:44:13,605][HYDRA] 	#1 : training.vcreg={reg_layers:.*after_skipping,var_weight:1.74,cov_weight:4.72} training.vcreg.n_first_task=1
+[2024-04-23 17:44:13,612][HYDRA] 	#2 : training.vcreg={reg_layers:.*after_skipping,var_weight:1.74,cov_weight:12.8} training.vcreg.n_first_task=-1
+[2024-04-23 17:44:13,619][HYDRA] 	#3 : training.vcreg={reg_layers:.*after_skipping,var_weight:1.74,cov_weight:12.8} training.vcreg.n_first_task=1

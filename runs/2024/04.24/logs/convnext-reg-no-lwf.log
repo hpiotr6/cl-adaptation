@@ -1,0 +1,4 @@
+[2024-04-24 13:34:54,108][HYDRA] Submitit 'slurm' sweep output dir : results/2024/04.24/13-34-53
+[2024-04-24 13:34:54,111][HYDRA] 	#0 : +convnext_exps=ewc
+[2024-04-24 13:34:54,118][HYDRA] 	#1 : +convnext_exps=finetuning
+[2024-04-24 13:34:54,126][HYDRA] 	#2 : +convnext_exps=replay

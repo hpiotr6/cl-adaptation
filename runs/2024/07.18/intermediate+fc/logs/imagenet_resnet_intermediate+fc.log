@@ -1,0 +1,30 @@
+[2024-07-18 16:57:18,569][HYDRA] Submitit 'slurm' sweep output dir : results/2024/07.18/16-57-16
+[2024-07-18 16:57:18,572][HYDRA] 	#0 : +training/approach=finetuning data.num_tasks=10 training.vcreg={var_weight:4.72,cov_weight:1.74}
+[2024-07-18 16:57:18,579][HYDRA] 	#1 : +training/approach=finetuning data.num_tasks=10 training.vcreg={var_weight:4.72,cov_weight:12.8}
+[2024-07-18 16:57:18,585][HYDRA] 	#2 : +training/approach=finetuning data.num_tasks=20 training.vcreg={var_weight:4.72,cov_weight:1.74}
+[2024-07-18 16:57:18,592][HYDRA] 	#3 : +training/approach=finetuning data.num_tasks=20 training.vcreg={var_weight:4.72,cov_weight:12.8}
+[2024-07-18 16:57:18,599][HYDRA] 	#4 : +training/approach=replay data.num_tasks=10 training.vcreg={var_weight:4.72,cov_weight:1.74}
+[2024-07-18 16:57:18,605][HYDRA] 	#5 : +training/approach=replay data.num_tasks=10 training.vcreg={var_weight:4.72,cov_weight:12.8}
+[2024-07-18 16:57:18,611][HYDRA] 	#6 : +training/approach=replay data.num_tasks=20 training.vcreg={var_weight:4.72,cov_weight:1.74}
+[2024-07-18 16:57:18,618][HYDRA] 	#7 : +training/approach=replay data.num_tasks=20 training.vcreg={var_weight:4.72,cov_weight:12.8}
+[2024-07-18 16:57:18,624][HYDRA] 	#8 : +training/approach=lwf data.num_tasks=10 training.vcreg={var_weight:4.72,cov_weight:1.74}
+[2024-07-18 16:57:18,631][HYDRA] 	#9 : +training/approach=lwf data.num_tasks=10 training.vcreg={var_weight:4.72,cov_weight:12.8}
+[2024-07-18 16:57:18,637][HYDRA] 	#10 : +training/approach=lwf data.num_tasks=20 training.vcreg={var_weight:4.72,cov_weight:1.74}
+[2024-07-18 16:57:18,644][HYDRA] 	#11 : +training/approach=lwf data.num_tasks=20 training.vcreg={var_weight:4.72,cov_weight:12.8}
+[2024-07-18 16:57:18,650][HYDRA] 	#12 : +training/approach=ewc data.num_tasks=10 training.vcreg={var_weight:4.72,cov_weight:1.74}
+[2024-07-18 16:57:18,657][HYDRA] 	#13 : +training/approach=ewc data.num_tasks=10 training.vcreg={var_weight:4.72,cov_weight:12.8}
+[2024-07-18 16:57:18,663][HYDRA] 	#14 : +training/approach=ewc data.num_tasks=20 training.vcreg={var_weight:4.72,cov_weight:1.74}
+[2024-07-18 16:57:18,670][HYDRA] 	#15 : +training/approach=ewc data.num_tasks=20 training.vcreg={var_weight:4.72,cov_weight:12.8}
+Error executing job with overrides: ['+training/approach=lwf', 'data.num_tasks=10', 'training.vcreg={var_weight:4.72,cov_weight:1.74}']
+Traceback (most recent call last):
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 466, in <lambda>
+    lambda: hydra.multirun(
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/hydra.py", line 162, in multirun
+    ret = sweeper.sweep(arguments=task_overrides)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/core_plugins/basic_sweeper.py", line 181, in sweep
+    _ = r.return_value
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+ValueError: Loss is NaN! Training cannot continue.

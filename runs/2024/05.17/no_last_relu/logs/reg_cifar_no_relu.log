@@ -1,0 +1,5 @@
+[2024-05-17 17:05:55,774][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.17/17-05-54
+[2024-05-17 17:05:55,776][HYDRA] 	#0 : +reg_exps=ewc_resnet
+[2024-05-17 17:05:55,783][HYDRA] 	#1 : +reg_exps=finetuning_resnet
+[2024-05-17 17:05:55,790][HYDRA] 	#2 : +reg_exps=lwf_resnet
+[2024-05-17 17:05:55,799][HYDRA] 	#3 : +reg_exps=replay_resnet

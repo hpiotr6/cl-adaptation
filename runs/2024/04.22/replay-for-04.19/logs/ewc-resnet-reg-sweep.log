@@ -1,0 +1,3 @@
+[2024-04-23 00:08:35,430][HYDRA] Submitit 'slurm' sweep output dir : results/2024/04.23/00-08-35
+[2024-04-23 00:08:35,433][HYDRA] 	#0 : training.vcreg={reg_layers:fc$,var_weight:1.74,cov_weight:0.64}
+[2024-04-23 00:08:35,440][HYDRA] 	#1 : training.vcreg={reg_layers:fc$,var_weight:0.64,cov_weight:12.8}

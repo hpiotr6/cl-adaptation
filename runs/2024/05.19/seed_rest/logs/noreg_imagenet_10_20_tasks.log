@@ -1,0 +1,22 @@
+[2024-05-20 01:43:20,948][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.20/01-43-19
+[2024-05-20 01:43:20,950][HYDRA] 	#0 : +networks=resnet data.num_tasks=10 misc.seed=1
+[2024-05-20 01:43:20,957][HYDRA] 	#1 : +networks=resnet data.num_tasks=10 misc.seed=2
+[2024-05-20 01:43:20,964][HYDRA] 	#2 : +networks=resnet data.num_tasks=20 misc.seed=1
+[2024-05-20 01:43:20,970][HYDRA] 	#3 : +networks=resnet data.num_tasks=20 misc.seed=2
+[2024-05-20 01:43:20,977][HYDRA] 	#4 : +networks=convnext data.num_tasks=10 misc.seed=1
+[2024-05-20 01:43:20,983][HYDRA] 	#5 : +networks=convnext data.num_tasks=10 misc.seed=2
+[2024-05-20 01:43:20,990][HYDRA] 	#6 : +networks=convnext data.num_tasks=20 misc.seed=1
+[2024-05-20 01:43:20,997][HYDRA] 	#7 : +networks=convnext data.num_tasks=20 misc.seed=2
+Error executing job with overrides: ['+networks=convnext', 'data.num_tasks=10', 'misc.seed=1']
+Traceback (most recent call last):
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 466, in <lambda>
+    lambda: hydra.multirun(
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/hydra.py", line 162, in multirun
+    ret = sweeper.sweep(arguments=task_overrides)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/core_plugins/basic_sweeper.py", line 181, in sweep
+    _ = r.return_value
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+submitit.core.utils.UncompletedJobError: Job not requeued because: timed-out too many times.

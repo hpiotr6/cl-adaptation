@@ -1,0 +1,46 @@
+[2024-04-19 13:45:52,889][HYDRA] Submitit 'slurm' sweep output dir : results/2024/04.19/13-45-48
+[2024-04-19 13:45:52,891][HYDRA] 	#0 : training.vcreg.reg_layers=fc$ training.vcreg.var_weight=0.64 training.vcreg.cov_weight=0.64
+[2024-04-19 13:45:52,899][HYDRA] 	#1 : training.vcreg.reg_layers=fc$ training.vcreg.var_weight=0.64 training.vcreg.cov_weight=1.74
+[2024-04-19 13:45:52,906][HYDRA] 	#2 : training.vcreg.reg_layers=fc$ training.vcreg.var_weight=0.64 training.vcreg.cov_weight=4.72
+[2024-04-19 13:45:52,912][HYDRA] 	#3 : training.vcreg.reg_layers=fc$ training.vcreg.var_weight=0.64 training.vcreg.cov_weight=12.8
+[2024-04-19 13:45:52,919][HYDRA] 	#4 : training.vcreg.reg_layers=fc$ training.vcreg.var_weight=1.74 training.vcreg.cov_weight=0.64
+[2024-04-19 13:45:52,925][HYDRA] 	#5 : training.vcreg.reg_layers=fc$ training.vcreg.var_weight=1.74 training.vcreg.cov_weight=1.74
+[2024-04-19 13:45:52,931][HYDRA] 	#6 : training.vcreg.reg_layers=fc$ training.vcreg.var_weight=1.74 training.vcreg.cov_weight=4.72
+[2024-04-19 13:45:52,938][HYDRA] 	#7 : training.vcreg.reg_layers=fc$ training.vcreg.var_weight=1.74 training.vcreg.cov_weight=12.8
+[2024-04-19 13:45:52,944][HYDRA] 	#8 : training.vcreg.reg_layers=fc$ training.vcreg.var_weight=4.72 training.vcreg.cov_weight=0.64
+[2024-04-19 13:45:52,951][HYDRA] 	#9 : training.vcreg.reg_layers=fc$ training.vcreg.var_weight=4.72 training.vcreg.cov_weight=1.74
+[2024-04-19 13:45:52,957][HYDRA] 	#10 : training.vcreg.reg_layers=fc$ training.vcreg.var_weight=4.72 training.vcreg.cov_weight=4.72
+[2024-04-19 13:45:52,966][HYDRA] 	#11 : training.vcreg.reg_layers=fc$ training.vcreg.var_weight=4.72 training.vcreg.cov_weight=12.8
+[2024-04-19 13:45:52,972][HYDRA] 	#12 : training.vcreg.reg_layers=fc$ training.vcreg.var_weight=12.8 training.vcreg.cov_weight=0.64
+[2024-04-19 13:45:52,979][HYDRA] 	#13 : training.vcreg.reg_layers=fc$ training.vcreg.var_weight=12.8 training.vcreg.cov_weight=1.74
+[2024-04-19 13:45:52,985][HYDRA] 	#14 : training.vcreg.reg_layers=fc$ training.vcreg.var_weight=12.8 training.vcreg.cov_weight=4.72
+[2024-04-19 13:45:52,992][HYDRA] 	#15 : training.vcreg.reg_layers=fc$ training.vcreg.var_weight=12.8 training.vcreg.cov_weight=12.8
+[2024-04-19 13:45:52,998][HYDRA] 	#16 : training.vcreg.reg_layers=.*after_relu training.vcreg.var_weight=0.64 training.vcreg.cov_weight=0.64
+[2024-04-19 13:45:53,004][HYDRA] 	#17 : training.vcreg.reg_layers=.*after_relu training.vcreg.var_weight=0.64 training.vcreg.cov_weight=1.74
+[2024-04-19 13:45:53,011][HYDRA] 	#18 : training.vcreg.reg_layers=.*after_relu training.vcreg.var_weight=0.64 training.vcreg.cov_weight=4.72
+[2024-04-19 13:45:53,017][HYDRA] 	#19 : training.vcreg.reg_layers=.*after_relu training.vcreg.var_weight=0.64 training.vcreg.cov_weight=12.8
+[2024-04-19 13:45:53,023][HYDRA] 	#20 : training.vcreg.reg_layers=.*after_relu training.vcreg.var_weight=1.74 training.vcreg.cov_weight=0.64
+[2024-04-19 13:45:53,030][HYDRA] 	#21 : training.vcreg.reg_layers=.*after_relu training.vcreg.var_weight=1.74 training.vcreg.cov_weight=1.74
+[2024-04-19 13:45:53,036][HYDRA] 	#22 : training.vcreg.reg_layers=.*after_relu training.vcreg.var_weight=1.74 training.vcreg.cov_weight=4.72
+[2024-04-19 13:45:53,043][HYDRA] 	#23 : training.vcreg.reg_layers=.*after_relu training.vcreg.var_weight=1.74 training.vcreg.cov_weight=12.8
+[2024-04-19 13:45:53,049][HYDRA] 	#24 : training.vcreg.reg_layers=.*after_relu training.vcreg.var_weight=4.72 training.vcreg.cov_weight=0.64
+[2024-04-19 13:45:53,056][HYDRA] 	#25 : training.vcreg.reg_layers=.*after_relu training.vcreg.var_weight=4.72 training.vcreg.cov_weight=1.74
+[2024-04-19 13:45:53,062][HYDRA] 	#26 : training.vcreg.reg_layers=.*after_relu training.vcreg.var_weight=4.72 training.vcreg.cov_weight=4.72
+[2024-04-19 13:45:53,068][HYDRA] 	#27 : training.vcreg.reg_layers=.*after_relu training.vcreg.var_weight=4.72 training.vcreg.cov_weight=12.8
+[2024-04-19 13:45:53,075][HYDRA] 	#28 : training.vcreg.reg_layers=.*after_relu training.vcreg.var_weight=12.8 training.vcreg.cov_weight=0.64
+[2024-04-19 13:45:53,081][HYDRA] 	#29 : training.vcreg.reg_layers=.*after_relu training.vcreg.var_weight=12.8 training.vcreg.cov_weight=1.74
+[2024-04-19 13:45:53,296][HYDRA] 	#30 : training.vcreg.reg_layers=.*after_relu training.vcreg.var_weight=12.8 training.vcreg.cov_weight=4.72
+[2024-04-19 13:45:53,303][HYDRA] 	#31 : training.vcreg.reg_layers=.*after_relu training.vcreg.var_weight=12.8 training.vcreg.cov_weight=12.8
+Error executing job with overrides: ['training.vcreg.reg_layers=fc$', 'training.vcreg.var_weight=0.64', 'training.vcreg.cov_weight=12.8']
+Traceback (most recent call last):
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 466, in <lambda>
+    lambda: hydra.multirun(
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/hydra.py", line 162, in multirun
+    ret = sweeper.sweep(arguments=task_overrides)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/core_plugins/basic_sweeper.py", line 181, in sweep
+    _ = r.return_value
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+submitit.core.utils.UncompletedJobError: Job not requeued because: timed-out too many times.

@@ -1,0 +1,9 @@
+[2024-04-24 13:34:33,896][HYDRA] Submitit 'slurm' sweep output dir : results/2024/04.24/13-34-32
+[2024-04-24 13:34:33,898][HYDRA] 	#0 : +training/approach=finetuning training.vcreg.n_first_task=-1
+[2024-04-24 13:34:33,906][HYDRA] 	#1 : +training/approach=finetuning training.vcreg.n_first_task=1
+[2024-04-24 13:34:33,913][HYDRA] 	#2 : +training/approach=replay training.vcreg.n_first_task=-1
+[2024-04-24 13:34:33,921][HYDRA] 	#3 : +training/approach=replay training.vcreg.n_first_task=1
+[2024-04-24 13:34:33,928][HYDRA] 	#4 : +training/approach=ewc training.vcreg.n_first_task=-1
+[2024-04-24 13:34:33,936][HYDRA] 	#5 : +training/approach=ewc training.vcreg.n_first_task=1
+[2024-04-24 13:34:33,943][HYDRA] 	#6 : +training/approach=lwf training.vcreg.n_first_task=-1
+[2024-04-24 13:34:33,950][HYDRA] 	#7 : +training/approach=lwf training.vcreg.n_first_task=1

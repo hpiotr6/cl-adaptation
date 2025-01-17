@@ -1,0 +1,4 @@
+[2024-05-20 13:13:06,750][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.20/13-13-06
+[2024-05-20 13:13:06,752][HYDRA] 	#0 : +reg_exps=ssil_convnext misc.seed=0
+[2024-05-20 13:13:06,759][HYDRA] 	#1 : +reg_exps=ssil_convnext misc.seed=1
+[2024-05-20 13:13:06,766][HYDRA] 	#2 : +reg_exps=ssil_convnext misc.seed=2

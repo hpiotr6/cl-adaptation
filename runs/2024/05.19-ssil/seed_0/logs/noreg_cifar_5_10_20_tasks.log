@@ -1,0 +1,283 @@
+[2024-05-20 12:16:28,391][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.20/12-16-27
+[2024-05-20 12:16:28,393][HYDRA] 	#0 : +networks=resnet data.num_tasks=5
+[2024-05-20 12:16:28,401][HYDRA] 	#1 : +networks=resnet data.num_tasks=10
+[2024-05-20 12:16:28,408][HYDRA] 	#2 : +networks=resnet data.num_tasks=20
+[2024-05-20 12:16:28,415][HYDRA] 	#3 : +networks=convnext data.num_tasks=5
+[2024-05-20 12:16:28,422][HYDRA] 	#4 : +networks=convnext data.num_tasks=10
+[2024-05-20 12:16:28,430][HYDRA] 	#5 : +networks=convnext data.num_tasks=20
+Traceback (most recent call last):
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 466, in <lambda>
+    lambda: hydra.multirun(
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/hydra.py", line 162, in multirun
+    ret = sweeper.sweep(arguments=task_overrides)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/core_plugins/basic_sweeper.py", line 177, in sweep
+    results = self.launcher.launch(batch, initial_job_idx=initial_job_idx)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra_plugins/hydra_submitit_launcher/submitit_launcher.py", line 146, in launch
+    return [j.results()[0] for j in jobs]
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra_plugins/hydra_submitit_launcher/submitit_launcher.py", line 146, in <listcomp>
+    return [j.results()[0] for j in jobs]
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/core.py", line 289, in results
+    outcome, result = self._get_outcome_and_result()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/core.py", line 384, in _get_outcome_and_result
+    raise utils.UncompletedJobError("\n".join(message))
+submitit.core.utils.UncompletedJobError: Job 722480_3 (task: 0) with path /net/tscratch/people/plghpiotr/cl-adaptation/results/2024/05.20/12-16-27/.submitit/722480_3/722480_3_0_result.pkl
+has not produced any output (state: TIMEOUT)
+Error stream produced:
+----------------------------------------
+ GCCcore/11.2.0 loaded.
+ zlib/1.2.11 loaded.
+ binutils/2.37 loaded.
+ GCC/11.2.0 loaded.
+ numactl/2.0.14 loaded.
+ XZ/5.2.5 loaded.
+ libxml2/2.9.10 loaded.
+ libpciaccess/0.16 loaded.
+ hwloc/2.5.0 loaded.
+ OpenSSL/1.1 loaded.
+ libevent/2.1.12 loaded.
+ CUDA/11.6.0 loaded.
+ UCX/1.12.1 loaded.
+ GDRCopy/2.3 loaded.
+ UCX-CUDA/1.12.1-CUDA-11.6.0 loaded.
+ libfabric/1.13.2 loaded.
+ PMIx/4.1.0 loaded.
+ OpenMPI/4.1.2-CUDA-11.6.0 loaded.
+/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=None`.
+  warnings.warn(msg)
+/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/scipy/__init__.py:146: UserWarning: A NumPy version >=1.17.3 and <1.25.0 is required for this version of SciPy (detected version 1.26.4
+  warnings.warn(f"A NumPy version >={np_minversion} and <{np_maxversion}"
+wandb: Currently logged in as: phondra (tunnels-ssl). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.17.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.16.6
+wandb: Run data is saved locally in /net/tscratch/people/plghpiotr/cl-adaptation/wandb/run-20240520_135346-i46x6nng
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run apricot-elevator-15
+wandb:  View project at https://wandb.ai/tunnels-ssl/ssil
+wandb:  View run at https://wandb.ai/tunnels-ssl/ssil/runs/i46x6nng
+/net/tscratch/people/plghpiotr/cl-adaptation/src/loggers/wandb_logger.py:118: UserWarning: Saving model is not implemented in wandb logger
+  warnings.warn("Saving model is not implemented in wandb logger")
+submitit WARNING (2024-05-22 12:23:08,004) - Bypassing signal SIGCONT
+submitit WARNING (2024-05-22 12:23:08,006) - Caught signal SIGUSR2 on t0027: this job is timed-out.
+--- Logging error ---
+Traceback (most recent call last):
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1103, in emit
+    stream.write(msg + self.terminator)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/job_environment.py", line 226, in checkpoint_and_try_requeue
+    raise utils.UncompletedJobError(message)
+submitit.core.utils.UncompletedJobError: Job not requeued because: timed-out too many times.
+Call stack:
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/_submit.py", line 11, in <module>
+    submitit_main()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/submission.py", line 76, in submitit_main
+    process_job(args.folder)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/submission.py", line 55, in process_job
+    result = delayed.result()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/utils.py", line 133, in result
+    self._result = self.function(*self.args, **self.kwargs)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra_plugins/hydra_submitit_launcher/submitit_launcher.py", line 71, in __call__
+    return run_job(
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+  File "/net/tscratch/people/plghpiotr/cl-adaptation/src/main_incremental.py", line 368, in main
+    appr.train(t, trn_loader[t], val_loader[t])
+  File "/net/tscratch/people/plghpiotr/cl-adaptation/src/approach/incremental_learning.py", line 137, in train
+    self.train_loop(t, trn_loader, val_loader)
+  File "/net/tscratch/people/plghpiotr/cl-adaptation/src/approach/ssil.py", line 86, in train_loop
+    super().train_loop(t, trn_loader, val_loader)
+  File "/net/tscratch/people/plghpiotr/cl-adaptation/src/approach/incremental_learning.py", line 469, in train_loop
+    self.train_epoch(t, trn_loader)
+  File "/net/tscratch/people/plghpiotr/cl-adaptation/src/approach/ssil.py", line 125, in train_epoch
+    for samples in trn_loader:
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 633, in __next__
+    data = self._next_data()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1328, in _next_data
+    idx, data = self._get_data()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1284, in _get_data
+    success, data = self._try_get_data()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1132, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/queue.py", line 180, in get
+    self.not_empty.wait(remaining)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/threading.py", line 324, in wait
+    gotit = waiter.acquire(True, timeout)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/job_environment.py", line 196, in bypass
+    self._logger.warning(f"Bypassing signal {signal.Signals(signum).name}")
+Message: 'Bypassing signal SIGCONT'
+Arguments: ()
+slurmstepd: error: *** STEP 722797.0 ON t0027 CANCELLED AT 2024-05-22T12:33:41 DUE TO TIME LIMIT ***
+srun: Job step aborted: Waiting up to 182 seconds for job step to finish.
+slurmstepd: error: *** JOB 722797 ON t0027 CANCELLED AT 2024-05-22T12:33:41 DUE TO TIME LIMIT ***
+submitit WARNING (2024-05-22 12:33:41,007) - Bypassing signal SIGTERM
+submitit WARNING (2024-05-22 12:33:41,008) - Bypassing signal SIGCONT
+submitit WARNING (2024-05-22 12:33:41,009) - Bypassing signal SIGTERM
+--- Logging error ---
+Traceback (most recent call last):
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1084, in flush
+    self.stream.flush()
+RuntimeError: reentrant call inside <_io.BufferedWriter name='/net/tscratch/people/plghpiotr/cl-adaptation/results/2024/05.20/12-16-27/3/main_incremental.log'>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1104, in emit
+    self.flush()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1084, in flush
+    self.stream.flush()
+RuntimeError: reentrant call inside <_io.BufferedWriter name='/net/tscratch/people/plghpiotr/cl-adaptation/results/2024/05.20/12-16-27/3/main_incremental.log'>
+Call stack:
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/_submit.py", line 11, in <module>
+    submitit_main()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/submission.py", line 76, in submitit_main
+    process_job(args.folder)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/submission.py", line 55, in process_job
+    result = delayed.result()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/utils.py", line 133, in result
+    self._result = self.function(*self.args, **self.kwargs)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra_plugins/hydra_submitit_launcher/submitit_launcher.py", line 71, in __call__
+    return run_job(
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+  File "/net/tscratch/people/plghpiotr/cl-adaptation/src/main_incremental.py", line 368, in main
+    appr.train(t, trn_loader[t], val_loader[t])
+  File "/net/tscratch/people/plghpiotr/cl-adaptation/src/approach/incremental_learning.py", line 137, in train
+    self.train_loop(t, trn_loader, val_loader)
+  File "/net/tscratch/people/plghpiotr/cl-adaptation/src/approach/ssil.py", line 86, in train_loop
+    super().train_loop(t, trn_loader, val_loader)
+  File "/net/tscratch/people/plghpiotr/cl-adaptation/src/approach/incremental_learning.py", line 469, in train_loop
+    self.train_epoch(t, trn_loader)
+  File "/net/tscratch/people/plghpiotr/cl-adaptation/src/approach/ssil.py", line 125, in train_epoch
+    for samples in trn_loader:
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 633, in __next__
+    data = self._next_data()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1328, in _next_data
+    idx, data = self._get_data()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1284, in _get_data
+    success, data = self._try_get_data()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1132, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/queue.py", line 180, in get
+    self.not_empty.wait(remaining)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/threading.py", line 324, in wait
+    gotit = waiter.acquire(True, timeout)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/job_environment.py", line 196, in bypass
+    self._logger.warning(f"Bypassing signal {signal.Signals(signum).name}")
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1489, in warning
+    self._log(WARNING, msg, args, **kwargs)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1624, in _log
+    self.handle(record)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1634, in handle
+    self.callHandlers(record)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1696, in callHandlers
+    hdlr.handle(record)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 968, in handle
+    self.emit(record)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1218, in emit
+    StreamHandler.emit(self, record)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1104, in emit
+    self.flush()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1084, in flush
+    self.stream.flush()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/job_environment.py", line 196, in bypass
+    self._logger.warning(f"Bypassing signal {signal.Signals(signum).name}")
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1489, in warning
+    self._log(WARNING, msg, args, **kwargs)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1624, in _log
+    self.handle(record)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1634, in handle
+    self.callHandlers(record)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1696, in callHandlers
+    hdlr.handle(record)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 968, in handle
+    self.emit(record)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1218, in emit
+    StreamHandler.emit(self, record)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1104, in emit
+    self.flush()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1084, in flush
+    self.stream.flush()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/job_environment.py", line 196, in bypass
+    self._logger.warning(f"Bypassing signal {signal.Signals(signum).name}")
+Message: 'Bypassing signal SIGTERM'
+Arguments: ()
+--- Logging error ---
+Traceback (most recent call last):
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1104, in emit
+    self.flush()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1084, in flush
+    self.stream.flush()
+RuntimeError: reentrant call inside <_io.BufferedWriter name='/net/tscratch/people/plghpiotr/cl-adaptation/results/2024/05.20/12-16-27/3/main_incremental.log'>
+Call stack:
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/_submit.py", line 11, in <module>
+    submitit_main()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/submission.py", line 76, in submitit_main
+    process_job(args.folder)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/submission.py", line 55, in process_job
+    result = delayed.result()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/utils.py", line 133, in result
+    self._result = self.function(*self.args, **self.kwargs)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra_plugins/hydra_submitit_launcher/submitit_launcher.py", line 71, in __call__
+    return run_job(
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+  File "/net/tscratch/people/plghpiotr/cl-adaptation/src/main_incremental.py", line 368, in main
+    appr.train(t, trn_loader[t], val_loader[t])
+  File "/net/tscratch/people/plghpiotr/cl-adaptation/src/approach/incremental_learning.py", line 137, in train
+    self.train_loop(t, trn_loader, val_loader)
+  File "/net/tscratch/people/plghpiotr/cl-adaptation/src/approach/ssil.py", line 86, in train_loop
+    super().train_loop(t, trn_loader, val_loader)
+  File "/net/tscratch/people/plghpiotr/cl-adaptation/src/approach/incremental_learning.py", line 469, in train_loop
+    self.train_epoch(t, trn_loader)
+  File "/net/tscratch/people/plghpiotr/cl-adaptation/src/approach/ssil.py", line 125, in train_epoch
+    for samples in trn_loader:
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 633, in __next__
+    data = self._next_data()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1328, in _next_data
+    idx, data = self._get_data()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1284, in _get_data
+    success, data = self._try_get_data()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1132, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/queue.py", line 180, in get
+    self.not_empty.wait(remaining)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/threading.py", line 324, in wait
+    gotit = waiter.acquire(True, timeout)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/job_environment.py", line 196, in bypass
+    self._logger.warning(f"Bypassing signal {signal.Signals(signum).name}")
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1489, in warning
+    self._log(WARNING, msg, args, **kwargs)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1624, in _log
+    self.handle(record)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1634, in handle
+    self.callHandlers(record)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1696, in callHandlers
+    hdlr.handle(record)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 968, in handle
+    self.emit(record)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1218, in emit
+    StreamHandler.emit(self, record)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1104, in emit
+    self.flush()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/logging/__init__.py", line 1084, in flush
+    self.stream.flush()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/job_environment.py", line 196, in bypass
+    self._logger.warning(f"Bypassing signal {signal.Signals(signum).name}")
+Message: 'Bypassing signal SIGCONT'
+Arguments: ()
+

@@ -1,0 +1,62 @@
+[2024-05-14 13:28:12,137][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.14/13-28-06
+[2024-05-14 13:28:12,139][HYDRA] 	#0 : +training/approach=finetuning +networks=resnet data.num_tasks=5 misc.seed=1
+[2024-05-14 13:28:12,147][HYDRA] 	#1 : +training/approach=finetuning +networks=resnet data.num_tasks=5 misc.seed=2
+[2024-05-14 13:28:12,154][HYDRA] 	#2 : +training/approach=finetuning +networks=resnet data.num_tasks=10 misc.seed=1
+[2024-05-14 13:28:12,160][HYDRA] 	#3 : +training/approach=finetuning +networks=resnet data.num_tasks=10 misc.seed=2
+[2024-05-14 13:28:12,167][HYDRA] 	#4 : +training/approach=finetuning +networks=resnet data.num_tasks=20 misc.seed=1
+[2024-05-14 13:28:12,174][HYDRA] 	#5 : +training/approach=finetuning +networks=resnet data.num_tasks=20 misc.seed=2
+[2024-05-14 13:28:12,180][HYDRA] 	#6 : +training/approach=finetuning +networks=convnext data.num_tasks=5 misc.seed=1
+[2024-05-14 13:28:12,187][HYDRA] 	#7 : +training/approach=finetuning +networks=convnext data.num_tasks=5 misc.seed=2
+[2024-05-14 13:28:12,194][HYDRA] 	#8 : +training/approach=finetuning +networks=convnext data.num_tasks=10 misc.seed=1
+[2024-05-14 13:28:12,201][HYDRA] 	#9 : +training/approach=finetuning +networks=convnext data.num_tasks=10 misc.seed=2
+[2024-05-14 13:28:12,207][HYDRA] 	#10 : +training/approach=finetuning +networks=convnext data.num_tasks=20 misc.seed=1
+[2024-05-14 13:28:12,214][HYDRA] 	#11 : +training/approach=finetuning +networks=convnext data.num_tasks=20 misc.seed=2
+[2024-05-14 13:28:12,220][HYDRA] 	#12 : +training/approach=replay +networks=resnet data.num_tasks=5 misc.seed=1
+[2024-05-14 13:28:12,227][HYDRA] 	#13 : +training/approach=replay +networks=resnet data.num_tasks=5 misc.seed=2
+[2024-05-14 13:28:12,234][HYDRA] 	#14 : +training/approach=replay +networks=resnet data.num_tasks=10 misc.seed=1
+[2024-05-14 13:28:12,240][HYDRA] 	#15 : +training/approach=replay +networks=resnet data.num_tasks=10 misc.seed=2
+[2024-05-14 13:28:12,247][HYDRA] 	#16 : +training/approach=replay +networks=resnet data.num_tasks=20 misc.seed=1
+[2024-05-14 13:28:12,253][HYDRA] 	#17 : +training/approach=replay +networks=resnet data.num_tasks=20 misc.seed=2
+[2024-05-14 13:28:12,260][HYDRA] 	#18 : +training/approach=replay +networks=convnext data.num_tasks=5 misc.seed=1
+[2024-05-14 13:28:12,267][HYDRA] 	#19 : +training/approach=replay +networks=convnext data.num_tasks=5 misc.seed=2
+[2024-05-14 13:28:12,273][HYDRA] 	#20 : +training/approach=replay +networks=convnext data.num_tasks=10 misc.seed=1
+[2024-05-14 13:28:12,280][HYDRA] 	#21 : +training/approach=replay +networks=convnext data.num_tasks=10 misc.seed=2
+[2024-05-14 13:28:12,286][HYDRA] 	#22 : +training/approach=replay +networks=convnext data.num_tasks=20 misc.seed=1
+[2024-05-14 13:28:12,293][HYDRA] 	#23 : +training/approach=replay +networks=convnext data.num_tasks=20 misc.seed=2
+[2024-05-14 13:28:12,299][HYDRA] 	#24 : +training/approach=ewc +networks=resnet data.num_tasks=5 misc.seed=1
+[2024-05-14 13:28:12,306][HYDRA] 	#25 : +training/approach=ewc +networks=resnet data.num_tasks=5 misc.seed=2
+[2024-05-14 13:28:12,312][HYDRA] 	#26 : +training/approach=ewc +networks=resnet data.num_tasks=10 misc.seed=1
+[2024-05-14 13:28:12,319][HYDRA] 	#27 : +training/approach=ewc +networks=resnet data.num_tasks=10 misc.seed=2
+[2024-05-14 13:28:12,326][HYDRA] 	#28 : +training/approach=ewc +networks=resnet data.num_tasks=20 misc.seed=1
+[2024-05-14 13:28:12,332][HYDRA] 	#29 : +training/approach=ewc +networks=resnet data.num_tasks=20 misc.seed=2
+[2024-05-14 13:28:12,339][HYDRA] 	#30 : +training/approach=ewc +networks=convnext data.num_tasks=5 misc.seed=1
+[2024-05-14 13:28:12,345][HYDRA] 	#31 : +training/approach=ewc +networks=convnext data.num_tasks=5 misc.seed=2
+[2024-05-14 13:28:12,352][HYDRA] 	#32 : +training/approach=ewc +networks=convnext data.num_tasks=10 misc.seed=1
+[2024-05-14 13:28:12,358][HYDRA] 	#33 : +training/approach=ewc +networks=convnext data.num_tasks=10 misc.seed=2
+[2024-05-14 13:28:12,365][HYDRA] 	#34 : +training/approach=ewc +networks=convnext data.num_tasks=20 misc.seed=1
+[2024-05-14 13:28:12,372][HYDRA] 	#35 : +training/approach=ewc +networks=convnext data.num_tasks=20 misc.seed=2
+[2024-05-14 13:28:12,379][HYDRA] 	#36 : +training/approach=lwf +networks=resnet data.num_tasks=5 misc.seed=1
+[2024-05-14 13:28:12,385][HYDRA] 	#37 : +training/approach=lwf +networks=resnet data.num_tasks=5 misc.seed=2
+[2024-05-14 13:28:12,392][HYDRA] 	#38 : +training/approach=lwf +networks=resnet data.num_tasks=10 misc.seed=1
+[2024-05-14 13:28:12,399][HYDRA] 	#39 : +training/approach=lwf +networks=resnet data.num_tasks=10 misc.seed=2
+[2024-05-14 13:28:12,405][HYDRA] 	#40 : +training/approach=lwf +networks=resnet data.num_tasks=20 misc.seed=1
+[2024-05-14 13:28:12,412][HYDRA] 	#41 : +training/approach=lwf +networks=resnet data.num_tasks=20 misc.seed=2
+[2024-05-14 13:28:12,419][HYDRA] 	#42 : +training/approach=lwf +networks=convnext data.num_tasks=5 misc.seed=1
+[2024-05-14 13:28:12,425][HYDRA] 	#43 : +training/approach=lwf +networks=convnext data.num_tasks=5 misc.seed=2
+[2024-05-14 13:28:12,432][HYDRA] 	#44 : +training/approach=lwf +networks=convnext data.num_tasks=10 misc.seed=1
+[2024-05-14 13:28:12,439][HYDRA] 	#45 : +training/approach=lwf +networks=convnext data.num_tasks=10 misc.seed=2
+[2024-05-14 13:28:12,445][HYDRA] 	#46 : +training/approach=lwf +networks=convnext data.num_tasks=20 misc.seed=1
+[2024-05-14 13:28:12,452][HYDRA] 	#47 : +training/approach=lwf +networks=convnext data.num_tasks=20 misc.seed=2
+Error executing job with overrides: ['+training/approach=lwf', '+networks=resnet', 'data.num_tasks=20', 'misc.seed=1']
+Traceback (most recent call last):
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 466, in <lambda>
+    lambda: hydra.multirun(
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/hydra.py", line 162, in multirun
+    ret = sweeper.sweep(arguments=task_overrides)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/core_plugins/basic_sweeper.py", line 181, in sweep
+    _ = r.return_value
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+ValueError: Loss is NaN! Training cannot continue.

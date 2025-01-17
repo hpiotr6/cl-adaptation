@@ -1,0 +1,99 @@
+[2024-07-18 16:57:37,871][HYDRA] Submitit 'slurm' sweep output dir : results/2024/07.18/16-57-35
+[2024-07-18 16:57:37,873][HYDRA] 	#0 : +training/approach=finetuning data.num_tasks=10 training.vcreg={var_weight:4.72,cov_weight:1.74}
+[2024-07-18 16:57:37,880][HYDRA] 	#1 : +training/approach=finetuning data.num_tasks=10 training.vcreg={var_weight:12.8,cov_weight:0.64}
+[2024-07-18 16:57:37,887][HYDRA] 	#2 : +training/approach=finetuning data.num_tasks=20 training.vcreg={var_weight:4.72,cov_weight:1.74}
+[2024-07-18 16:57:37,894][HYDRA] 	#3 : +training/approach=finetuning data.num_tasks=20 training.vcreg={var_weight:12.8,cov_weight:0.64}
+[2024-07-18 16:57:37,901][HYDRA] 	#4 : +training/approach=replay data.num_tasks=10 training.vcreg={var_weight:4.72,cov_weight:1.74}
+[2024-07-18 16:57:37,907][HYDRA] 	#5 : +training/approach=replay data.num_tasks=10 training.vcreg={var_weight:12.8,cov_weight:0.64}
+[2024-07-18 16:57:37,914][HYDRA] 	#6 : +training/approach=replay data.num_tasks=20 training.vcreg={var_weight:4.72,cov_weight:1.74}
+[2024-07-18 16:57:37,921][HYDRA] 	#7 : +training/approach=replay data.num_tasks=20 training.vcreg={var_weight:12.8,cov_weight:0.64}
+[2024-07-18 16:57:37,927][HYDRA] 	#8 : +training/approach=lwf data.num_tasks=10 training.vcreg={var_weight:4.72,cov_weight:1.74}
+[2024-07-18 16:57:37,934][HYDRA] 	#9 : +training/approach=lwf data.num_tasks=10 training.vcreg={var_weight:12.8,cov_weight:0.64}
+[2024-07-18 16:57:37,941][HYDRA] 	#10 : +training/approach=lwf data.num_tasks=20 training.vcreg={var_weight:4.72,cov_weight:1.74}
+[2024-07-18 16:57:37,948][HYDRA] 	#11 : +training/approach=lwf data.num_tasks=20 training.vcreg={var_weight:12.8,cov_weight:0.64}
+[2024-07-18 16:57:37,955][HYDRA] 	#12 : +training/approach=ewc data.num_tasks=10 training.vcreg={var_weight:4.72,cov_weight:1.74}
+[2024-07-18 16:57:37,961][HYDRA] 	#13 : +training/approach=ewc data.num_tasks=10 training.vcreg={var_weight:12.8,cov_weight:0.64}
+[2024-07-18 16:57:37,970][HYDRA] 	#14 : +training/approach=ewc data.num_tasks=20 training.vcreg={var_weight:4.72,cov_weight:1.74}
+[2024-07-18 16:57:37,977][HYDRA] 	#15 : +training/approach=ewc data.num_tasks=20 training.vcreg={var_weight:12.8,cov_weight:0.64}
+Traceback (most recent call last):
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 466, in <lambda>
+    lambda: hydra.multirun(
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/hydra.py", line 162, in multirun
+    ret = sweeper.sweep(arguments=task_overrides)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/core_plugins/basic_sweeper.py", line 177, in sweep
+    results = self.launcher.launch(batch, initial_job_idx=initial_job_idx)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra_plugins/hydra_submitit_launcher/submitit_launcher.py", line 146, in launch
+    return [j.results()[0] for j in jobs]
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra_plugins/hydra_submitit_launcher/submitit_launcher.py", line 146, in <listcomp>
+    return [j.results()[0] for j in jobs]
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/core.py", line 289, in results
+    outcome, result = self._get_outcome_and_result()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/core.py", line 384, in _get_outcome_and_result
+    raise utils.UncompletedJobError("\n".join(message))
+submitit.core.utils.UncompletedJobError: Job 819315_6 (task: 0) with path /net/tscratch/people/plghpiotr/cl-adaptation/results/2024/07.18/16-57-35/.submitit/819315_6/819315_6_0_result.pkl
+has not produced any output (state: FAILED)
+Error stream produced:
+----------------------------------------
+ GCCcore/11.2.0 loaded.
+ zlib/1.2.11 loaded.
+ binutils/2.37 loaded.
+ GCC/11.2.0 loaded.
+ numactl/2.0.14 loaded.
+ XZ/5.2.5 loaded.
+ libxml2/2.9.10 loaded.
+ libpciaccess/0.16 loaded.
+ hwloc/2.5.0 loaded.
+ OpenSSL/1.1 loaded.
+ libevent/2.1.12 loaded.
+ CUDA/11.6.0 loaded.
+ UCX/1.12.1 loaded.
+ GDRCopy/2.3 loaded.
+ UCX-CUDA/1.12.1-CUDA-11.6.0 loaded.
+ libfabric/1.13.2 loaded.
+ PMIx/4.1.0 loaded.
+ OpenMPI/4.1.2-CUDA-11.6.0 loaded.
+/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=None`.
+  warnings.warn(msg)
+/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/scipy/__init__.py:146: UserWarning: A NumPy version >=1.17.3 and <1.25.0 is required for this version of SciPy (detected version 1.26.4
+  warnings.warn(f"A NumPy version >={np_minversion} and <{np_maxversion}"
+wandb: Currently logged in as: phondra (tunnels-ssl). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.17.4 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.16.6
+wandb: Run data is saved locally in /net/tscratch/people/plghpiotr/cl-adaptation/wandb/run-20240719_064611-ai197n51
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run effortless-sky-76
+wandb:  View project at https://wandb.ai/tunnels-ssl/07.18
+wandb:  View run at https://wandb.ai/tunnels-ssl/07.18/runs/ai197n51
+/net/tscratch/people/plghpiotr/cl-adaptation/src/loggers/wandb_logger.py:118: UserWarning: Saving model is not implemented in wandb logger
+  warnings.warn("Saving model is not implemented in wandb logger")
+submitit ERROR (2024-07-19 16:43:47,281) - Could not dump error:
+[Errno 5] Input/output error
+
+because of [Errno 108] Cannot send after transport endpoint shutdown: '/net/tscratch/people/plghpiotr/cl-adaptation/results/2024/07.18/16-57-35/.submitit/819315_6/819315_6_0_result.pkl.save_tmp'
+submitit ERROR (2024-07-19 16:43:47,282) - Submitted job triggered an exception
+Traceback (most recent call last):
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/_submit.py", line 11, in <module>
+    submitit_main()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/submission.py", line 76, in submitit_main
+    process_job(args.folder)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/submission.py", line 69, in process_job
+    raise error
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/submission.py", line 59, in process_job
+    utils.cloudpickle_dump(("success", result), tmppath)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/utils.py", line 232, in cloudpickle_dump
+    with open(filename, "wb") as ofile:
+OSError: [Errno 5] Input/output error
+submitit WARNING (2024-07-21 05:15:35,007) - Caught signal SIGUSR2 on t0029: this job is timed-out.
+submitit WARNING (2024-07-21 05:15:35,050) - Bypassing signal SIGCONT
+wandb: While tearing down the service manager. The following error has occurred: Job not requeued because: timed-out too many times.
+srun: error: t0029: task 0: Exited with exit code 1
+

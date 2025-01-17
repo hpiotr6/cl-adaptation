@@ -1,0 +1,17 @@
+[2024-05-15 16:05:22,163][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.15/16-05-19
+[2024-05-15 16:05:22,166][HYDRA] 	#0 : +training/approach=finetuning training.vcreg={reg_layers:.*after_skipping,var_weight:4.72,cov_weight:4.72} data.num_tasks=10
+[2024-05-15 16:05:22,173][HYDRA] 	#1 : +training/approach=finetuning training.vcreg={reg_layers:.*after_skipping,var_weight:4.72,cov_weight:4.72} data.num_tasks=20
+[2024-05-15 16:05:22,180][HYDRA] 	#2 : +training/approach=finetuning training.vcreg={reg_layers:classifier$,var_weight:1.74,cov_weight:12.8} data.num_tasks=10
+[2024-05-15 16:05:22,191][HYDRA] 	#3 : +training/approach=finetuning training.vcreg={reg_layers:classifier$,var_weight:1.74,cov_weight:12.8} data.num_tasks=20
+[2024-05-15 16:05:22,198][HYDRA] 	#4 : +training/approach=replay training.vcreg={reg_layers:.*after_skipping,var_weight:4.72,cov_weight:4.72} data.num_tasks=10
+[2024-05-15 16:05:22,205][HYDRA] 	#5 : +training/approach=replay training.vcreg={reg_layers:.*after_skipping,var_weight:4.72,cov_weight:4.72} data.num_tasks=20
+[2024-05-15 16:05:22,211][HYDRA] 	#6 : +training/approach=replay training.vcreg={reg_layers:classifier$,var_weight:1.74,cov_weight:12.8} data.num_tasks=10
+[2024-05-15 16:05:22,218][HYDRA] 	#7 : +training/approach=replay training.vcreg={reg_layers:classifier$,var_weight:1.74,cov_weight:12.8} data.num_tasks=20
+[2024-05-15 16:05:22,225][HYDRA] 	#8 : +training/approach=ewc training.vcreg={reg_layers:.*after_skipping,var_weight:4.72,cov_weight:4.72} data.num_tasks=10
+[2024-05-15 16:05:22,232][HYDRA] 	#9 : +training/approach=ewc training.vcreg={reg_layers:.*after_skipping,var_weight:4.72,cov_weight:4.72} data.num_tasks=20
+[2024-05-15 16:05:22,245][HYDRA] 	#10 : +training/approach=ewc training.vcreg={reg_layers:classifier$,var_weight:1.74,cov_weight:12.8} data.num_tasks=10
+[2024-05-15 16:05:22,252][HYDRA] 	#11 : +training/approach=ewc training.vcreg={reg_layers:classifier$,var_weight:1.74,cov_weight:12.8} data.num_tasks=20
+[2024-05-15 16:05:22,258][HYDRA] 	#12 : +training/approach=lwf training.vcreg={reg_layers:.*after_skipping,var_weight:4.72,cov_weight:4.72} data.num_tasks=10
+[2024-05-15 16:05:22,265][HYDRA] 	#13 : +training/approach=lwf training.vcreg={reg_layers:.*after_skipping,var_weight:4.72,cov_weight:4.72} data.num_tasks=20
+[2024-05-15 16:05:22,271][HYDRA] 	#14 : +training/approach=lwf training.vcreg={reg_layers:classifier$,var_weight:1.74,cov_weight:12.8} data.num_tasks=10
+[2024-05-15 16:05:22,278][HYDRA] 	#15 : +training/approach=lwf training.vcreg={reg_layers:classifier$,var_weight:1.74,cov_weight:12.8} data.num_tasks=20

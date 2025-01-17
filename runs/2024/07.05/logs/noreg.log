@@ -1,0 +1,5 @@
+[2024-07-05 13:33:16,893][HYDRA] Submitit 'slurm' sweep output dir : results/2024/07.05/13-33-16
+[2024-07-05 13:33:16,895][HYDRA] 	#0 : +networks=resnet data.datasets=[imagenet_subset_kaggle]
+[2024-07-05 13:33:16,903][HYDRA] 	#1 : +networks=resnet data.datasets=[cifar100_fixed]
+[2024-07-05 13:33:16,909][HYDRA] 	#2 : +networks=convnext data.datasets=[imagenet_subset_kaggle]
+[2024-07-05 13:33:16,915][HYDRA] 	#3 : +networks=convnext data.datasets=[cifar100_fixed]

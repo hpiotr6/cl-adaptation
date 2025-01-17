@@ -1,0 +1,7 @@
+[2024-05-11 00:29:42,140][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.11/00-29-41
+[2024-05-11 00:29:42,142][HYDRA] 	#0 : +training/vcreg=noreg misc.seed=0
+[2024-05-11 00:29:42,149][HYDRA] 	#1 : +training/vcreg=noreg misc.seed=1
+[2024-05-11 00:29:42,156][HYDRA] 	#2 : +training/vcreg=noreg misc.seed=2
+[2024-05-11 00:29:42,163][HYDRA] 	#3 : +training/vcreg=resnet misc.seed=0
+[2024-05-11 00:29:42,170][HYDRA] 	#4 : +training/vcreg=resnet misc.seed=1
+[2024-05-11 00:29:42,176][HYDRA] 	#5 : +training/vcreg=resnet misc.seed=2

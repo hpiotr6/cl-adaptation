@@ -1,0 +1,5 @@
+[2024-05-15 17:07:08,008][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.15/17-07-07
+[2024-05-15 17:07:08,010][HYDRA] 	#0 : +reg_exps=ewc_convnext
+[2024-05-15 17:07:08,017][HYDRA] 	#1 : +reg_exps=finetuning_convnext
+[2024-05-15 17:07:08,023][HYDRA] 	#2 : +reg_exps=lwf_convnext
+[2024-05-15 17:07:08,030][HYDRA] 	#3 : +reg_exps=replay_convnext

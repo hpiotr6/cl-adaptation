@@ -1,0 +1,9 @@
+[2024-04-27 10:23:56,445][HYDRA] Submitit 'slurm' sweep output dir : results/2024/04.27/10-23-55
+[2024-04-27 10:23:56,447][HYDRA] 	#0 : +training/vcreg=noreg data.num_tasks=10 data.datasets=[imagenet_subset_kaggle]
+[2024-04-27 10:23:56,454][HYDRA] 	#1 : +training/vcreg=noreg data.num_tasks=10 data.datasets=[cifar100_fixed]
+[2024-04-27 10:23:56,461][HYDRA] 	#2 : +training/vcreg=noreg data.num_tasks=20 data.datasets=[imagenet_subset_kaggle]
+[2024-04-27 10:23:56,468][HYDRA] 	#3 : +training/vcreg=noreg data.num_tasks=20 data.datasets=[cifar100_fixed]
+[2024-04-27 10:23:56,474][HYDRA] 	#4 : +training/vcreg=resnet data.num_tasks=10 data.datasets=[imagenet_subset_kaggle]
+[2024-04-27 10:23:56,481][HYDRA] 	#5 : +training/vcreg=resnet data.num_tasks=10 data.datasets=[cifar100_fixed]
+[2024-04-27 10:23:56,487][HYDRA] 	#6 : +training/vcreg=resnet data.num_tasks=20 data.datasets=[imagenet_subset_kaggle]
+[2024-04-27 10:23:56,493][HYDRA] 	#7 : +training/vcreg=resnet data.num_tasks=20 data.datasets=[cifar100_fixed]

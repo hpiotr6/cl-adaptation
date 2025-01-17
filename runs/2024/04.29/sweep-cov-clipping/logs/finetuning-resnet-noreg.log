@@ -1,0 +1,4 @@
+[2024-04-29 12:58:18,630][HYDRA] Submitit 'slurm' sweep output dir : results/2024/04.29/12-58-17
+[2024-04-29 12:58:18,632][HYDRA] 	#0 : training.clipping=1
+[2024-04-29 12:58:18,639][HYDRA] 	#1 : training.clipping=10
+[2024-04-29 12:58:18,646][HYDRA] 	#2 : training.clipping=100

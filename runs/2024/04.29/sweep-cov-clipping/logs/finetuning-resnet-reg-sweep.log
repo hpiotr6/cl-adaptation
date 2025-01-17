@@ -1,0 +1,10 @@
+[2024-04-29 12:58:32,799][HYDRA] Submitit 'slurm' sweep output dir : results/2024/04.29/12-58-31
+[2024-04-29 12:58:32,801][HYDRA] 	#0 : training.vcreg.smooth_cov=0.001 training.clipping=1
+[2024-04-29 12:58:32,808][HYDRA] 	#1 : training.vcreg.smooth_cov=0.001 training.clipping=10
+[2024-04-29 12:58:32,815][HYDRA] 	#2 : training.vcreg.smooth_cov=0.001 training.clipping=100
+[2024-04-29 12:58:32,821][HYDRA] 	#3 : training.vcreg.smooth_cov=0.01 training.clipping=1
+[2024-04-29 12:58:32,828][HYDRA] 	#4 : training.vcreg.smooth_cov=0.01 training.clipping=10
+[2024-04-29 12:58:32,835][HYDRA] 	#5 : training.vcreg.smooth_cov=0.01 training.clipping=100
+[2024-04-29 12:58:32,841][HYDRA] 	#6 : training.vcreg.smooth_cov=0.1 training.clipping=1
+[2024-04-29 12:58:32,847][HYDRA] 	#7 : training.vcreg.smooth_cov=0.1 training.clipping=10
+[2024-04-29 12:58:32,854][HYDRA] 	#8 : training.vcreg.smooth_cov=0.1 training.clipping=100

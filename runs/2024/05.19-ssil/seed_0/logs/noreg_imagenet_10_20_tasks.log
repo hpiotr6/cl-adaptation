@@ -1,0 +1,60 @@
+[2024-05-20 12:16:17,965][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.20/12-16-17
+[2024-05-20 12:16:17,967][HYDRA] 	#0 : +networks=resnet data.num_tasks=10
+[2024-05-20 12:16:17,973][HYDRA] 	#1 : +networks=resnet data.num_tasks=20
+[2024-05-20 12:16:17,980][HYDRA] 	#2 : +networks=convnext data.num_tasks=10
+[2024-05-20 12:16:17,987][HYDRA] 	#3 : +networks=convnext data.num_tasks=20
+Traceback (most recent call last):
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 466, in <lambda>
+    lambda: hydra.multirun(
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/hydra.py", line 162, in multirun
+    ret = sweeper.sweep(arguments=task_overrides)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/core_plugins/basic_sweeper.py", line 177, in sweep
+    results = self.launcher.launch(batch, initial_job_idx=initial_job_idx)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra_plugins/hydra_submitit_launcher/submitit_launcher.py", line 146, in launch
+    return [j.results()[0] for j in jobs]
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra_plugins/hydra_submitit_launcher/submitit_launcher.py", line 146, in <listcomp>
+    return [j.results()[0] for j in jobs]
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/core.py", line 289, in results
+    outcome, result = self._get_outcome_and_result()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/core.py", line 384, in _get_outcome_and_result
+    raise utils.UncompletedJobError("\n".join(message))
+submitit.core.utils.UncompletedJobError: Job 722479_0 (task: 0) with path /net/tscratch/people/plghpiotr/cl-adaptation/results/2024/05.20/12-16-17/.submitit/722479_0/722479_0_0_result.pkl
+has not produced any output (state: FAILED)
+Error stream produced:
+----------------------------------------
+ GCCcore/11.2.0 loaded.
+ zlib/1.2.11 loaded.
+ binutils/2.37 loaded.
+ GCC/11.2.0 loaded.
+ numactl/2.0.14 loaded.
+ XZ/5.2.5 loaded.
+ libxml2/2.9.10 loaded.
+ libpciaccess/0.16 loaded.
+ hwloc/2.5.0 loaded.
+ OpenSSL/1.1 loaded.
+ libevent/2.1.12 loaded.
+ CUDA/11.6.0 loaded.
+ UCX/1.12.1 loaded.
+ GDRCopy/2.3 loaded.
+ UCX-CUDA/1.12.1-CUDA-11.6.0 loaded.
+ libfabric/1.13.2 loaded.
+ PMIx/4.1.0 loaded.
+ OpenMPI/4.1.2-CUDA-11.6.0 loaded.
+/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/scipy/__init__.py:146: UserWarning: A NumPy version >=1.17.3 and <1.25.0 is required for this version of SciPy (detected version 1.26.4
+  warnings.warn(f"A NumPy version >={np_minversion} and <{np_maxversion}"
+wandb: Currently logged in as: phondra (tunnels-ssl). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.17.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.16.6
+wandb: Run data is saved locally in /net/tscratch/people/plghpiotr/cl-adaptation/wandb/run-20240520_135144-kylmconn
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run silvery-frost-7
+wandb:  View project at https://wandb.ai/tunnels-ssl/ssil
+wandb:  View run at https://wandb.ai/tunnels-ssl/ssil/runs/kylmconn
+/net/tscratch/people/plghpiotr/cl-adaptation/src/loggers/wandb_logger.py:118: UserWarning: Saving model is not implemented in wandb logger
+  warnings.warn("Saving model is not implemented in wandb logger")
+slurmstepd: error: Detected 2 oom_kill events in StepId=722787.0. Some of the step tasks have been OOM Killed.
+srun: error: t0030: task 0: Out Of Memory
+

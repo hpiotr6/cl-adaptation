@@ -1,0 +1,13 @@
+[2024-06-17 18:07:44,579][HYDRA] Submitit 'slurm' sweep output dir : results/2024/06.17/18-07-42
+[2024-06-17 18:07:44,581][HYDRA] 	#0 : +reg_exps=ewc_convnext misc.seed=0
+[2024-06-17 18:07:44,721][HYDRA] 	#1 : +reg_exps=ewc_convnext misc.seed=1
+[2024-06-17 18:07:44,727][HYDRA] 	#2 : +reg_exps=ewc_convnext misc.seed=2
+[2024-06-17 18:07:44,733][HYDRA] 	#3 : +reg_exps=finetuning_convnext misc.seed=0
+[2024-06-17 18:07:44,740][HYDRA] 	#4 : +reg_exps=finetuning_convnext misc.seed=1
+[2024-06-17 18:07:44,746][HYDRA] 	#5 : +reg_exps=finetuning_convnext misc.seed=2
+[2024-06-17 18:07:44,752][HYDRA] 	#6 : +reg_exps=lwf_convnext misc.seed=0
+[2024-06-17 18:07:44,759][HYDRA] 	#7 : +reg_exps=lwf_convnext misc.seed=1
+[2024-06-17 18:07:44,765][HYDRA] 	#8 : +reg_exps=lwf_convnext misc.seed=2
+[2024-06-17 18:07:44,771][HYDRA] 	#9 : +reg_exps=replay_convnext misc.seed=0
+[2024-06-17 18:07:44,777][HYDRA] 	#10 : +reg_exps=replay_convnext misc.seed=1
+[2024-06-17 18:07:44,783][HYDRA] 	#11 : +reg_exps=replay_convnext misc.seed=2

@@ -1,0 +1,13 @@
+[2024-05-20 01:43:05,105][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.20/01-43-03
+[2024-05-20 01:43:05,107][HYDRA] 	#0 : +cifar_reg_exps=lwf_convnext data.num_tasks=5 misc.seed=1
+[2024-05-20 01:43:05,115][HYDRA] 	#1 : +cifar_reg_exps=lwf_convnext data.num_tasks=5 misc.seed=2
+[2024-05-20 01:43:05,254][HYDRA] 	#2 : +cifar_reg_exps=lwf_convnext data.num_tasks=10 misc.seed=1
+[2024-05-20 01:43:05,261][HYDRA] 	#3 : +cifar_reg_exps=lwf_convnext data.num_tasks=10 misc.seed=2
+[2024-05-20 01:43:05,267][HYDRA] 	#4 : +cifar_reg_exps=lwf_convnext data.num_tasks=20 misc.seed=1
+[2024-05-20 01:43:05,273][HYDRA] 	#5 : +cifar_reg_exps=lwf_convnext data.num_tasks=20 misc.seed=2
+[2024-05-20 01:43:05,280][HYDRA] 	#6 : +cifar_reg_exps=lwf_resnet data.num_tasks=5 misc.seed=1
+[2024-05-20 01:43:05,286][HYDRA] 	#7 : +cifar_reg_exps=lwf_resnet data.num_tasks=5 misc.seed=2
+[2024-05-20 01:43:05,293][HYDRA] 	#8 : +cifar_reg_exps=lwf_resnet data.num_tasks=10 misc.seed=1
+[2024-05-20 01:43:05,299][HYDRA] 	#9 : +cifar_reg_exps=lwf_resnet data.num_tasks=10 misc.seed=2
+[2024-05-20 01:43:05,306][HYDRA] 	#10 : +cifar_reg_exps=lwf_resnet data.num_tasks=20 misc.seed=1
+[2024-05-20 01:43:05,312][HYDRA] 	#11 : +cifar_reg_exps=lwf_resnet data.num_tasks=20 misc.seed=2

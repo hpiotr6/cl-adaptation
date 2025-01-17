@@ -1,0 +1,37 @@
+[2024-05-13 13:29:50,770][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.13/13-29-48
+[2024-05-13 13:29:50,771][HYDRA] 	#0 : +training/approach=finetuning +networks=resnet data.datasets=[imagenet_subset_kaggle]
+[2024-05-13 13:29:50,778][HYDRA] 	#1 : +training/approach=finetuning +networks=resnet data.datasets=[cifar100_fixed]
+[2024-05-13 13:29:50,785][HYDRA] 	#2 : +training/approach=finetuning +networks=convnext data.datasets=[imagenet_subset_kaggle]
+[2024-05-13 13:29:50,792][HYDRA] 	#3 : +training/approach=finetuning +networks=convnext data.datasets=[cifar100_fixed]
+[2024-05-13 13:29:50,798][HYDRA] 	#4 : +training/approach=replay +networks=resnet data.datasets=[imagenet_subset_kaggle]
+[2024-05-13 13:29:50,805][HYDRA] 	#5 : +training/approach=replay +networks=resnet data.datasets=[cifar100_fixed]
+[2024-05-13 13:29:50,811][HYDRA] 	#6 : +training/approach=replay +networks=convnext data.datasets=[imagenet_subset_kaggle]
+[2024-05-13 13:29:50,818][HYDRA] 	#7 : +training/approach=replay +networks=convnext data.datasets=[cifar100_fixed]
+[2024-05-13 13:29:50,824][HYDRA] 	#8 : +training/approach=ewc +networks=resnet data.datasets=[imagenet_subset_kaggle]
+[2024-05-13 13:29:50,831][HYDRA] 	#9 : +training/approach=ewc +networks=resnet data.datasets=[cifar100_fixed]
+[2024-05-13 13:29:50,838][HYDRA] 	#10 : +training/approach=ewc +networks=convnext data.datasets=[imagenet_subset_kaggle]
+[2024-05-13 13:29:50,844][HYDRA] 	#11 : +training/approach=ewc +networks=convnext data.datasets=[cifar100_fixed]
+[2024-05-13 13:29:50,851][HYDRA] 	#12 : +training/approach=lwf +networks=resnet data.datasets=[imagenet_subset_kaggle]
+[2024-05-13 13:29:50,858][HYDRA] 	#13 : +training/approach=lwf +networks=resnet data.datasets=[cifar100_fixed]
+[2024-05-13 13:29:50,864][HYDRA] 	#14 : +training/approach=lwf +networks=convnext data.datasets=[imagenet_subset_kaggle]
+[2024-05-13 13:29:50,871][HYDRA] 	#15 : +training/approach=lwf +networks=convnext data.datasets=[cifar100_fixed]
+Traceback (most recent call last):
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 466, in <lambda>
+    lambda: hydra.multirun(
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/hydra.py", line 162, in multirun
+    ret = sweeper.sweep(arguments=task_overrides)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/core_plugins/basic_sweeper.py", line 177, in sweep
+    results = self.launcher.launch(batch, initial_job_idx=initial_job_idx)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra_plugins/hydra_submitit_launcher/submitit_launcher.py", line 146, in launch
+    return [j.results()[0] for j in jobs]
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra_plugins/hydra_submitit_launcher/submitit_launcher.py", line 146, in <listcomp>
+    return [j.results()[0] for j in jobs]
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/core.py", line 289, in results
+    outcome, result = self._get_outcome_and_result()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/submitit/core/core.py", line 384, in _get_outcome_and_result
+    raise utils.UncompletedJobError("\n".join(message))
+submitit.core.utils.UncompletedJobError: Job 696633_0 (task: 0) with path /net/tscratch/people/plghpiotr/cl-adaptation/results/2024/05.13/13-09-12/.submitit/696633_0/696633_0_0_result.pkl
+has not produced any output (state: CANCELLED by 114263)
+No output/error stream produced ! Check: /net/tscratch/people/plghpiotr/cl-adaptation/results/2024/05.13/13-09-12/.submitit/696633_0/696633_0_0_log.out

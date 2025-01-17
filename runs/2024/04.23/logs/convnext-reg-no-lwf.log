@@ -1,0 +1,19 @@
+[2024-04-23 17:44:10,401][HYDRA] Submitit 'slurm' sweep output dir : results/2024/04.23/17-44-09
+[2024-04-23 17:44:10,403][HYDRA] 	#0 : +convnext_exps=ewc
+[2024-04-23 17:44:10,410][HYDRA] 	#1 : +convnext_exps=finetuning
+[2024-04-23 17:44:10,417][HYDRA] 	#2 : +convnext_exps=replay
+Error executing job with overrides: ['+convnext_exps=replay']
+Traceback (most recent call last):
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 466, in <lambda>
+    lambda: hydra.multirun(
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/hydra.py", line 162, in multirun
+    ret = sweeper.sweep(arguments=task_overrides)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/core_plugins/basic_sweeper.py", line 181, in sweep
+    _ = r.return_value
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+omegaconf.errors.ConfigAttributeError: Missing key approach
+    full_key: training.approach
+    object_type=dict

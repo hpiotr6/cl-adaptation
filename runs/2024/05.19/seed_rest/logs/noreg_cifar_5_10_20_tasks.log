@@ -1,0 +1,26 @@
+[2024-05-20 01:43:28,410][HYDRA] Submitit 'slurm' sweep output dir : results/2024/05.20/01-43-26
+[2024-05-20 01:43:28,412][HYDRA] 	#0 : +networks=resnet data.num_tasks=5 misc.seed=1
+[2024-05-20 01:43:28,420][HYDRA] 	#1 : +networks=resnet data.num_tasks=5 misc.seed=2
+[2024-05-20 01:43:28,574][HYDRA] 	#2 : +networks=resnet data.num_tasks=10 misc.seed=1
+[2024-05-20 01:43:28,581][HYDRA] 	#3 : +networks=resnet data.num_tasks=10 misc.seed=2
+[2024-05-20 01:43:28,588][HYDRA] 	#4 : +networks=resnet data.num_tasks=20 misc.seed=1
+[2024-05-20 01:43:28,595][HYDRA] 	#5 : +networks=resnet data.num_tasks=20 misc.seed=2
+[2024-05-20 01:43:28,602][HYDRA] 	#6 : +networks=convnext data.num_tasks=5 misc.seed=1
+[2024-05-20 01:43:28,609][HYDRA] 	#7 : +networks=convnext data.num_tasks=5 misc.seed=2
+[2024-05-20 01:43:28,616][HYDRA] 	#8 : +networks=convnext data.num_tasks=10 misc.seed=1
+[2024-05-20 01:43:28,623][HYDRA] 	#9 : +networks=convnext data.num_tasks=10 misc.seed=2
+[2024-05-20 01:43:28,630][HYDRA] 	#10 : +networks=convnext data.num_tasks=20 misc.seed=1
+[2024-05-20 01:43:28,638][HYDRA] 	#11 : +networks=convnext data.num_tasks=20 misc.seed=2
+Error executing job with overrides: ['+networks=resnet', 'data.num_tasks=20', 'misc.seed=1']
+Traceback (most recent call last):
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/utils.py", line 466, in <lambda>
+    lambda: hydra.multirun(
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/hydra.py", line 162, in multirun
+    ret = sweeper.sweep(arguments=task_overrides)
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/_internal/core_plugins/basic_sweeper.py", line 181, in sweep
+    _ = r.return_value
+  File "/net/tscratch/people/plghpiotr/.conda/mgr_env/lib/python3.10/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+AssertionError: Loss is NaN
