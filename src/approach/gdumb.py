@@ -1,11 +1,13 @@
-import torch
-import numpy as np
-from copy import deepcopy
 from argparse import ArgumentParser
+from copy import deepcopy
+
+import numpy as np
+import torch
 from torch.utils.data.dataloader import default_collate
 
-from .incremental_learning import Inc_Learning_Appr
 from src.datasets.exemplars_dataset import ExemplarsDataset
+
+from .incremental_learning import Inc_Learning_Appr
 
 
 def rand_bbox(size, lam):

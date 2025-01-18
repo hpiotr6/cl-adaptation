@@ -4,18 +4,11 @@ import re
 import time
 from functools import partial, reduce
 
+import hydra
 import numpy as np
 import torch
 import torch.multiprocessing
 from dotenv import find_dotenv, load_dotenv
-
-from src.metrics import cm
-from src.regularizers import NullVarCovRegLoss, VarCovRegLoss
-
-load_dotenv(find_dotenv())
-
-
-import hydra
 from omegaconf import DictConfig, OmegaConf
 
 import src.approach
@@ -23,9 +16,12 @@ import src.utils
 from src.datasets.data_loader import get_loaders
 from src.last_layer_analysis import last_layer_analysis
 from src.loggers.exp_logger import MultiLogger
+from src.metrics import cm
 from src.networks import allmodels, set_tvmodel_head_var, tvmodels
+from src.regularizers import NullVarCovRegLoss, VarCovRegLoss
 
 torch.multiprocessing.set_sharing_strategy("file_system")
+load_dotenv(find_dotenv())
 
 
 def add_and_assert_cfg(cfg):

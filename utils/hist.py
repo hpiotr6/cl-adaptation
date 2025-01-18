@@ -1,6 +1,7 @@
 from pathlib import Path
-from matplotlib import pyplot as plt
+
 import torch
+from matplotlib import pyplot as plt
 
 ROOT = "analysis/12.09"
 directory_path = Path(ROOT)

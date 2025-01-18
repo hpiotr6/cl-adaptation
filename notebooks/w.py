@@ -1,9 +1,10 @@
-import pandas as pd
-import wandb
-
 from itertools import product
-from matplotlib import pyplot as plt
+
+import pandas as pd
 import seaborn as sns
+from matplotlib import pyplot as plt
+
+import wandb
 
 api = wandb.Api()
 
@@ -33,7 +34,6 @@ config_df = pd.json_normalize(runs_df["config"])
 df = pd.concat([runs_df.drop(columns=["config"]), config_df], axis=1)
 df["data.datasets"] = df["data.datasets"].apply(lambda x: x[0])
 from typing import Optional
-
 
 layers = {
     "last_layer": ["fc", "classifier"],

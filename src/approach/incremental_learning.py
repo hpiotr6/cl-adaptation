@@ -1,12 +1,13 @@
-from functools import partial
-import omegaconf
 import time
+from functools import partial
 from typing import Callable, Optional
-import torch
-import numpy as np
 
-from src.loggers.exp_logger import ExperimentLogger
+import numpy as np
+import omegaconf
+import torch
+
 from src.datasets.exemplars_dataset import ExemplarsDataset
+from src.loggers.exp_logger import ExperimentLogger
 from src.regularizers import VarCovRegLossInterface
 
 

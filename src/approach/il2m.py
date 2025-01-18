@@ -1,8 +1,9 @@
-import torch
 import numpy as np
+import torch
+
+from src.datasets.exemplars_dataset import ExemplarsDataset
 
 from .incremental_learning import Inc_Learning_Appr
-from src.datasets.exemplars_dataset import ExemplarsDataset
 
 
 class Appr(Inc_Learning_Appr):

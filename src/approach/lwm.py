@@ -1,14 +1,16 @@
 import contextlib
 import os
-import torch
-from copy import deepcopy
-import torch.nn.functional as F
 from argparse import ArgumentParser
+from copy import deepcopy
+
+import torch
+import torch.nn.functional as F
 from torchvision.utils import save_image
 
-from src.networks.network import LLL_Net
-from .incremental_learning import Inc_Learning_Appr
 from src.datasets.exemplars_dataset import ExemplarsDataset
+from src.networks.network import LLL_Net
+
+from .incremental_learning import Inc_Learning_Appr
 
 
 class Appr(Inc_Learning_Appr):

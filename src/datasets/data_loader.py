@@ -1,22 +1,20 @@
 import glob
 import os
+from collections import defaultdict
 from itertools import compress
-from collections import defaultdict
-
-from collections import defaultdict
 
 import numpy as np
-from torch.utils import data
 import torchvision.transforms as transforms
-from torchvision.datasets import MNIST as TorchVisionMNIST
-from torchvision.datasets import CIFAR100 as TorchVisionCIFAR100
+from torch.utils import data
 from torchvision.datasets import CIFAR10 as TorchVisionCIFAR10
+from torchvision.datasets import CIFAR100 as TorchVisionCIFAR100
+from torchvision.datasets import MNIST as TorchVisionMNIST
 from torchvision.datasets import SVHN as TorchVisionSVHN
 
 from . import base_dataset as basedat
 from . import memory_dataset as memd
-from .dataset_config import dataset_config
 from .autoaugment import CIFAR10Policy, ImageNetPolicy
+from .dataset_config import dataset_config
 from .ops import Cutout
 
 

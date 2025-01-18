@@ -1,14 +1,16 @@
+from argparse import ArgumentParser
+from copy import deepcopy
+from typing import Optional
+
 import omegaconf
 import torch
-from copy import deepcopy
-from argparse import ArgumentParser
 
-from src.metrics import cka
-from .incremental_learning import Inc_Learning_Appr
 from src.datasets.exemplars_dataset import ExemplarsDataset
-from src.regularizers import VarCovRegLossInterface
-from typing import Optional
 from src.loggers.exp_logger import ExperimentLogger
+from src.metrics import cka
+from src.regularizers import VarCovRegLossInterface
+
+from .incremental_learning import Inc_Learning_Appr
 
 
 class Appr(Inc_Learning_Appr):

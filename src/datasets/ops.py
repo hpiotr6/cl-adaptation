@@ -1,7 +1,8 @@
-from PIL import Image, ImageEnhance, ImageOps
 import random
-import torch
+
 import numpy as np
+import torch
+from PIL import Image, ImageEnhance, ImageOps
 
 
 class Cutout(object):

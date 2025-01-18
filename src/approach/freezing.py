@@ -1,8 +1,10 @@
-import torch
 from argparse import ArgumentParser
 
-from .incremental_learning import Inc_Learning_Appr
+import torch
+
 from src.datasets.exemplars_dataset import ExemplarsDataset
+
+from .incremental_learning import Inc_Learning_Appr
 
 
 class Appr(Inc_Learning_Appr):

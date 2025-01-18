@@ -1,6 +1,7 @@
+from copy import deepcopy
+
 import torch
 from torch import nn
-from copy import deepcopy
 
 
 class LLL_Net(nn.Module):

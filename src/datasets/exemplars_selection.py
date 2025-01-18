@@ -5,7 +5,7 @@ from typing import Iterable
 
 import numpy as np
 import torch
-from torch.utils.data import DataLoader, ConcatDataset
+from torch.utils.data import ConcatDataset, DataLoader
 from torchvision.transforms import Lambda
 
 from src.datasets.exemplars_dataset import ExemplarsDataset

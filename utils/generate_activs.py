@@ -1,9 +1,11 @@
-from pathlib import Path
+import re
 from collections import defaultdict
+from pathlib import Path
+
 import torch
 from tqdm import tqdm
+
 from src.analysis import core
-import re
 
 get_digits = lambda str: int(re.sub(r"\D", "", str))
 

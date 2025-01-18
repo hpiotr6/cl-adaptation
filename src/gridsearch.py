@@ -1,6 +1,6 @@
 import importlib
-from copy import deepcopy
 from argparse import ArgumentParser
+from copy import deepcopy
 
 import src.utils
 

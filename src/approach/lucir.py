@@ -1,15 +1,17 @@
 import copy
 import math
-import torch
 import warnings
-from torch import nn
-import torch.nn.functional as F
 from argparse import ArgumentParser
+
+import torch
+import torch.nn.functional as F
+from torch import nn
 from torch.nn import Module, Parameter
 from torch.utils.data import DataLoader
 
-from .incremental_learning import Inc_Learning_Appr
 from src.datasets.exemplars_dataset import ExemplarsDataset
+
+from .incremental_learning import Inc_Learning_Appr
 
 
 class Appr(Inc_Learning_Appr):

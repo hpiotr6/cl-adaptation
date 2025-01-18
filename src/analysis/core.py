@@ -2,21 +2,20 @@
 #              -> dataloader
 
 
-from collections import defaultdict
 import importlib
 import os
+import re
+from collections import defaultdict
 from pathlib import Path
 from pprint import pprint
-import re
 
+import torch
+from omegaconf import DictConfig, OmegaConf
 from tqdm import tqdm
 
 from src.datasets.data_loader import get_loaders
-from omegaconf import DictConfig, OmegaConf
-import torch
-
-from src.networks.network import LLL_Net
 from src.networks import allmodels, set_tvmodel_head_var, tvmodels
+from src.networks.network import LLL_Net
 
 
 def create_cfg(dir_path):

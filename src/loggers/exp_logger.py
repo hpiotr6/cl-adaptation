@@ -1,7 +1,7 @@
 import importlib
 import os
-from datetime import datetime
 from abc import ABC, abstractmethod
+from datetime import datetime
 
 
 class ExperimentLogger(ABC):
@@ -17,24 +17,19 @@ class ExperimentLogger(ABC):
             self.begin_time = begin_time
 
     @abstractmethod
-    def log_scalar(self, task, iter, name, value, group=None, curtime=None):
-        ...
+    def log_scalar(self, task, iter, name, value, group=None, curtime=None): ...
 
     @abstractmethod
-    def log_args(self, args):
-        ...
+    def log_args(self, args): ...
 
     @abstractmethod
-    def log_result(self, array, name, step):
-        ...
+    def log_result(self, array, name, step): ...
 
     @abstractmethod
-    def log_figure(self, name, iter, figure, curtime=None):
-        ...
+    def log_figure(self, name, iter, figure, curtime=None): ...
 
     @abstractmethod
-    def save_model(self, state_dict, task):
-        ...
+    def save_model(self, state_dict, task): ...
 
 
 class MultiLogger(ExperimentLogger):

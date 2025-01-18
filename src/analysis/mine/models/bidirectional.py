@@ -1,14 +1,15 @@
+import abc
 import itertools
+
+import numpy as np
+import pytorch_lightning as pl
 import torch
 import torch.nn as nn
-import numpy as np
-import abc
+from mine.models.gan import LinearDiscriminator, LinearGenerator
+from mine.models.mine import Mine, T
+from pytorch_lightning import Trainer
 
 from datasets import load_dataloader
-from mine.models.mine import T, Mine
-from mine.models.gan import LinearGenerator, LinearDiscriminator
-import pytorch_lightning as pl
-from pytorch_lightning import Trainer
 
 
 class Encoder(nn.Module):

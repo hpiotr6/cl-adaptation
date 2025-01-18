@@ -1,8 +1,8 @@
-from collections import defaultdict
 import os
+import re
+from collections import defaultdict
 from pathlib import Path
 from pprint import pprint
-import re
 
 import yaml
 

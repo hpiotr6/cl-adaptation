@@ -1,22 +1,23 @@
+import math
+
 import matplotlib.pyplot as plt
 import numpy as np
-import math
+import pytorch_lightning as pl
 import torch
 import torch.nn as nn
-from torch.distributions import MultivariateNormal
+from pytorch_lightning import Trainer
 from torch.autograd import Variable
-
+from torch.distributions import MultivariateNormal
 from torchvision import datasets
 from torchvision.transforms import transforms
 
-# from .gan import GAN
-
 from ..datasets import FunctionDataset, MultivariateNormalDataset
+from ..utils import helpers
 from .layers import ConcatLayer, CustomSequential
 
-import pytorch_lightning as pl
-from pytorch_lightning import Trainer
-from ..utils import helpers
+# from .gan import GAN
+
+
 
 torch.autograd.set_detect_anomaly(True)
 

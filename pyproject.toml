@@ -17,8 +17,9 @@ python = "^3.10"
 # python-dotenv = "*"
 # imagecorruptions = "*"
 # hydra-core = "^1.3.2"
-torch = "^2.5.1"
-torchvision = "^0.20.1"
+# torch = "^2.5.1"
+torch = "2.0.1"
+torchvision = "0.15.2"
 wand = "^0.6.13"
 python-dotenv = "^1.0.1"
 imagecorruptions = "^1.1.2"
@@ -29,6 +30,10 @@ wandb = "^0.19.3"
 seaborn = "^0.13.2"
 ipykernel = "^6.29.5"
 
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.10.0"
+isort = "^5.13.2"
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,5 +1,5 @@
-from copy import deepcopy
 import os
+from copy import deepcopy
 from dataclasses import dataclass
 from datetime import datetime
 from functools import partial
@@ -16,8 +16,8 @@ from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.loggers import WandbLogger
 from torch.optim import AdamW
 from torch.utils.data import DataLoader, random_split
-import wandb
 
+import wandb
 from src.analysis import core
 from src.datasets.memory_dataset import MemoryDataset
 

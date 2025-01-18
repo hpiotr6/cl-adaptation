@@ -1,7 +1,16 @@
 defaults:
   - defaults
   - debug
-  - training/vcreg: resnet
   - training/approach: finetuning
-  - training/optimizer: sgd
+  - networks: convnext
   - _self_
+
+training:
+  vcreg:
+    scale: false
+    reg_layers: .*after_skipping
+    smooth_cov: 1.0
+    var_weight: 5
+    cov_weight: 5
+    n_first_task: -1
+

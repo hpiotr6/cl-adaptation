@@ -1,17 +1,17 @@
+import os
 from collections import defaultdict
 from datetime import date
 from functools import partial
-import os
 from pathlib import Path
 from pprint import pprint
 from typing import Any
+
 import torch
 
-from src.sign_visualizer.core import get_activations, load_and_clean, load_extractor
-from src.sign_visualizer.dataset_interface import (
-    ContinualDataset,
-    ContinualDatasetConfig,
-)
+from src.sign_visualizer.core import (get_activations, load_and_clean,
+                                      load_extractor)
+from src.sign_visualizer.dataset_interface import (ContinualDataset,
+                                                   ContinualDatasetConfig)
 
 
 def is_sign_changed(output_1: torch.Tensor, output_2: torch.Tensor):

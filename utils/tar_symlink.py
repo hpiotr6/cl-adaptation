@@ -4,7 +4,6 @@ from pathlib import Path
 
 from tqdm import tqdm
 
-
 # def add_files(tar, path):
 #     for item in path.iterdir():
 #         if item.is_symlink():

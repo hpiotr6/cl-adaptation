@@ -1,22 +1,17 @@
+import itertools
+import random
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pytorch_lightning as pl
 import torch
 import torch.nn as nn
-import numpy as np
-import itertools
-
-from .layers import (
-    LinearDiscriminator,
-    LinearGenerator,
-    DCGanDiscriminator,
-    DCGanGenerator,
-)
-from .adaptive_gradient_clipping import adaptive_gradient_clipping_
-
-import pytorch_lightning as pl
 import torchvision
-import random
-import matplotlib.pyplot as plt
 
 from ..datasets import to_onehot
+from .adaptive_gradient_clipping import adaptive_gradient_clipping_
+from .layers import (DCGanDiscriminator, DCGanGenerator, LinearDiscriminator,
+                     LinearGenerator)
 
 
 class GAN(pl.LightningModule):

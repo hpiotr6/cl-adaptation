@@ -1,11 +1,11 @@
 import os
 from pathlib import Path
-import hydra
 
+import hydra
+import seaborn as sns
+import torch
 from matplotlib import pyplot as plt
 from omegaconf import DictConfig
-import torch
-import seaborn as sns
 
 
 class Plot:

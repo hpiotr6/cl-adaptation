@@ -1,8 +1,9 @@
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Callable, Protocol, Tuple, Optional
-import torch.nn.functional as F
+from typing import Callable, Optional, Protocol, Tuple
+
 import torch
+import torch.nn.functional as F
 
 
 def into_2d(feats: torch.Tensor):

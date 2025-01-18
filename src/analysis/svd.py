@@ -1,6 +1,6 @@
-from matplotlib import pyplot as plt
 import numpy as np
 import torch
+from matplotlib import pyplot as plt
 
 
 def calculate_eigens_directclr(embeddings):

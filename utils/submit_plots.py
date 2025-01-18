@@ -2,7 +2,6 @@ import os
 import subprocess
 from pathlib import Path
 
-
 # directory_path = Path("analysis/12.07")
 # ckpts = list(directory_path.rglob("*.pt"))
 # for ckpt in ckpts:

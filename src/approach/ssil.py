@@ -1,16 +1,17 @@
 import warnings
-import torch
-from copy import deepcopy
 from argparse import ArgumentParser
-import torch.nn.functional as F
+from copy import deepcopy
 from typing import Optional
-import omegaconf
 
+import omegaconf
+import torch
+import torch.nn.functional as F
+
+from src.datasets.exemplars_dataset import ExemplarsDataset
 from src.loggers.exp_logger import ExperimentLogger
+from src.regularizers import VarCovRegLossInterface
 
 from .incremental_learning import Inc_Learning_Appr
-from src.datasets.exemplars_dataset import ExemplarsDataset
-from src.regularizers import VarCovRegLossInterface
 
 
 class Appr(Inc_Learning_Appr):

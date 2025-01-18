@@ -1,11 +1,11 @@
 from torchvision import models
 
+from .convnext_custom import *
 from .lenet import LeNet
 from .resnet32 import resnet32
 from .resnet32_ln import resnet32_ln
 from .resnet32_no_bn import resnet32_no_bn
 from .resnet_custom import *
-from .convnext_custom import *
 from .vggnet import VggNet
 
 # available torchvision models

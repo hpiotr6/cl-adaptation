@@ -1,9 +1,10 @@
 import os
-import torch
 import shutil
 
-from main_incremental import main
+import torch
+
 import datasets.dataset_config as c
+from main_incremental import main
 
 
 def run_main(args_line, result_dir="results_test", clean_run=False):

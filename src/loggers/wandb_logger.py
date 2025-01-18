@@ -1,17 +1,17 @@
 import io
-import re
 import os
-from typing import List, Optional
+import re
 import warnings
+from datetime import date
+from typing import List, Optional
 
 import seaborn as sns
 from matplotlib import pyplot as plt
 from PIL import Image
 
 import wandb
+
 from .exp_logger import ExperimentLogger
-import os
-from datetime import date
 
 os.environ["WANDB_START_METHOD"] = "thread"
 

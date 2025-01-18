@@ -28,7 +28,7 @@ class BasicBlock(BasicBlock):
         self.before_skip = nn.Identity()
         self.before_relu = nn.Identity()
         self.relu2 = nn.ReLU(inplace=True)
-        self.after_relu = nn.Identity()
+        self.intermediate = nn.Identity()
 
     def forward(self, x: Tensor) -> Tensor:
         out = self.conv1(x)
@@ -41,7 +41,7 @@ class BasicBlock(BasicBlock):
         out = self._skipping_connection(x, out)
         out = self.before_relu(out)
         out = self.relu2(out)
-        out = self.after_relu(out)
+        out = self.intermediate(out)
 
         return out
 

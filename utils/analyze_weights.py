@@ -1,11 +1,12 @@
+import re
 from dataclasses import dataclass, field
 from functools import partial
 from pathlib import Path
-import re
 from typing import List
-from matplotlib import pyplot as plt
+
 import numpy as np
 import torch
+from matplotlib import pyplot as plt
 
 
 def parse_path(filename):

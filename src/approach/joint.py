@@ -1,9 +1,11 @@
-import torch
 from argparse import ArgumentParser
+
+import torch
 from torch.utils.data import DataLoader, Dataset
 
-from .incremental_learning import Inc_Learning_Appr
 from src.datasets.exemplars_dataset import ExemplarsDataset
+
+from .incremental_learning import Inc_Learning_Appr
 
 
 class Appr(Inc_Learning_Appr):
