@@ -37,7 +37,7 @@ def submit(directory, yaml_files, logfile_root):
 
 
 def main():
-    directory = Path("runs/2025/01.17")
+    directory = Path("runs/2025/01.23/B")
     yaml_files = directory.glob("*.yaml")
     logfile_root = Path(directory, "logs")
     files = list(yaml_files)

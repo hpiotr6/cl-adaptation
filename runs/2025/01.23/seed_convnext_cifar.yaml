@@ -1,0 +1,35 @@
+defaults:
+  - defaults
+  - networks: convnext
+  - override hydra/launcher: slurm
+  - _self_
+
+
+hydra:
+  searchpath:
+    - file://src/config
+  mode: MULTIRUN
+  launcher:
+    timeout_min: 2800
+  sweep:
+    dir: results/2025/${now:%m.%d}/${now:%H-%M-%S}
+  sweeper:
+      params:
+        +training/approach: finetuning, replay, ewc, lwf
+        misc.seed: 0,1,2
+        data.num_tasks: 5,10,20
+misc:
+  results_path: ${hydra:sweep.dir}/${hydra:sweep.subdir}
+
+data:
+  datasets: 
+   - cifar100_fixed
+
+training:
+  vcreg:
+    scale: false
+    var_weight: 15.0
+    cov_weight: 10.0
+    reg_layers: classifier$
+    smooth_cov: 1.0
+    n_first_task: -1
