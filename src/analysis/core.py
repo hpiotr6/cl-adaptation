@@ -47,7 +47,7 @@ def get_activations(model, dataloader, device="cpu") -> dict:
         inputs, labels = batch
         inputs = inputs.to(device)
         labels = labels.to(device)
-        output = model(inputs)
+        output = model(inputs).detach().cpu()
         for k, v in zip(labels, output):
             outputs[k.item()].append(v)
 

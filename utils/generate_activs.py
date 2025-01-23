@@ -2,6 +2,7 @@ import re
 from collections import defaultdict
 from pathlib import Path
 
+import pandas as pd
 import torch
 from tqdm import tqdm
 
@@ -10,15 +11,15 @@ from src.analysis import core
 get_digits = lambda str: int(re.sub(r"\D", "", str))
 
 
-def get_activs(exp_name, path):
-    root = Path("activations")
-    save_path = root.joinpath(*exp_name.split("_"))
+def get_activs(exp_name: tuple, path):
+    root = Path("activations/2025")
+    save_path = root.joinpath(*exp_name)
     save_path.mkdir(exist_ok=True, parents=True)
 
     train_tasks_data = defaultdict(dict)
     test_tasks_data = defaultdict(dict)
     cfg = core.create_cfg(path)
-    cfg.data.num_workers = 16
+    cfg.data.num_workers = 0
     data_factory = core.DataFactory(cfg)
     model_factory = core.ModelFactory(cfg, path, device=DEVICE)
     for task_idx, ckpt in tqdm(enumerate(sorted(model_factory.ckpts))):
@@ -39,22 +40,30 @@ def get_activs(exp_name, path):
 
 
 if __name__ == "__main__":
-    DEVICE = "cuda"
+    DEVICE = "mps"
     NUM_CLASSES = 20
+    df = pd.read_csv(
+        "/Users/piotr.hondra/Documents/mgr/cl-adaptation/checkpoints_paths.csv"
+    )
+    df = df[df.is_regularized == False]
 
-    resnet_finetuning = {
-        "resnet34_finetuning_reg": "results/2024/04.24/13-35-10/0/cifar100_fixed_finetuning",
-        "resnet34_finetuning_noreg": "results/2024/04.17/18-13-25/0/cifar100_fixed_finetuning_final_checkpoint",
-    }
-
-    convnext_finetuning = {
-        "convnext_finetuning_s:2_reg:False": "results/2024/05.14/13-28-06/7/cifar100_fixed_finetuning",
-        "convnext_finetuning_s:1_reg:False": "results/2024/05.14/13-28-06/6/cifar100_fixed_finetuning",
-        "convnext_finetuning_s:2_reg:True": "results/2024/05.14/13-27-53/13/cifar100_fixed_finetuning",
-        "convnext_finetuning_s:1_reg:True": "results/2024/05.14/13-27-53/12/cifar100_fixed_finetuning",
-        "convnext_finetuning_s:0_reg:True": "results/2024/04.24/13-34-44/0/cifar100_fixed_finetuning",
-        "convnext_finetuning_s:0_reg:False": "results/2024/04.17/18-12-39/0/cifar100_fixed_finetuning_final_checkpoint",
-    }
-
-    for e_name, path in convnext_finetuning.items():
-        tasks_data = get_activs(exp_name=e_name, path=path)
+    for row in df.itertuples():
+        i, *x, path = row
+        tasks_data = get_activs(exp_name=map(str, x), path=path)
+    #
+    # resnet_finetuning = {
+    #     "resnet34_finetuning_reg": "results/2024/04.24/13-35-10/0/cifar100_fixed_finetuning",
+    #     "resnet34_finetuning_noreg": "results/2024/04.17/18-13-25/0/cifar100_fixed_finetuning_final_checkpoint",
+    # }
+    #
+    # convnext_finetuning = {
+    #     "convnext_finetuning_s:2_reg:False": "results/2024/05.14/13-28-06/7/cifar100_fixed_finetuning",
+    #     "convnext_finetuning_s:1_reg:False": "results/2024/05.14/13-28-06/6/cifar100_fixed_finetuning",
+    #     "convnext_finetuning_s:2_reg:True": "results/2024/05.14/13-27-53/13/cifar100_fixed_finetuning",
+    #     "convnext_finetuning_s:1_reg:True": "results/2024/05.14/13-27-53/12/cifar100_fixed_finetuning",
+    #     "convnext_finetuning_s:0_reg:True": "results/2024/04.24/13-34-44/0/cifar100_fixed_finetuning",
+    #     "convnext_finetuning_s:0_reg:False": "results/2024/04.17/18-12-39/0/cifar100_fixed_finetuning_final_checkpoint",
+    # }
+    #
+    # # for e_name, path in convnext_finetuning.items():
+    # #     tasks_data = get_activs(exp_name=e_name, path=path)
