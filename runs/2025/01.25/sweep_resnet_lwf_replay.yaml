@@ -36,7 +36,6 @@ hydra:
           {var_weight: 15, cov_weight: 20},
           {var_weight: 20, cov_weight: 15},
           {var_weight: 20, cov_weight: 20}"
-
         data.datasets: "[imagenet_subset_kaggle], [cifar100_fixed]"
 misc:
   results_path: ${hydra:sweep.dir}/${hydra:sweep.subdir}
