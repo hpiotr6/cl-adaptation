@@ -1,16 +1,16 @@
 defaults:
   - defaults
   - debug
-  - training/approach: finetuning
-  - networks: convnext
+  - training/approach: lwf
+  - networks: resnet
   - _self_
 
 training:
   vcreg:
     scale: false
-    reg_layers: .*after_skipping
+    reg_layers: .*after_relu
     smooth_cov: 1.0
-    var_weight: 5
-    cov_weight: 5
+    var_weight: 0.1
+    cov_weight: 0.1
     n_first_task: -1
 
