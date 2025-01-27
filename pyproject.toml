@@ -30,6 +30,7 @@ wandb = "^0.19.3"
 seaborn = "^0.13.2"
 ipykernel = "^6.29.5"
 tqdm = "^4.67.1"
+scikit-learn = "^1.6.1"
 
 
 [tool.poetry.group.dev.dependencies]
