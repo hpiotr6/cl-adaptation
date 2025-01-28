@@ -38,7 +38,7 @@ class VarCovRegLoss:
     delta: float = 1
     hooked_layer_names: Optional[list[str]] = None
     eps: float = 1e-4
-    scale: bool = True
+    scale: bool = False
     n_first_task: int = -1
     _initialised: bool = False
     _hooks: defaultdict = field(default_factory=lambda: defaultdict(lambda: None))

@@ -1,0 +1,37 @@
+defaults:
+  - defaults
+  - networks: resnet
+  - override hydra/launcher: slurm
+  - _self_
+
+
+hydra:
+  searchpath:
+    - file://src/config
+  mode: MULTIRUN
+  launcher:
+    timeout_min: 2800
+  sweep:
+    dir: results/2025/${now:%m.%d}/${now:%H-%M-%S}
+  sweeper:
+      params:
+        +training/approach: replay, lwf
+        misc.seed: 0,1,2
+        +training.vcreg: "
+          {var_weight: 0, cov_weight: 0},
+          {var_weight: 10, cov_weight: 10}"
+        data.datasets: "[imagenet_subset_kaggle], [cifar100_fixed]"
+
+misc:
+  results_path: ${hydra:sweep.dir}/${hydra:sweep.subdir}
+
+data:
+  nc_first_task: 50
+  num_tasks: 6
+
+training:
+  vcreg:
+    reg_layers: .*after_relu
+    smooth_cov: 1.0
+    scale: false
+    n_first_task: -1
