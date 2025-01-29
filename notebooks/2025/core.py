@@ -154,3 +154,28 @@ def get_df_pycil(project_name: str, min_runtime_minutes: int = 5):
 
     df["project_name"] = project_name
     return df, failed_runs, not_finished_runs
+
+
+def seed_wise_differcence(df):
+
+    avg_acc = (
+        df.groupby(["approach", "dataset", "num_tasks", "seed", "is_regularized"])[
+            "avg_acc_tag"
+        ]
+        .agg(lambda x: x)
+        .unstack()
+    )
+    avg_acc["difference"] = avg_acc[True] - avg_acc[False]
+    avg_acc.reset_index(inplace=True)
+    new_rows = avg_acc[
+        ["approach", "dataset", "num_tasks", "seed", "difference"]
+    ].copy()
+    new_rows["is_regularized"] = "agg"  # Set is_regularized to 'add'
+    new_rows["avg_acc_tag"] = new_rows[
+        "difference"
+    ]  # Set avg_acc_tag to the difference
+    new_rows = new_rows[
+        ["approach", "is_regularized", "dataset", "num_tasks", "avg_acc_tag", "seed"]
+    ]
+    df_final = pd.concat([df, new_rows], ignore_index=True)
+    return df_final
