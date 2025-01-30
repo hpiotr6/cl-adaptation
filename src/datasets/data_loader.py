@@ -61,6 +61,8 @@ def get_loaders(
             ds_name=cur_dataset,
         )
 
+        trn_transform = tst_transform  # WARNING: forcing training transorms to be test
+
         if len(datasets) > 1:
             if cur_dataset in ds_to_cls_order:
                 class_order = ds_to_cls_order[cur_dataset]
