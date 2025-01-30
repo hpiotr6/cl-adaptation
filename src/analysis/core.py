@@ -119,6 +119,7 @@ class ModelFactory:
     def _initialise_hooks(self, model):
         def scale_strategy(output):
             if self.cfg.training.vcreg.scale:
+                raise NotImplementedError
                 return output - output.mean(0)
             else:
                 return output

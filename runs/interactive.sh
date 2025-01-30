@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH -A plggenerativepw2-gpu-a100
+#SBATCH -A plgdynamic2-gpu-a100
 #SBATCH -p plgrid-gpu-a100
-#SBATCH -t 3:00:00
+#SBATCH -t 1-0:0
 #SBATCH --ntasks 1
 #SBATCH --gres gpu:1
 #SBATCH --mem 40G
