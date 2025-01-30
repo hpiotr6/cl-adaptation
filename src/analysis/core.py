@@ -119,7 +119,9 @@ class ModelFactory:
     def _initialise_hooks(self, model):
         def scale_strategy(output):
             if self.cfg.training.vcreg.scale:
-                raise NotImplementedError
+                raise NotImplementedError(
+                    "You try to use model demean but we don't want it!"
+                )
                 return output - output.mean(0)
             else:
                 return output

@@ -17,3 +17,7 @@ cifar,convnext,5,2,True,results/2025/01.23/09-34-56/6/cifar100_fixed_finetuning
 cifar,convnext,10,0,True,results/2025/01.23/09-34-56/1/cifar100_fixed_finetuning
 cifar,convnext,10,1,True,results/2025/01.23/09-34-56/4/cifar100_fixed_finetuning
 cifar,convnext,10,2,True,results/2025/01.23/09-34-56/7/cifar100_fixed_finetuning
+imagenet,convnext,10,1,False,results/2024/05.17/16-23-07/4/imagenet_subset_kaggle_finetuning
+imagenet,convnext,10,2,False,results/2024/05.17/16-23-07/5/imagenet_subset_kaggle_finetuning
+imagenet,convnext,10,1,True,results/2025/01.23/09-35-16/2/imagenet_subset_kaggle_finetuning
+imagenet,convnext,10,2,True,results/2025/01.23/09-35-16/4/imagenet_subset_kaggle_finetuning
